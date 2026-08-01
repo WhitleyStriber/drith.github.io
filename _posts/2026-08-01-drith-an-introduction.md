@@ -33,29 +33,39 @@ said KH2. The combat in that game is what made me commit to this properly.
   coming, so without somewhere to fall back to you won't last long.
 - From there you push out further. There's 12+ monuments and they're the places
   worth going, which means everyone else is going to them too.
-- Be careful out there. Other players are crawling the same monuments you are,
-  and that's usually where PvE turns into PvP.
+- Be careful out there. Other players are crawling the same monuments you are.
+  PvP is Rust styled, so you can lose everything you're carrying.
+- Looting is a big part of it. Random drops, airdrops, and rare monsters that
+  drop exclusive loot you can't get anywhere else.
 - Then you come back, reinforce what you've got, and go out again.
-- On top of that there's classes, melee, guns and magic skill trees, so you can
-  specialise into something that plays differently.
+- On top of that it's class based action: melee, guns, magic skill trees and
+  ultimate abilities, so you can specialise into something that plays
+  differently.
 
 ## What's working
 
 - Base building
 - The wardeck, where you stage loadout changes and commit them in one swap
 - Melee and ranged weapons
-- Magic and the skill trees
+- Magic, the skill trees and ultimate abilities
 - Classes and loadouts
-- Enemy AI, with a director that ramps up pressure
+- Enemy AI, with a director that ramps up pressure, and rare spawns
 - Netcode, which is what PvP runs on
 - Vehicles and mounts
-- Loot, crafting, blueprints and shops
+- Loot, airdrops, crafting, blueprints and shops
+- Wipes, with stats tracked across them
 - Monuments, water and environment FX
 
 The base side is the most finished part of the project and the world is the
 least, so that's where most of the next stretch is going. Right now I'm mostly
 polishing instead of adding: physics, 3d models, textures, and a bunch of random
 bugs.
+
+## Wipes
+
+The server wipes, and whoever comes out on top of a wipe walks away with illegal
+gems. You spend those on exclusive skins and weapons that carry into the wipes
+after it, so there's a reason to actually win one instead of just surviving it.
 
 ## Playing the pre-alpha
 
