@@ -102,3 +102,29 @@ so anything I post about it is a first draft and I'll probably change it.
 
 Before 2030, and at the rate I'm going I should hit that. I'd rather say 202X
 than give a date I have to walk back.
+
+## Thanks
+
+In absolutely no particular order at all, thanks to and grateful for:
+
+<ul class="thanks">
+  <li>Parisi</li>
+  <li>Richard</li>
+  <li>Matt</li>
+  <li>Tori</li>
+  <li>Ange</li>
+  <li>Stew</li>
+  <li>Nick</li>
+  <li>Algeri</li>
+  <li>Kazu</li>
+  <li>Harold</li>
+  <li>Ryan</li>
+  <li>Mom &amp; Dad</li>
+  <li>Forgie &amp; Maddy</li>
+  <li>Messi</li>
+  <li>Kevin &amp; Megan</li>
+  <li>Keith (Columbine)</li>
+  <li>James</li>
+  <li>Cameron</li>
+  <li>Columbine</li>
+</ul>

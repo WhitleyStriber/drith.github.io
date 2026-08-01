@@ -307,6 +307,15 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   margin: 28px 0 10px;
 }
 .prose li { margin-bottom: 6px; }
+
+/* Credits list — flows into columns so 15 names don't run down the page. */
+.prose ul.thanks {
+  columns: 2;
+  column-gap: 36px;
+  padding-left: 20px;
+}
+.prose ul.thanks li { break-inside: avoid; margin-bottom: 4px; }
+@media (min-width: 620px) { .prose ul.thanks { columns: 3; } }
 .prose strong { color: var(--txt); }
 .prose blockquote {
   margin: 24px 0;
