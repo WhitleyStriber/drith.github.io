@@ -127,4 +127,11 @@ In absolutely no particular order at all, thanks to and grateful for:
   <li>James</li>
   <li>Cameron</li>
   <li>Columbine</li>
+  <li>Coogan</li>
+  <li>Meatball</li>
+  <li>Vince</li>
+  <li>Walz</li>
+  <li>Tori &amp; Arian</li>
+  <li>Kattin</li>
+  <li>Frost</li>
 </ul>
