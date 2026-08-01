@@ -108,29 +108,29 @@ than give a date I have to walk back.
 In absolutely no particular order at all, thanks to and grateful for:
 
 <ul class="thanks">
-  <li>Parisi</li>
-  <li>Richard</li>
-  <li>Matt</li>
-  <li>Ange</li>
-  <li>Stew</li>
-  <li>Nick</li>
-  <li>Algeri</li>
-  <li>Kazu</li>
-  <li>Harold</li>
-  <li>Ryan</li>
-  <li>Mom &amp; Dad</li>
-  <li>Forgie &amp; Maddy</li>
-  <li>Messi</li>
-  <li>Kevin &amp; Megan</li>
-  <li>Keith (Columbine)</li>
-  <li>James</li>
-  <li>Cameron</li>
-  <li>Columbine</li>
-  <li>Coogan</li>
-  <li>Meatball</li>
   <li>Vince</li>
-  <li>Walz</li>
-  <li>Tori &amp; Arian</li>
+  <li>Columbine</li>
   <li>Kattin</li>
+  <li>Kazu</li>
+  <li>Coogan</li>
+  <li>Forgie &amp; Maddy</li>
+  <li>Ryan</li>
+  <li>Ange</li>
+  <li>Richard</li>
+  <li>Algeri</li>
+  <li>Kevin &amp; Megan</li>
+  <li>Walz</li>
+  <li>Stew</li>
+  <li>Messi</li>
+  <li>Keith (Columbine)</li>
+  <li>Tori &amp; Arian</li>
+  <li>Parisi</li>
+  <li>Matt</li>
+  <li>Cameron</li>
+  <li>Nick</li>
+  <li>James</li>
   <li>Frost</li>
+  <li>Mom &amp; Dad</li>
+  <li>Meatball</li>
+  <li>Harold</li>
 </ul>
