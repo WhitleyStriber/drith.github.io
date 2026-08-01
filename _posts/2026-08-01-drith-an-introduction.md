@@ -6,6 +6,8 @@ description: >-
   the pre-alpha.
 ---
 
+Hi all. Short introduction and an update on where we are with Drith.
+
 I've been working on this game on and off for about 3 years, and properly for
 the last year and a half.
 
@@ -21,9 +23,10 @@ Deadlocked, which ironically is the same name as Valve's upcoming MOBA hero
 shooter.
 
 In 2023 I spent most of the year just playing games. I replayed a bunch of
-classics like Kingdom Hearts 2, the Pokemon games, Final Fantasy 11, Ape Escape
-and Ico. I asked my friend Richard in a Discord what I should play next and he
-said KH2. The combat in that game is what made me commit to this properly.
+classics like the Pokemon games, Final Fantasy 11, Ape Escape and Ico. During
+that time I was looking for something to play next, so I asked my friend Richard
+in a Discord and he said Kingdom Hearts 2. That's the one that inspired me
+enough to actually make this game.
 
 ## How it plays
 
