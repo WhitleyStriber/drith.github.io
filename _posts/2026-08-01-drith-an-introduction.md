@@ -71,6 +71,9 @@ Some of it is further along than the rest. The base and armament side is the
 most finished thing in the project; the world is the least, and that's where
 most of the next stretch goes.
 
+Right now I'm mostly polishing rather than adding — the physics systems, 3D
+models, textures, and a long tail of random bugs.
+
 ## On the story
 
 There is one — the world, why Caldera is the way it is, what's underneath all
@@ -84,5 +87,6 @@ I'll be posting here as things land — what worked, what I tore out, and what
 turned out to be a bad idea I'd defended for six months. It won't be on a
 schedule.
 
-Target is **202X**. That's a real answer to a question I can't answer honestly
-yet, and I'd rather print that than a date I'd have to walk back later.
+The target is to get this out **before 2030**, and at the rate I'm developing
+now I believe I can hit it. I'm not narrowing it further than that yet — I'd
+rather print 202X than a date I'd have to walk back later.

@@ -35,9 +35,6 @@ kramdown:
 
 permalink: /devlog/:year/:month/:day/:title/
 
-plugins:
-  - jekyll-feed
-
 defaults:
   - scope:
       path: ""
