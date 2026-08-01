@@ -70,6 +70,11 @@ models, textures, and a bunch of random bugs.
 
 ## How to play the beta
 
+Before anything else, this is a **pre-alpha** build. It's rough, there are bugs
+I already know about and plenty I don't, and things are going to change or get
+torn out entirely. If you go in expecting a finished game you're going to have a
+bad time. If you go in expecting a pre-alpha you'll probably have fun with it.
+
 The beta runs on a server I host myself, so it's only playable when I've got it
 running. The Play button on the front page (and at the bottom of this post) will
 show you the access code when it's up, or tell you the server is offline when
