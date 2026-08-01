@@ -210,6 +210,34 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .server .off { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--mut); }
 
+/* Live status light — green while the box answers, grey while it doesn't. */
+.server .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.server .state::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 3px rgba(128, 140, 166, .12);
+}
+.server .state.on { color: var(--acc); }
+.server .state.on::before {
+  box-shadow: 0 0 0 3px rgba(77, 230, 122, .16);
+  animation: blink 2.4s ease-in-out infinite;
+}
+.server .state.checking::before { animation: blink 1s ease-in-out infinite; }
+
+@keyframes blink { 50% { opacity: .3; } }
+
 .copy {
   font-family: var(--mono);
   font-size: 9.5px;
@@ -389,5 +417,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .server { animation: none; }
+  .server .state::before { animation: none; }
   * { transition: none !important; }
 }

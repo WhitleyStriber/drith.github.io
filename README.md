@@ -29,6 +29,17 @@ url:     "https://whitleystriber.github.io"   # or https://yourdomain.com
 baseurl: ""
 ```
 
+## Server status
+
+The PLAY panel can show whether the game server is actually up. A browser can't
+probe a UDP port, so `tools/status/status_server.py` runs on the box next to
+the game server, checks the port, and answers JSON over HTTP; point
+`status_url` in `_config.yml` at it. Setup — including the HTTPS requirement,
+which will bite you otherwise — is in [tools/status/README.md](tools/status/README.md).
+
+Leave `status_url` empty and nothing changes: the panel reads `server_ip` at
+build time, so an address means online and no address means offline.
+
 ## Writing a devlog entry
 
 Drop a file in `_posts/` named `YYYY-MM-DD-some-slug.md`:
@@ -53,7 +64,8 @@ everything by year, and `/feed.xml` updates.
 ## Layout
 
 ```
-_config.yml            site title, release string, baseurl
+_config.yml            site title, release string, baseurl, server address
+_includes/server.html  the PLAY panel — access code or server status
 _layouts/default.html  frame, top bar, tabs, footer
 _layouts/post.html     devlog entry + prev/next
 index.html             hero, hologram, build status, latest posts, lore teasers

@@ -86,20 +86,101 @@
   var panel = document.getElementById('server');
   if (!play || !panel) return;
 
+  var copy = document.getElementById('copy');
+  var addr = document.getElementById('addr');
+
   play.addEventListener('click', function () {
     var open = !panel.hidden;
     panel.hidden = open;
     play.setAttribute('aria-expanded', String(!open));
+    if (!open) check();                 // opening — take a fresh reading
   });
 
-  var copy = document.getElementById('copy');
-  var addr = document.getElementById('addr');
-  if (!copy || !addr || !navigator.clipboard) return;
-
-  copy.addEventListener('click', function () {
-    navigator.clipboard.writeText(addr.textContent.trim()).then(function () {
-      copy.textContent = 'Copied';
-      setTimeout(function () { copy.textContent = 'Copy'; }, 1600);
+  if (copy && addr && navigator.clipboard) {
+    copy.addEventListener('click', function () {
+      navigator.clipboard.writeText(addr.textContent.trim()).then(function () {
+        copy.textContent = 'Copied';
+        setTimeout(function () { copy.textContent = 'Copy'; }, 1600);
+      });
     });
-  });
+  }
+
+  /* ------------------------------------------------------ server status --- */
+  /* The game is a Godot/ENet server on a UDP port and a browser can't poke a
+     UDP port, so the box runs a small HTTP responder next to it
+     (tools/status/status_server.py) that does the probe and answers JSON.
+     site.status_url is the panel's data-status; empty means no responder is
+     configured, so leave the panel exactly as Jekyll rendered it. */
+
+  var statusUrl = panel.getAttribute('data-status') || '';
+  var state = document.getElementById('state');
+  if (!statusUrl || !state) return;
+
+  var FRESH = 15000;      // don't re-probe more often than this
+  var TIMEOUT = 4000;     // a box that won't answer in 4s is down as far as we care
+  var checkedAt = 0;
+  var pending = false;
+  var settled = false;
+
+  /* Not paint() — the mute button already owns that name in this scope. */
+  function light(kind, text) {
+    state.className = 'state ' + kind;
+    state.textContent = text;           // the dot is a ::before
+  }
+
+  function show(el, on) { if (el) el.hidden = !on; }
+
+  /* Online with an address shows the code and the copy button; anything else
+     is just the status line. An address from the responder wins over the one
+     baked in at build time, so changing ports doesn't need a site rebuild. */
+  function settle(online, address) {
+    settled = true;
+    if (!online) {
+      light('off', 'Server offline');
+      show(addr, false);
+      show(copy, false);
+      return;
+    }
+    if (address && addr) addr.textContent = address;
+    var code = addr && addr.textContent.trim() !== '';
+    light('on', 'Online');
+    show(addr, code);
+    show(copy, code && !!navigator.clipboard);
+  }
+
+  function check() {
+    if (pending || Date.now() - checkedAt < FRESH) return;
+    if (!window.fetch) {                // too old to ask; show what we were given
+      light('checking', 'Status unknown');
+      show(addr, addr && addr.textContent.trim() !== '');
+      show(copy, !!navigator.clipboard);
+      return;
+    }
+
+    pending = true;
+    if (!settled) light('checking', 'Checking');   // refreshes keep the old state
+
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, TIMEOUT);
+
+    fetch(statusUrl, {
+      cache: 'no-store',
+      signal: ctl ? ctl.signal : undefined
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(function (d) {
+      settle(!!d.online, d.address);
+    })['catch'](function () {
+      settle(false, null);              // can't reach the box — it's down
+    }).then(function () {
+      clearTimeout(timer);
+      pending = false;
+      checkedAt = Date.now();
+    });
+  }
+
+  /* Re-probe while someone sits with the panel open, so a server coming up
+     mid-visit turns the light green without a reload. */
+  setInterval(function () { if (!panel.hidden) check(); }, 30000);
 })();

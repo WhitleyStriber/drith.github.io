@@ -19,6 +19,15 @@ release:     "202X"
 # and cached. Use the address of the box you actually intend to expose.
 server_ip: ""
 
+# Live status. A URL that answers JSON — {"online": true, "address": "1.2.3.4:27015"}
+# — which the PLAY panel fetches to decide between ONLINE and SERVER OFFLINE. A
+# browser can't poke the game's UDP port itself, so the box runs the little
+# responder in tools/status/ next to the server and answers on its behalf.
+#
+# Leave this empty and the panel falls back to the static server_ip check above:
+# an address means "online", no address means "offline".
+status_url: ""
+
 # Where players download the beta build. Leave empty and the devlog says the
 # link is coming shortly instead of printing a dead one.
 beta_download: ""
@@ -51,3 +60,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+  - tools
