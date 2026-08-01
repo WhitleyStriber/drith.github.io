@@ -2,48 +2,24 @@
 layout: default
 ---
 
-<article class="doc">
+<div class="wrap post">
 
-  <div class="post-head">
+  <div class="head">
+    <a class="home" href="{{ '/' | relative_url }}">Drith</a>
     <a class="label" href="{{ '/devlog/' | relative_url }}">&larr; Devlog</a>
-    <h1>{{ page.title }}</h1>
-    <div class="post-meta">
-      <span class="chip acc">{{ page.date | date: "%Y.%m.%d" }}</span>
-      {%- for tag in page.tags %}
-      <span class="chip">{{ tag }}</span>
-      {%- endfor %}
-      {%- if page.build %}
-      <span class="chip gold">Build {{ page.build }}</span>
-      {%- endif %}
-    </div>
   </div>
 
-  <div class="card">
-    <div class="prose">
-      {{ content }}
-    </div>
+  <span class="label">{{ page.date | date: "%Y.%m.%d" }}</span>
+  <h1>{{ page.title }}</h1>
+
+  <div class="prose">
+    {{ content }}
   </div>
 
-  {%- if page.previous or page.next %}
-  <div class="section" style="margin-top:22px">
-    <div class="section-head"><h2>Adjacent entries</h2><span class="rule"></span></div>
-    <div class="log-list">
-      {%- if page.next %}
-      <a class="log-row" href="{{ page.next.url | relative_url }}">
-        <span class="d">Newer · {{ page.next.date | date: "%Y.%m.%d" }}</span>
-        <span><span class="t">{{ page.next.title }}</span></span>
-        <span class="go label">Open</span>
-      </a>
-      {%- endif %}
-      {%- if page.previous %}
-      <a class="log-row" href="{{ page.previous.url | relative_url }}">
-        <span class="d">Older · {{ page.previous.date | date: "%Y.%m.%d" }}</span>
-        <span><span class="t">{{ page.previous.title }}</span></span>
-        <span class="go label">Open</span>
-      </a>
-      {%- endif %}
-    </div>
+  <div class="foot">
+    {%- if page.next %}<a href="{{ page.next.url | relative_url }}">&larr; {{ page.next.title }}</a>{% endif -%}
+    {%- if page.next and page.previous %} &nbsp;&middot;&nbsp; {% endif -%}
+    {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }} &rarr;</a>{% endif -%}
   </div>
-  {%- endif %}
 
-</article>
+</div>

@@ -1,23 +1,29 @@
 # ============================================================================
-# Drith devlog — Jekyll config (GitHub Pages builds this automatically)
+# Drith — Jekyll config (GitHub Pages builds this automatically)
 # ============================================================================
 
 title:       Drith
-tagline:     Capture the outpost. Never ask what's under it.
+tagline:     Siege and conquer
 description: >-
-  Drith — a territorial-control mercenary shooter set on a planet that is
-  slowly waking up. Dev blog, build status and lore. Targeting 202X.
+  Drith — drop in, plant a base, and hold it. Survival, monuments, PvP and PvE
+  on a world that never stops coming for you. 202X.
 author:      WhitleyStriber
 release:     "202X"
-github_user: WhitleyStriber
+
+# --- Game server ------------------------------------------------------------
+# The access code the PLAY button reveals. Leave it empty and the panel reads
+# "Server offline" instead. A bare IP is fine — "203.0.113.24" — or add a port
+# if players need one: "203.0.113.24:7777".
+#
+# NOTE: whatever goes here is published on a public page and will be crawled
+# and cached. Use the address of the box you actually intend to expose.
+server_ip: ""
 
 # --- URLs -------------------------------------------------------------------
-# The repo is WhitleyStriber/drith.github.io, so Pages serves it as a PROJECT
-# site at https://whitleystriber.github.io/drith.github.io/ and every link
-# needs the /drith.github.io prefix (handled by the `relative_url` filter).
-#
-# If you rename the repo to `whitleystriber.github.io` (a USER site) or point a
-# custom domain at it, set:  baseurl: ""   and update `url` to match.
+# Repo is WhitleyStriber/drith.github.io → a PROJECT site, so every path needs
+# the /drith.github.io prefix (handled by the `relative_url` filter).
+# Rename the repo to whitleystriber.github.io, or add a custom domain, and set
+# baseurl to "".
 url:     "https://whitleystriber.github.io"
 baseurl: "/drith.github.io"
 
@@ -31,9 +37,6 @@ permalink: /devlog/:year/:month/:day/:title/
 
 plugins:
   - jekyll-feed
-
-feed:
-  path: feed.xml
 
 defaults:
   - scope:
