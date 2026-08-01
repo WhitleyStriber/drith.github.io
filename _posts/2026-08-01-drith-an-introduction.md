@@ -1,92 +1,115 @@
 ---
-title: "Drith — an introduction"
+title: "An introduction to Drith"
 date: 2026-08-01
 description: >-
-  Three years, three engines, and two false starts on perspective. What Drith
-  is, how a round plays, and what's actually running today.
+  3 years, 3 engines and a couple of false starts on perspective. What the game
+  is, how it plays, and what's actually working right now.
 ---
 
-I've been working on this game on and off for about three years, but I dug my
-heels in around eighteen months ago and it's been the main thing since.
+I've been working on this game on and off for about 3 years, but I really dug my
+heels in around a year and a half ago and it's been the main thing I do since.
 
-It took a while to get here. I started in Unity, moved to Unreal 5, and landed
-on Godot. The perspective went the same way — first VR, then first person, now
-third. None of that was wasted exactly, but it was a long time spent finding out
-what the game wasn't. Figuring out the right engine, the right workflow and the
-right dev environment took far longer than I'd like to admit.
-
-I've finally got solid ground under me. What I planted in it is now a small
-plant.
+It took a while to get here. I jumped from Unity, to UE5, to Godot. First VR,
+then first person, now 3rd person. It took a long time to figure out the best
+workflow, engine and dev environment, but I've finally found solid ground and
+planted what has now become a small plant.
 
 ## Inspirations
 
-The idea is a lot older than three years. I've had it since I was playing on
-CRTs in my parents' basement, somewhere around 2004 to 2008. A lot of it comes
-out of **Ratchet & Clank: Up Your Arsenal** and **Ratchet: Deadlocked** — which,
-ironically, now shares a name with Valve's MOBA hero shooter.
+I've had the idea for this game since I was playing on CRTs in my parents
+basement around 2004-2008. A lot of it was inspired by Ratchet and Clank: Up
+Your Arsenal and Ratchet: Deadlocked, which ironically is the same name as
+Valve's upcoming MOBA hero shooter.
 
-What actually made me pull the plug and commit was spending most of 2023 just
-playing games. I went back through a lot of classics: **Kingdom Hearts II**, the
-**Pokémon** games, **Final Fantasy XI**, **Ape Escape**, **Ico**. I asked my
-friend Richard in a Discord which one I should play next and he said KH2.
+What made me really pull the plug on committing to it was just playing a bunch
+of video games all year in 2023. I went back and replayed a lot of classics like
+Kingdom Hearts 2, the Pokemon games, Final Fantasy 11, Ape Escape and Ico. I
+asked my friend Richard in a Discord which game I should play next and he said
+KH2. Ever since then I was inspired greatly by the combat system in that game
+and decided to just dive head first into this whole thing.
 
-That combat system got its hooks in me. I dove in head first, and I've been in
-it ever since.
+## How it plays
 
-## The flow
+- You get dropped into the world with nothing.
+- The first thing you have to do is put down a base. Caldera is crawling with
+  enemies and they don't stop coming, so if you don't have somewhere to fall
+  back to you aren't going to last very long.
+- From there you push out to the monuments. There's 12+ of them spread around
+  the world and they're the places worth going to, which also means everyone
+  else is going to them.
+- That's usually where PvE turns into PvP, because you both wanted the same
+  monument.
+- Then you come back, reinforce what you've got, and go out again.
+- On top of all that there's classes, a melee system, a gun system and magic
+  skill trees, so you can specialise into something that actually plays
+  differently instead of just hitting harder.
 
-- **Drop in with nothing.** You start on the surface with no foothold and no
-  protection.
-- **Put down a base.** This is the first thing that matters, not a
-  nice-to-have. Caldera crawls, and it does not stop — enemies come for whatever
-  you've built, constantly. A player without a base is just something moving
-  around outside.
-- **Push out to the monuments.** 12+ of them across the world: the places worth
-  going, and the places everyone else is also going.
-- **PvE turns into PvP.** Not because anyone decided it should — because you
-  both wanted the same monument.
-- **Come back and reinforce.** Take what you found, harden what you've got, go
-  again. The loop tightens as the map fills in.
-- **Specialise.** Classes, a melee system, a gun system, and magic skill trees —
-  built so a build actually plays differently, not just hits harder.
+## What's working right now
 
-## What's running today
+This isn't a wishlist, it's what's actually in the build:
 
-Not a wishlist — this is what's in the build:
+- Base building, placing structures and the triggers behind it
+- The wardeck, which is the base armament terminal where you stage loadout
+  changes and commit them all at once as one swap
+- Melee and ranged weapons, with impact and hit reactions
+- Magic, the spell weapons and the skill tree UI behind them
+- Classes and loadouts, the gear data and the logic that drives it
+- Enemies, the mob AI plus a director and spawner that ramp up pressure
+- Netcode for networked sessions, which is what PvP sits on
+- Vehicles you can drive and mounts you can ride
+- Loot tables, crafting, blueprints, pickups and shops
+- The world itself, monument spaces, water, environment FX and warp triggers
+- HUD for inventory, combat, base, shop, dialog, magic and zones
 
-- **Base building** — placement, structures, and the build triggers that gate it
-- **Wardeck** — the base armament terminal: slot, stage, and commit loadout
-  changes as one timed swap
-- **Combat** — melee and ranged weapon systems, impact and hit reaction
-- **Magic** — spell weapons and the skill-tree UI behind them
-- **Classes and loadouts** — gear data, class definitions, loadout logic
-- **Enemies** — mob AI plus a director and spawner driving pressure over time
-- **Netcode** — networked sessions, the backbone for PvP
-- **Vehicles and mounts** — drivable props and rideable NPCs
-- **Economy** — loot tables, crafting, blueprints, pickups, and shops
-- **World** — monument spaces, water, environmental FX, warp triggers
-- **HUD** — inventory, combat, base, shop, dialog, magic and zone screens
+Some of it is a lot further along than the rest. The base and armament side is
+the most finished thing in the project and the world is probably the least, so
+that's where most of the next stretch is going.
 
-Some of it is further along than the rest. The base and armament side is the
-most finished thing in the project; the world is the least, and that's where
-most of the next stretch goes.
+Right now I'm mostly polishing instead of adding new stuff. Physics systems, 3d
+models, textures, and a bunch of random bugs.
 
-Right now I'm mostly polishing rather than adding — the physics systems, 3D
-models, textures, and a long tail of random bugs.
+## How to play the beta
 
-## On the story
+The beta runs on a server I host myself, so it's only playable when I've got it
+running. The Play button on the front page (and at the bottom of this post) will
+show you the access code when it's up, or tell you the server is offline when
+it isn't.
 
-There is one — the world, why Caldera is the way it is, what's underneath all
-of it. Fair warning: most of the story elements are very early works in
-progress. I've never written a story before, so treat anything I post on that
-side as a first draft I'm likely to change.
+{% if site.beta_download and site.beta_download != "" %}
+1. Grab the build: [download]({{ site.beta_download }})
+{% else %}
+1. Grab the build (download link going up shortly)
+{% endif %}
+2. Unzip it wherever you want.
+3. Hit Play, copy the access code, and launch the game with it:
 
-## Where this goes
+```
+Drith.exe --connect-ip=ACCESS_CODE
+```
 
-I'll be posting here as things land — what worked, what I tore out, and what
-turned out to be a bad idea I'd defended for six months. It won't be on a
-schedule.
+On Linux it's the same thing with the Linux binary:
 
-The target is to get this out **before 2030**, and at the rate I'm developing
-now I believe I can hit it. I'm not narrowing it further than that yet — I'd
-rather print 202X than a date I'd have to walk back later.
+```
+./Drith --connect-ip=ACCESS_CODE
+```
+
+If the access code doesn't have a port on the end of it, the game falls back to
+27015, which is what I run on. If it does have a port, it'll use that instead.
+
+There's no proper join screen yet, so the launch flag is the way in for now.
+That's on the list.
+
+## The story
+
+There is one, but I want to be upfront that a lot of the story elements are very
+early works in progress. I've never written a story before, so anything I post
+about that side is basically a first draft and I'll probably end up changing it.
+
+## Where this is going
+
+I'll post here when things land. Not on any kind of schedule, just whenever
+there's something worth writing about.
+
+The target is to get this out before 2030, and at the rate I'm developing I
+believe I should be able to hit that. I don't want to narrow it down more than
+that yet, I'd rather say 202X than give a date I have to walk back later.

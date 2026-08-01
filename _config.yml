@@ -19,6 +19,10 @@ release:     "202X"
 # and cached. Use the address of the box you actually intend to expose.
 server_ip: ""
 
+# Where players download the beta build. Leave empty and the devlog says the
+# link is coming shortly instead of printing a dead one.
+beta_download: ""
+
 # --- URLs -------------------------------------------------------------------
 # Repo is WhitleyStriber/drith.github.io → a PROJECT site, so every path needs
 # the /drith.github.io prefix (handled by the `relative_url` filter).

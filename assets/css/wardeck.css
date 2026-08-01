@@ -153,6 +153,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .btn.ghost:hover { color: var(--txt); }
 
+/* PLAY on the document pages (devlog, posts) — left-aligned, not centred. */
+.playbar { display: flex; margin: 34px 0 0; }
+.wrap .server { justify-content: flex-start; margin-top: 14px; }
+
 /* Server address, revealed by PLAY. */
 .server {
   display: flex;

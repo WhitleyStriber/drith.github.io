@@ -1,0 +1,9 @@
+<div class="server" id="server" hidden>
+  {%- if site.server_ip and site.server_ip != "" %}
+  <span class="label">Access code</span>
+  <code id="addr">{{ site.server_ip }}</code>
+  <button class="copy" id="copy">Copy</button>
+  {%- else %}
+  <span class="off">Server offline</span>
+  {%- endif %}
+</div>

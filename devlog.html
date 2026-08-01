@@ -13,6 +13,11 @@ description: >-
     <span class="label">Devlog</span>
   </div>
 
+  <div class="playbar">
+    <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the beta</button>
+  </div>
+  {% include server.html %}
+
   {% if site.posts.size > 0 %}
   <div class="log">
     {%- for post in site.posts %}

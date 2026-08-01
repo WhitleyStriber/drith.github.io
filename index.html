@@ -16,17 +16,8 @@ description: >-
     <a class="btn ghost" href="{{ '/devlog/' | relative_url }}">Devlog</a>
   </div>
 
-  <div class="server" id="server" hidden>
-    {%- if site.server_ip and site.server_ip != "" %}
-    <span class="label">Access code</span>
-    <code id="addr">{{ site.server_ip }}</code>
-    <button class="copy" id="copy">Copy</button>
-    {%- else %}
-    <span class="off">Server offline</span>
-    {%- endif %}
-  </div>
+  {% include server.html %}
 
 </main>
 
 <script src="{{ '/assets/js/crystal.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/site.js' | relative_url }}" defer></script>

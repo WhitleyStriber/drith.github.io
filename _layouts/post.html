@@ -16,6 +16,11 @@ layout: default
     {{ content }}
   </div>
 
+  <div class="playbar">
+    <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the beta</button>
+  </div>
+  {% include server.html %}
+
   <div class="foot">
     {%- if page.next %}<a href="{{ page.next.url | relative_url }}">&larr; {{ page.next.title }}</a>{% endif -%}
     {%- if page.next and page.previous %} &nbsp;&middot;&nbsp; {% endif -%}
