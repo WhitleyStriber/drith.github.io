@@ -111,6 +111,9 @@ In absolutely no particular order at all, thanks to and grateful for:
   <li>Vince</li>
   <li>Columbine</li>
   <li>Kattin</li>
+  <li>Diva</li>
+  <li>Billie &amp; Benji</li>
+  <li>Stella &amp; Zuko</li>
   <li>Kazu</li>
   <li>Coogan</li>
   <li>Forgie &amp; Maddy</li>
@@ -125,7 +128,7 @@ In absolutely no particular order at all, thanks to and grateful for:
   <li>Keith (Columbine)</li>
   <li>Tori &amp; Arian</li>
   <li>Parisi</li>
-  <li>Matt</li>
+  <li>Matt &amp; Tori</li>
   <li>Cameron</li>
   <li>Nick</li>
   <li>James</li>

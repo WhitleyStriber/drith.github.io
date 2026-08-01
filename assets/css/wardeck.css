@@ -145,13 +145,32 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .btn:hover { filter: brightness(1.1); text-decoration: none; }
 .btn:active { transform: translateY(3px); border-bottom-width: 1px; }
 
-.btn.ghost {
-  color: var(--mut);
-  background: var(--slot);
-  border: 1px solid var(--line);
-  border-bottom: 4px solid rgba(140, 158, 199, .18);
+/* Devlog — same ledge press, blue instead of the accent green. */
+.btn.blue {
+  color: #03141f;
+  background: linear-gradient(180deg, #6cc6f5, #2f92c8);
+  border-bottom: 4px solid #1a5f85;
 }
-.btn.ghost:hover { color: var(--txt); }
+
+/* Sound toggle, pinned bottom-right inside the frame. */
+.mute {
+  position: fixed;
+  right: calc(var(--inset) + 14px);
+  bottom: calc(var(--inset) + 12px);
+  z-index: 41;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.mute:hover { color: var(--acc); border-color: rgba(77, 230, 122, .4); }
+.mute[aria-pressed="true"] { color: var(--dim); }
 
 /* Small status line under the front-page buttons. */
 .note {
