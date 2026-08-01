@@ -18,24 +18,37 @@ right dev environment took far longer than I'd like to admit.
 I've finally got solid ground under me. What I planted in it is now a small
 plant.
 
+## Inspirations
+
+The idea is a lot older than three years. I've had it since I was playing on
+CRTs in my parents' basement, somewhere around 2004 to 2008. A lot of it comes
+out of **Ratchet & Clank: Up Your Arsenal** and **Ratchet: Deadlocked** — which,
+ironically, now shares a name with Valve's MOBA hero shooter.
+
+What actually made me pull the plug and commit was spending most of 2023 just
+playing games. I went back through a lot of classics: **Kingdom Hearts II**, the
+**Pokémon** games, **Final Fantasy XI**, **Ape Escape**, **Ico**. I asked my
+friend Richard in a Discord which one I should play next and he said KH2.
+
+That combat system got its hooks in me. I dove in head first, and I've been in
+it ever since.
+
 ## The flow
 
-You get dropped into the world with nothing.
-
-The first thing that matters is putting down a base. Not as a nice-to-have —
-Caldera crawls, and it does not stop. Enemies come for whatever you've built,
-constantly, and a player without a foothold is just something moving around
-outside. The base is the difference between surviving the night and starting
-over.
-
-From there it opens up. There are **12+ monuments** scattered across the world —
-the places worth going, and the places everyone else is also going. That's where
-PvE turns into PvP without anyone deciding it should. You go out for what you
-need, you come back and reinforce, and the loop tightens as the map fills in.
-
-The character side sits on top of that: **classes**, a **melee system**, a **gun
-system**, and **magic skill trees** that let you specialise into something that
-actually plays differently rather than just hitting harder.
+- **Drop in with nothing.** You start on the surface with no foothold and no
+  protection.
+- **Put down a base.** This is the first thing that matters, not a
+  nice-to-have. Caldera crawls, and it does not stop — enemies come for whatever
+  you've built, constantly. A player without a base is just something moving
+  around outside.
+- **Push out to the monuments.** 12+ of them across the world: the places worth
+  going, and the places everyone else is also going.
+- **PvE turns into PvP.** Not because anyone decided it should — because you
+  both wanted the same monument.
+- **Come back and reinforce.** Take what you found, harden what you've got, go
+  again. The loop tightens as the map fills in.
+- **Specialise.** Classes, a melee system, a gun system, and magic skill trees —
+  built so a build actually plays differently, not just hits harder.
 
 ## What's running today
 
