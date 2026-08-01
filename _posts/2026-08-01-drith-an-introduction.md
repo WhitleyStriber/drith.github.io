@@ -111,7 +111,6 @@ In absolutely no particular order at all, thanks to and grateful for:
   <li>Parisi</li>
   <li>Richard</li>
   <li>Matt</li>
-  <li>Tori</li>
   <li>Ange</li>
   <li>Stew</li>
   <li>Nick</li>
