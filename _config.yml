@@ -1,0 +1,49 @@
+# ============================================================================
+# Drith devlog — Jekyll config (GitHub Pages builds this automatically)
+# ============================================================================
+
+title:       Drith
+tagline:     Capture the outpost. Never ask what's under it.
+description: >-
+  Drith — a territorial-control mercenary shooter set on a planet that is
+  slowly waking up. Dev blog, build status and lore. Targeting 202X.
+author:      WhitleyStriber
+release:     "202X"
+github_user: WhitleyStriber
+
+# --- URLs -------------------------------------------------------------------
+# The repo is WhitleyStriber/drith.github.io, so Pages serves it as a PROJECT
+# site at https://whitleystriber.github.io/drith.github.io/ and every link
+# needs the /drith.github.io prefix (handled by the `relative_url` filter).
+#
+# If you rename the repo to `whitleystriber.github.io` (a USER site) or point a
+# custom domain at it, set:  baseurl: ""   and update `url` to match.
+url:     "https://whitleystriber.github.io"
+baseurl: "/drith.github.io"
+
+# --- Build ------------------------------------------------------------------
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+permalink: /devlog/:year/:month/:day/:title/
+
+plugins:
+  - jekyll-feed
+
+feed:
+  path: feed.xml
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

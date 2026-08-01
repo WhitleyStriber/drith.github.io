@@ -1,0 +1,47 @@
+---
+layout: default
+title: Devlog
+permalink: /devlog/
+description: >-
+  Build notes from Drith — systems, art, netcode and the long walk to 202X.
+---
+
+<div class="section-head" style="margin-bottom:22px">
+  <h2>Devlog</h2><span class="rule"></span>
+  <span class="more">{{ site.posts.size }} entr{% if site.posts.size == 1 %}y{% else %}ies{% endif %} · <a href="{{ '/feed.xml' | relative_url }}">RSS</a></span>
+</div>
+
+{% if site.posts.size > 0 %}
+
+  {%- assign years = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
+  {%- for year in years %}
+
+  <section class="section">
+    <div class="section-head">
+      <h2>{{ year.name }}</h2><span class="rule"></span>
+      <span class="more">{{ year.items.size }} logged</span>
+    </div>
+
+    <div class="log-list">
+      {%- for post in year.items %}
+      <a class="log-row" href="{{ post.url | relative_url }}">
+        <span class="d">{{ post.date | date: "%b %d" | upcase }}<br>{% if post.build %}Build {{ post.build }}{% else %}Entry{% endif %}</span>
+        <span>
+          <span class="t">{{ post.title }}</span>
+          <span class="x">{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 155 }}</span>
+        </span>
+        <span class="go label">Open &rarr;</span>
+      </a>
+      {%- endfor %}
+    </div>
+  </section>
+
+  {%- endfor %}
+
+{% else %}
+
+  <div class="card">
+    <div class="empty">No transmissions logged — check back</div>
+  </div>
+
+{% endif %}

@@ -1,0 +1,246 @@
+---
+layout: default
+title: null
+description: >-
+  Drith — a territorial-control mercenary shooter set on a planet that is
+  slowly waking up. Dev blog, build status and lore. Targeting 202X.
+---
+
+<!-- ============================== HERO ============================== -->
+<section class="hero">
+
+  <div class="hero-copy">
+    <p class="eyebrow">Contract initiated · Sector 9</p>
+    <h1 class="wordmark">Dri<span>th</span></h1>
+    <p class="subhead">Capture the outpost. Never ask what's under it.</p>
+    <p class="blurb">
+      A territorial-control mercenary shooter. You fight for a corp, you flip
+      flags, you get paid — and every crystal you keep online pulls something
+      older than the planet a little closer to the surface.
+    </p>
+    <div class="cta">
+      <a class="btn" href="{{ '/devlog/' | relative_url }}">Read the devlog</a>
+      <a class="btn ghost" href="{{ '/lore/' | relative_url }}">The story</a>
+    </div>
+  </div>
+
+  <div class="holo">
+    <span class="holo-tag">Drith heart · <b>node active</b></span>
+    <span class="holo-net">Network <b>93%</b><br>Architects inbound</span>
+
+    <svg viewBox="0 0 400 400" role="img" aria-label="Holographic schematic of a Drith crystal">
+      <defs>
+        <linearGradient id="cry" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#4de67a" stop-opacity=".30"/>
+          <stop offset="55%"  stop-color="#4de67a" stop-opacity=".10"/>
+          <stop offset="100%" stop-color="#4de67a" stop-opacity=".02"/>
+        </linearGradient>
+        <radialGradient id="core" cx="50%" cy="45%">
+          <stop offset="0%"   stop-color="#dfffe9" stop-opacity=".95"/>
+          <stop offset="45%"  stop-color="#4de67a" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#4de67a" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="swp" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#4de67a" stop-opacity=".28"/>
+          <stop offset="100%" stop-color="#4de67a" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- subsurface contour rings -->
+      <g stroke="#4de67a" fill="none" opacity=".18">
+        <ellipse cx="200" cy="300" rx="150" ry="42"/>
+        <ellipse cx="200" cy="300" rx="108" ry="30"/>
+        <ellipse cx="200" cy="300" rx="66"  ry="19"/>
+      </g>
+
+      <!-- radar sweep -->
+      <g class="sweep">
+        <path d="M200 300 L350 300 A150 42 0 0 0 268 264 Z" fill="url(#swp)"/>
+      </g>
+
+      <!-- orbit rings -->
+      <g class="spin" stroke="#4de67a" fill="none" opacity=".32" stroke-width="1">
+        <ellipse cx="200" cy="200" rx="172" ry="54"/>
+      </g>
+      <g class="spin-rev" stroke="#4dd1eb" fill="none" opacity=".26" stroke-width="1">
+        <ellipse cx="200" cy="200" rx="140" ry="140" stroke-dasharray="3 9"/>
+      </g>
+
+      <!-- the crystal -->
+      <g class="breathe">
+        <circle cx="200" cy="195" r="96" fill="url(#core)"/>
+      </g>
+      <polygon points="200,54 274,152 248,302 200,348 152,302 126,152"
+               fill="url(#cry)" stroke="#4de67a" stroke-width="1.6" stroke-linejoin="round"/>
+      <g stroke="#4de67a" stroke-width=".9" opacity=".55" fill="none">
+        <path d="M200 54 L200 348"/>
+        <path d="M126 152 L274 152"/>
+        <path d="M200 54 L152 302"/>
+        <path d="M200 54 L248 302"/>
+        <path d="M126 152 L200 348"/>
+        <path d="M274 152 L200 348"/>
+        <path d="M126 152 L248 302"/>
+        <path d="M274 152 L152 302"/>
+      </g>
+
+      <!-- hardpoint markers -->
+      <g fill="#4de67a" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.6">
+        <g class="marker"><circle cx="126" cy="152" r="4"/><text x="72"  y="140" fill="#808ca6">MAIN·L</text></g>
+        <g class="marker"><circle cx="274" cy="152" r="4" fill="#ffb833"/><text x="288" y="140" fill="#808ca6">CORE</text></g>
+        <g class="marker"><circle cx="200" cy="54"  r="4" fill="#b88cff"/><text x="214" y="48"  fill="#808ca6">RADAR</text></g>
+        <g class="marker"><circle cx="248" cy="302" r="4" fill="#4dd1eb"/><text x="262" y="316" fill="#808ca6">RDECK</text></g>
+      </g>
+    </svg>
+  </div>
+
+</section>
+
+<!-- ========================== BUILD STATUS ========================== -->
+<section class="section">
+  <div class="section-head">
+    <h2>Build status</h2><span class="rule"></span>
+    <span class="more">Staged · uncommitted</span>
+  </div>
+
+  <div class="cols-2">
+
+    <div class="card">
+      <div class="card-head"><h3>Systems</h3><span class="rule"></span></div>
+
+      <div class="stat">
+        <div class="stat-row"><span>Core loop · capture &amp; hold</span><span>82%</span></div>
+        <div class="track"><div class="fill" style="width:82%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-row"><span>Wardeck · armament terminal</span><span>90%</span></div>
+        <div class="track"><div class="fill" style="width:90%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-row"><span>Netcode · dedicated sessions</span><span>61%</span></div>
+        <div class="track"><div class="fill cyan" style="width:61%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-row"><span>Ala &amp; magic systems</span><span>47%</span></div>
+        <div class="track"><div class="fill ecs" style="width:47%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-row"><span>World · sectors &amp; outposts</span><span>38%</span></div>
+        <div class="track"><div class="fill gold" style="width:38%"></div></div>
+      </div>
+
+      <div class="stat-row" style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line)">
+        <span>Milestone</span>
+        <span class="pips" aria-label="3 of 5 milestones complete">
+          <i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Spec sheet</h3><span class="rule"></span></div>
+      <div class="stat-row"><span>Engine</span><span>Godot 4 · GDExtension (C++)</span></div>
+      <div class="stat-row"><span>Genre</span><span>Territorial-control shooter</span></div>
+      <div class="stat-row"><span>Players</span><span>PvPvE · squad scale</span></div>
+      <div class="stat-row"><span>Platform</span><span>PC — Windows / Linux</span></div>
+      <div class="stat-row"><span>Status</span><span style="color:var(--gold)">In development</span></div>
+      <div class="stat-row"><span>Release</span><span style="color:var(--acc)">{{ site.release }}</span></div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:7px;flex-wrap:wrap">
+        <span class="chip acc">Wardeck loadouts</span>
+        <span class="chip cyan">Crystal nodes</span>
+        <span class="chip ecs">Oumo dolls</span>
+        <span class="chip gold">Ala &amp; magic</span>
+        <span class="chip bad">Permanent choices</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ DEVLOG ============================== -->
+<section class="section">
+  <div class="section-head">
+    <h2>Latest from the deck</h2><span class="rule"></span>
+    <a class="more" href="{{ '/devlog/' | relative_url }}">All entries &rarr;</a>
+  </div>
+
+  <div class="deck">
+
+    <div class="slots">
+      <span class="label" style="padding:0 2px 4px">Hardpoints</span>
+      <a class="slot" style="--sc:#4de67a" href="{{ '/devlog/' | relative_url }}">
+        <div class="k"><span>Armament</span><span>MAIN</span></div>
+        <div class="v">The Wardeck</div>
+        <div class="h">Slot, stage, attach. Every edit is a timed, vulnerable base swap.</div>
+      </a>
+      <a class="slot" style="--sc:#4dd1eb" href="{{ '/lore/' | relative_url }}#crystal">
+        <div class="k"><span>Objective</span><span>FDECK</span></div>
+        <div class="v">The Drith Heart</div>
+        <div class="h">Every outpost sits on a crystal. Capture it, or kill the ground forever.</div>
+      </a>
+      <a class="slot" style="--sc:#b88cff" href="{{ '/lore/' | relative_url }}#claris">
+        <div class="k"><span>Command</span><span>RADAR</span></div>
+        <div class="v">CLARIS</div>
+        <div class="h">The referee AI. She is lying to you, and she is the only one on your side.</div>
+      </a>
+      <a class="slot" style="--sc:#ffb833" href="{{ '/lore/' | relative_url }}#architects">
+        <div class="k"><span>Threat</span><span>CORE</span></div>
+        <div class="v">The Architects</div>
+        <div class="h">Solen and Vael. Neither is good. Both need the network finished.</div>
+      </a>
+    </div>
+
+    <div class="shelf">
+      {%- if site.posts.size > 0 -%}
+      {%- for post in site.posts limit: 4 %}
+      <a class="acard" href="{{ post.url | relative_url }}">
+        <span class="date">{{ post.date | date: "%Y.%m.%d" }}{% if post.build %} · Build {{ post.build }}{% endif %}</span>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 145 }}</p>
+        <span class="foot">
+          <span class="chip">{{ post.tags | first | default: "devlog" }}</span>
+          <span class="go">Open &rarr;</span>
+        </span>
+      </a>
+      {%- endfor -%}
+      {%- else -%}
+      <div class="empty">No transmissions logged</div>
+      {%- endif %}
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ CLARIS ============================== -->
+<section class="section">
+  <div class="claris">
+    <div class="who">// CLARIS — priority channel</div>
+    <p>
+      I need you to understand something. Every crystal you activate is a door.
+      And something is on the other side.<span class="caret">▌</span>
+    </p>
+  </div>
+</section>
+
+<!-- ========================= MANUFACTURERS ========================== -->
+<section class="section">
+  <div class="section-head">
+    <h2>Manufacturers</h2><span class="rule"></span>
+    <span class="more">Alignment is not a choice — the Ala picks</span>
+  </div>
+
+  <div class="card">
+    <div class="roster">
+      <div class="corp solen"><div class="n">Kova</div><div class="s">Solen · precision</div></div>
+      <div class="corp solen"><div class="n">Omer</div><div class="s">Solen · guided</div></div>
+      <div class="corp solen"><div class="n">Crest</div><div class="s">Solen · standard</div></div>
+      <div class="corp solen"><div class="n">Melies</div><div class="s">Solen · stealth</div></div>
+      <div class="corp solen"><div class="n">Takane</div><div class="s">Solen · anti-armor</div></div>
+      <div class="corp vael"><div class="n">Rosenthal</div><div class="s">Vael · heavy</div></div>
+      <div class="corp vael"><div class="n">Aldra</div><div class="s">Vael · incendiary</div></div>
+      <div class="corp vael"><div class="n">Kisaragi</div><div class="s">Vael · swarm</div></div>
+      <div class="corp vael"><div class="n">Murakumo</div><div class="s">Vael · experimental</div></div>
+      <div class="corp vael"><div class="n">Leonemeccanica</div><div class="s">Vael · rapid</div></div>
+    </div>
+  </div>
+</section>
