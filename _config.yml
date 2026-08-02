@@ -17,7 +17,7 @@ release:     "202X"
 #
 # NOTE: whatever goes here is published on a public page and will be crawled
 # and cached. Use the address of the box you actually intend to expose.
-server_ip: ""
+server_ip: "136.57.199.158:27015"
 
 # Live status. A URL that answers JSON — {"online": true, "address": "1.2.3.4:27015"}
 # — which the PLAY panel fetches to decide between ONLINE and SERVER OFFLINE. A
