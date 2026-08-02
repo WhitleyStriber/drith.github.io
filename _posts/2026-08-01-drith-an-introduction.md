@@ -122,6 +122,7 @@ In absolutely no particular order at all, thanks to and grateful for:
   <li>Ange</li>
   <li>Richard</li>
   <li>Algeri</li>
+  <li>Mabel the Cat</li>
   <li>Kevin &amp; Megan</li>
   <li>Walz</li>
   <li>Stew</li>
