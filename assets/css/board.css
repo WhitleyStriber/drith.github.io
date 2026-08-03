@@ -1,0 +1,898 @@
+/* ============================================================================
+   DRITH — THE BOARD, on the web.
+
+   The design source is the game's main menu (drith-godot: world/menu.tscn and
+   world/menu.gd), by way of the approved mockups next to it in
+   drith-godot/ui/mockups/ (_board.css, _board.js). Every colour, rule alpha
+   and timing below is the sRGB of a Color() literal the menu actually uses or
+   a shader uniform lifted verbatim, and the comment on each names where.
+
+   The rule the whole language turns on, from src/hud/core/board_style.h:
+
+     NOTHING IS A PANEL. A section is declared by a hairline rule with a
+     tracked-out caps label sitting on it, and the only thing that ever gets a
+     frame is the thing you are currently pointed at.
+
+   That is why there are no cards, borders, radii or drop shadows here, and why
+   the green gradient buttons this file replaces are gone: on the board a button
+   is a tracked-out word over a rule that lights when you point at it.
+
+   WHERE THIS DEPARTS FROM THE MOCKUPS, and why — a website is not a game screen:
+     - the mockups pin a 1600x900 stage and scale it to the window, because a
+       reflowing column would be a layout the game will never render. A page
+       has to reflow, so this one does.
+     - the mockups set user-select:none, because the board is a screen you look
+       AT. Here the devlog is text people quote, so it stays selectable.
+     - the CRT scanline overlay is pulled back on the document pages. Over four
+       words it reads as a display surface; over running paragraphs at the same
+       strength it just costs you the paragraphs.
+   ========================================================================== */
+
+:root {
+  /* --- palette -------------------------------------------------------------
+     Straight off world/menu.tscn and menu.gd. */
+  --void:  #070b0b;   /* Void ColorRect          Color(0.027,0.043,0.043) */
+  --bone:  #e6dcc4;   /* Hair rule, lit type     Color(0.902,0.863,0.769) */
+  --hint:  #9eb8d1;   /* resting entry text      C_TEXT (0.62,0.72,0.82)  */
+  --ice:   #b8ebff;   /* menu_field `cool`       Color(0.72,0.92,1.0)     */
+  --gold:  #ffe08c;   /* menu_field `warm`       Color(1.0,0.88,0.55)     */
+
+  /* C_LIVE. The menu lights a hovered entry — rule and word together — in the
+     accent green the squad and clan readouts come alive in, so a live line on
+     the board is the same green as a live line anywhere in the game. It is the
+     one saturated colour on the screen, and it only ever means "this one". */
+  --live:  #3de97d;   /* C_LIVE                  Color(0.24,0.91,0.49)    */
+
+  /* PAINT_INK. The marker the date sits on, and nothing else. */
+  --paint: #ff9429;   /* PAINT_INK               Color(1.0,0.58,0.16)     */
+
+  --bad:   #ff5c5c;
+
+  /* Rule weights. 0.22 is the board's Hair alpha verbatim; the other two are
+     for rules that carry a label or mark a live edge. The RATIO is what
+     carries the language, not the absolute values. */
+  --rule-faint: rgba(230, 220, 196, 0.12);
+  --rule:       rgba(230, 220, 196, 0.22);
+  --rule-live:  rgba(230, 220, 196, 0.44);
+
+  /* Hover tick, resting and lit — menu.gd TICK_REST / TICK_HOT. */
+  --tick-rest: 26px;
+  --tick-hot:  46px;
+
+  /* menu.gd HOVER_FADE, and the CRT snap out of ui_anim.cpp (CRT_FADE /
+     CRT_POP / CRT_FROM). Short on purpose: a cursor crosses the whole ledger
+     in about a second, so a highlight that takes a fifth of that to land is
+     still catching up with the hand. */
+  --hover: 0.09s;
+  --crt-fade: 0.13s;
+  --crt-pop:  0.22s;
+
+  /* THE FACES.
+     Display is PT Sans Narrow Bold — WORDMARK_FONT in menu.gd, and the game's
+     one display face through display_face::at(). A humanist narrow whose
+     strokes still taper the way a broad nib would have thinned them, so the
+     name reads warmer than a drawn-flat gothic would.
+
+     Body stands in for GNU FreeSans, the board's UI face (board_style.h) and
+     the project's default theme font. FreeSans is a Helvetica-metric design and
+     is not worth an 850 KB download to a phone, so the stack asks for the same
+     letters from whatever the reader already has.
+
+     Mono is JetBrains Mono, console_style::mono_font — the readout face. Every
+     figure on this site is set in it for the same reason it is in the HUD: a
+     number you are meant to read off a row should not be re-fitting its width
+     as it changes. */
+  --display: "PT Sans Narrow", "Arial Narrow", "Liberation Sans Narrow", sans-serif;
+  --body: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* menu.tscn's Content MarginContainer, 84 / 68 at 1920x1080, carried across
+     to a viewport that can be any size. */
+  --mx: clamp(22px, 4.4vw, 84px);
+  --my: clamp(26px, 4.2vw, 68px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--void); }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--void);
+  color: var(--hint);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: var(--ice); text-decoration: none; }
+
+/* ==========================================================================
+   THE GROUND — void, generated field, bloom, vignette, CRT.
+   Layering order back to front is menu.tscn's exactly.
+   ========================================================================== */
+
+/* The dot lattice with its travelling light band. Drawn by assets/js/field.js,
+   a port of shaders/menu_field.gdshader — the lattice pitch, the sweep period,
+   the diagonal the band travels along and the ice-to-gold tip at its crest are
+   the shader's own numbers.
+
+   `screen` rather than `normal`, because the shader declares blend_add: every
+   value it writes is a light contribution over the void, never a surface.
+
+   A canvas carries intrinsic dimensions, so `inset: 0` alone will not stretch
+   it the way it stretches a div — it stays 300x150 and the lattice draws into
+   a postage stamp in the corner. The explicit 100% is what sizes it, and
+   field.js reads clientWidth/clientHeight back off that. */
+#field {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+/* menu.tscn's Bloom TextureRect: a radial that runs warm -> cool -> out, sat
+   right of centre because the left half of the board belongs to the ledger. */
+#bloom {
+  position: fixed;
+  left: 44%; top: 2%; right: 0; bottom: 4%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(255, 224, 140, 0.13) 0%,
+    rgba(184, 235, 255, 0.07) 30%,
+    rgba(150, 199, 235, 0.025) 62%,
+    rgba(150, 199, 235, 0) 100%);
+}
+
+/* menu.tscn's Vignette — the same 0 -> 0.32 -> 0.86 ramp on the void colour. */
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(4, 6, 6, 0) 0%,
+    rgba(4, 6, 6, 0.32) 55%,
+    rgba(4, 6, 6, 0.86) 100%);
+}
+
+/* The CRT, from shaders/ui_preview_scanlines.gdshader. The engine runs it over
+   the 3D preview windows; the board runs it over the whole screen, which is
+   what makes a menu read as a screen you are looking AT rather than a layer
+   drawn in front of you. */
+#crt {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+}
+
+/* SCANLINE_PERIOD_PX is 4, shared with the HUD panels so the screen-aligned
+   lines stay in phase across every menu. Fixed to the viewport, not to the
+   content, for the reason the engine aligns them to the screen: lines that
+   scroll with the text stop reading as a display surface. */
+#crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.20) 0px,
+    rgba(0, 0, 0, 0.20) 2px,
+    rgba(0, 0, 0, 0)    2px,
+    rgba(0, 0, 0, 0)    4px);
+  animation: crt-flicker 0.25s steps(2, end) infinite;
+}
+
+/* The rolling scan bar. bar_speed 0.12 is one pass every ~8.3s, tinted with
+   the shader's own `tint` (0.62, 0.82, 1.0). */
+#crt::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 22%;
+  background: linear-gradient(to bottom,
+    rgba(158, 209, 255, 0) 0%,
+    rgba(158, 209, 255, 0.055) 50%,
+    rgba(158, 209, 255, 0) 100%);
+  animation: crt-bar 8.3s linear infinite;
+}
+
+@keyframes crt-bar { from { top: -22%; } to { top: 100%; } }
+/* flicker 0.03 — a 3% brightness jitter, no more. */
+@keyframes crt-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.97; } }
+
+/* On the devlog and the posts the same overlay sits over running paragraphs
+   instead of over four words. Same picture, pulled back to where it is texture
+   rather than a tax on every line of body copy. */
+.doc #crt::before { opacity: 0.4; }
+.doc #crt::after  { opacity: 0.5; }
+.doc #vignette    { opacity: 0.65; }
+
+/* The white line that flashes through on power-on, ahead of the snap. */
+#powerline {
+  position: fixed;
+  left: 8%; right: 8%; top: 50%;
+  height: 2px;
+  z-index: 46;
+  pointer-events: none;
+  background: linear-gradient(to right,
+    transparent, rgba(230, 220, 196, 0.9) 22%, rgba(230, 220, 196, 0.9) 78%, transparent);
+  animation: crt-line 0.34s ease-out both;
+}
+
+@keyframes crt-line {
+  0%   { opacity: 0; transform: scaleY(0.2); }
+  18%  { opacity: 0.9; }
+  100% { opacity: 0; transform: scaleY(28); }
+}
+
+/* The CRT snap every screen in the game opens on, and that the mockups replay
+   on every region swap: opacity over CRT_FADE, scale from CRT_FROM (1.04,
+   0.92) over CRT_POP. The horizontal over-scale collapsing inward is what
+   sells it as a tube. */
+@keyframes crt-snap {
+  from { opacity: 0; transform: scale(1.04, 0.92); }
+  to   { opacity: 1; transform: scale(1, 1); }
+}
+
+/* ==========================================================================
+   THE BOARD — the front page. menu.tscn's Content, one for one.
+   ========================================================================== */
+
+.board {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--my) var(--mx);
+  /* The ledger is 560px wide on the board and the stage object owns the right
+     of the screen. Holding that width here is what stops the rows stretching
+     into a full-bleed line on a desktop monitor. */
+  max-width: min(100%, 720px);
+}
+
+/* --- the object ----------------------------------------------------------
+   menu.tscn stands the real Drith base on a turntable right of centre, as a
+   dark Fresnel-lit hull under an emissive wireframe. This is that slot. It is
+   behind the content and it never takes the mouse, because on the board the
+   object is scenery and the ledger is the screen. */
+#crystal {
+  position: fixed;
+  right: max(2vw, calc(var(--mx) - 40px));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: min(52vw, 68vh, 620px);
+  height: min(52vw, 68vh, 620px);
+  pointer-events: none;
+}
+
+/* --- the wordmark --------------------------------------------------------
+   DRITH is cut into the surface a letter at a time, because the plaques and
+   the mausoleums in the world are stone and the wordmark is too. Each letter
+   is its own span so the intro can strike them one after another.
+
+   Tracking stands in for the Wordmark HBoxContainer's 14px separation at 96px.
+   That number was 26 against FreeSans and came down when the face became PT
+   Sans Narrow: its caps are narrow, and the old figure left the five letters
+   floating apart rather than reading as one word. */
+.wordmark {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(58px, 11.5vw, 128px);
+  line-height: 0.94;
+  letter-spacing: 0.145em;
+  text-transform: uppercase;
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+}
+.wordmark span { display: inline-block; }
+
+/* --- the tagline ---------------------------------------------------------
+   Two spans rather than one pre-spaced line, because the second half sits on a
+   paint stroke and is knocked out of it in the ground colour while the first
+   half stays ordinary steel type. The run of spaces that used to separate them
+   is the container's gap now. */
+.tagline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  /* The Tagline HBoxContainer's separation is 62. It can close up on a narrow
+     screen but not past ~40: the stroke behind the second half bleeds 18px to
+     its left (PAINT_BLEED), so anything tighter runs the marker over the last
+     letter of PRE-ALPHA. */
+  gap: clamp(40px, 4vw, 62px);
+  margin: clamp(12px, 1.8vw, 16px) 0 0;
+  font-family: var(--body);
+  font-size: clamp(13px, 1.35vw, 19px);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tagline .pre { color: rgba(158, 184, 209, 0.78); }
+
+/* VOID, not steel: this half is read OFF the stroke behind it, the way the
+   inventory's live tab is. */
+.tagline .date {
+  position: relative;
+  color: var(--void);
+  font-weight: 700;
+  padding: 0 2px;
+}
+
+/* THE MARKER.
+   Everything else on this screen is a fact about the machine, set in hairlines
+   and steel type. COMING 202X is the one line that is a promise, so it is the
+   one line that gets pigment — the generated marker drag the inventory's tabs
+   already sit on, in the same orange.
+
+   The stroke is laid down AFTER the words have arrived rather than under them
+   from the start: words first, then the marker pulled across them, which is the
+   order a hand does it in.
+
+   The streaks are in the fill rather than in a mask so the reveal only ever
+   needs one mask layer, and the ragged ends are a clip-path — between them
+   they are what stop it reading as a rectangle of orange. PAINT_BLEED (18, 5)
+   is how far the paint runs past the word. */
+.tagline .date::before {
+  content: "";
+  position: absolute;
+  inset: -5px -18px;
+  z-index: -1;
+  background:
+    /* The drag lines a chisel tip leaves. They run ALONG the stroke, because
+       that is the direction the hand moved — across it they read as a fence,
+       and against the CRT's own horizontal lines the two turn into plaid. */
+    repeating-linear-gradient(0.7deg,
+      rgba(120, 52, 0, 0)    0 7px,
+      rgba(120, 52, 0, 0.13) 7px 8px,
+      rgba(120, 52, 0, 0)    8px 19px),
+    /* The ink: near flat, loading and lifting at the ends of the drag. */
+    linear-gradient(92deg,
+      rgba(255, 148, 41, 0.86) 0%,
+      rgba(255, 148, 41, 1)    14%,
+      rgba(255, 148, 41, 0.95) 52%,
+      rgba(255, 148, 41, 1)    78%,
+      rgba(255, 148, 41, 0.88) 100%);
+  transform: rotate(-0.55deg);
+  clip-path: polygon(
+    0% 18%, 2% 4%, 26% 9%, 55% 2%, 82% 8%, 97% 3%, 100% 16%,
+    100% 84%, 97% 97%, 74% 91%, 46% 98%, 19% 92%, 3% 97%, 0% 82%);
+  /* The shader's own left-to-right reveal: it frays as it travels rather than
+     sliding a hard edge along. Two-and-a-bit stage widths of gradient walked
+     across the box, so the soft boundary is the only thing that moves. */
+  -webkit-mask-image: linear-gradient(90deg, #000 0 46%, rgba(0, 0, 0, 0) 54% 100%);
+  mask-image: linear-gradient(90deg, #000 0 46%, rgba(0, 0, 0, 0) 54% 100%);
+  -webkit-mask-size: 220% 100%;
+  mask-size: 220% 100%;
+  -webkit-mask-position: 0% 0;
+  mask-position: 0% 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* --- the rule ------------------------------------------------------------
+   menu.tscn's Hair: a plain 560x1 rule at 0.22, hard-ended and not faded at
+   the tips. It wipes out from the left as the title lands. */
+.hair {
+  width: min(560px, 100%);
+  height: 1px;
+  background: var(--rule);
+  margin: clamp(20px, 3vw, 30px) 0 0;
+  transform-origin: 0 50%;
+}
+
+/* ==========================================================================
+   THE LEDGER — the board's entry rows, and every list on the site.
+   Tick, name, spacer, right-hand status. Hover lengthens the tick and lights
+   it and the word together, so the rule and the word it points at read as one
+   highlight and not two.
+   ========================================================================== */
+
+.ledger {
+  width: min(560px, 100%);
+  margin: clamp(18px, 2.4vw, 26px) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;                       /* Ledger VBoxContainer separation */
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;                       /* the row's HBoxContainer separation */
+  padding: 4px 0;
+  width: 100%;
+  background: none;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  /* The row IS the button, from the left margin to the right. It used to be
+     the word alone, which put the rule and all the space between the word and
+     its status outside the entry — and that reads as a fault rather than as a
+     boundary, because the tick is the most eye-catching thing on the line and
+     a cursor that follows it there lands on dead ground. */
+}
+
+/* A rule that lights, lengthens and turns on hover. A handful of entries are
+   not a sequence, so numbering them would be decoration pretending to be
+   information. The turn is the one of the three that survives being looked at
+   from across the room. */
+.row .tick {
+  flex: none;
+  width: var(--tick-rest);
+  height: 2px;
+  background: rgba(158, 184, 209, 0.4);   /* C_TICK */
+  transition: width var(--hover) ease, background-color var(--hover) ease,
+              transform 0.5s linear;      /* SPIN_PERIOD, while lit */
+}
+
+.row .name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(24px, 3.4vw, 32px);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--hint);                     /* C_TEXT */
+  transition: color var(--hover) ease;
+}
+
+.row .fill { flex: 1; }
+
+.row .val {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(158, 184, 209, 0.72);
+  white-space: nowrap;
+  transition: color var(--hover) ease;
+}
+
+.row:hover .tick,
+.row:focus-visible .tick,
+.row[aria-expanded="true"] .tick { width: var(--tick-hot); background: var(--live); }
+
+.row:hover .name,
+.row:focus-visible .name,
+.row[aria-expanded="true"] .name { color: var(--live); }
+
+/* The stock focus ring, dropped. The entry already says it is live in the two
+   ways the board built for itself — the rule turns, and both it and the word go
+   green — so a rectangle ruled around the whole line would be a third one
+   shouting over them. */
+.row:focus { outline: none; }
+.row:focus-visible { outline: none; }
+
+/* ==========================================================================
+   THE ACCESS PANEL — what PLAY opens.
+   A readout, not a card: rules and figures, nothing boxed.
+   ========================================================================== */
+
+.server {
+  width: min(560px, 100%);
+  margin: 22px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--rule-faint);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  animation: crt-snap var(--crt-pop) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.server[hidden] { display: none; }
+
+.server code {
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--bone);
+  user-select: all;
+}
+
+.server .off {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.55);
+}
+
+/* The live light. Green while the box answers, steel while it does not — the
+   one place on the page besides a hovered entry where the accent is allowed,
+   because it is the one other thing that is literally live. */
+.server .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.7);
+}
+.server .state::before {
+  content: "";
+  width: 6px; height: 6px;
+  background: currentColor;
+}
+.server .state.on { color: var(--live); }
+.server .state.on::before { animation: blink 2.4s ease-in-out infinite; }
+.server .state.checking::before { animation: blink 1s ease-in-out infinite; }
+.server .state.off { color: rgba(158, 184, 209, 0.5); }
+
+@keyframes blink { 50% { opacity: 0.25; } }
+
+/* ==========================================================================
+   BUTTONS — a tracked-out word over a rule. Lights on hover. That is all.
+   ========================================================================== */
+
+.btn {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--hint);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 2px;
+  cursor: pointer;
+  transition: color var(--hover) ease, border-color var(--hover) ease;
+}
+.btn:hover { color: var(--bone); border-bottom-color: var(--rule-live); }
+.btn:focus-visible { color: var(--bone); border-bottom-color: var(--rule-live); outline: none; }
+.btn[aria-expanded="true"] { color: var(--live); border-bottom-color: rgba(61, 233, 125, 0.5); }
+
+.copy {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.6);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule-faint);
+  padding: 4px 2px;
+  cursor: pointer;
+  transition: color var(--hover) ease, border-color var(--hover) ease;
+}
+.copy:hover { color: var(--bone); border-bottom-color: var(--rule); }
+
+/* The sound toggle, bottom right. Footer text, not a control with chrome. */
+.mute {
+  position: fixed;
+  right: var(--mx);
+  bottom: calc(var(--my) * 0.55);
+  z-index: 46;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.45);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 3px 1px;
+  cursor: pointer;
+  transition: color var(--hover) ease, border-color var(--hover) ease;
+}
+.mute:hover { color: var(--bone); border-bottom-color: var(--rule); }
+
+/* ==========================================================================
+   LABELS AND SECTION HEADS
+   A section is a hairline rule with its name sitting on it. No fill, no border
+   box, no radius: the label claims the rule, and the rule claims the region
+   under it. This is what replaces the card.
+   ========================================================================== */
+
+.label {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.6);
+}
+
+.sec {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 44px 0 16px;
+}
+.sec h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone);
+  white-space: nowrap;
+}
+.sec .line { flex: 1; height: 1px; background: var(--rule-faint); }
+
+/* ==========================================================================
+   DOCUMENT PAGES — devlog index and posts.
+   Same language, set for reading: the masthead is the board's masthead shrunk
+   to a header, and the post list is the board's ledger.
+   ========================================================================== */
+
+.wrap {
+  position: relative;
+  z-index: 10;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--my) clamp(22px, 5vw, 40px) 90px;
+}
+
+.mast {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 34px;
+}
+.mast .home {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone);
+  transition: color var(--hover) ease;
+}
+.mast .home:hover { color: var(--live); }
+.mast .spacer { flex: 1; }
+.mast a.label { transition: color var(--hover) ease; }
+.mast a.label:hover { color: var(--bone); }
+
+/* The post list is the ledger, so it is literally .row. Only the type sizes
+   move — an entry name at the board's 32px would be a headline per post. */
+.log { display: flex; flex-direction: column; }
+.log .row {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--rule-faint);
+  gap: 16px;
+}
+.log .row .name { font-size: 21px; letter-spacing: 0.05em; }
+.log .row .val { font-size: 11px; letter-spacing: 0.16em; }
+
+.empty {
+  padding: 60px 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.45);
+}
+
+.playbar { display: flex; margin: 30px 0 0; }
+.wrap .server { justify-content: flex-start; }
+
+/* --- the post itself ------------------------------------------------------ */
+
+.post h1 {
+  margin: 10px 0 30px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 1.06;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bone);
+}
+
+.prose { color: #c3cfdd; }
+.prose p, .prose ul, .prose ol { margin: 0 0 20px; }
+
+.prose h2 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone);
+  margin: 40px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule-faint);
+}
+.prose h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.8);
+  margin: 28px 0 10px;
+}
+
+.prose li { margin-bottom: 6px; }
+.prose strong { color: var(--bone); font-weight: 700; }
+
+/* Credits — 20-odd names should not run a page down the screen. */
+.prose ul.thanks { columns: 2; column-gap: 36px; padding-left: 20px; }
+.prose ul.thanks li { break-inside: avoid; margin-bottom: 4px; }
+@media (min-width: 620px) { .prose ul.thanks { columns: 3; } }
+
+/* A pulled line is a rule and an indent, not a tinted box. */
+.prose blockquote {
+  margin: 26px 0;
+  padding: 2px 0 2px 20px;
+  border-left: 1px solid var(--rule-live);
+  color: var(--bone);
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--bone);
+}
+.prose pre {
+  font-family: var(--mono);
+  padding: 16px 0 16px 18px;
+  border-left: 1px solid var(--rule-faint);
+  overflow-x: auto;
+  margin-bottom: 22px;
+}
+.prose pre code { color: rgba(158, 184, 209, 0.9); }
+.prose img { max-width: 100%; border: 1px solid var(--rule-faint); }
+
+.prose a { color: var(--ice); border-bottom: 1px solid rgba(184, 235, 255, 0.3); }
+.prose a:hover { color: var(--bone); border-bottom-color: var(--rule-live); }
+
+.foot {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  margin-top: 54px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-faint);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.foot a { color: rgba(158, 184, 209, 0.6); transition: color var(--hover) ease; }
+.foot a:hover { color: var(--bone); }
+
+/* ==========================================================================
+   THE INTRO — DRITH cut in a letter at a time, then the rule wipes and the
+   entries drop in. The delays and durations are _play_intro and _pop_ledger
+   from menu.gd, one for one.
+   ========================================================================== */
+
+@keyframes letter-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rule-wipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes paint-grow {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
+}
+
+.intro .wordmark span {
+  opacity: 0;
+  animation: letter-in 0.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  /* 0.05 + i * 0.08 */
+  animation-delay: calc(0.05s + var(--i) * 0.08s);
+}
+
+.intro .tagline {
+  opacity: 0;
+  animation: fade-in 0.7s ease forwards 0.5s;
+}
+
+/* The marker is pulled over the date once the line has arrived. It lands with
+   the rule wiping out — the two gestures that finish the title. */
+.intro .tagline .date::before {
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  animation: paint-grow 0.26s ease forwards 0.92s;   /* PAINT_FILL */
+}
+
+.intro .hair {
+  opacity: 0;
+  transform: scaleX(0);
+  animation: fade-in 0.3s ease forwards 0.62s,
+             rule-wipe 0.7s cubic-bezier(0.33, 1, 0.68, 1) forwards 0.62s;
+}
+
+/* CRT_FADE under the longer back-eased CRT_POP, one entry after another —
+   the same curve the settings menu and the server browser open on. */
+.intro .ledger .row {
+  opacity: 0;
+  animation: fade-in var(--crt-fade) cubic-bezier(0.33, 1, 0.68, 1) forwards,
+             crt-snap var(--crt-pop) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  /* 0.82 + i * 0.09 */
+  animation-delay: calc(0.82s + var(--i) * 0.09s);
+}
+
+/* The document pages open on the same snap, as one region rather than row by
+   row: there is no title to cut in, so the screen simply arrives. */
+.doc .wrap { animation: crt-snap var(--crt-pop) cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+/* Below the fold width the object stops being scenery beside the ledger and
+   starts being something the ledger sits on top of. Sink it behind the type
+   and centre it, rather than letting the rows run over its bright edges. */
+@media (max-width: 900px) {
+  #crystal {
+    right: auto;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
+    width: min(88vw, 60vh);
+    height: min(88vw, 60vh);
+    opacity: 0.45;
+  }
+  #bloom { left: 8%; right: 8%; }
+  /* The extra bottom padding is for the sound toggle: the board is bottom-set
+     here, so without it the last ledger row and its status run straight into
+     the fixed toggle in the corner. */
+  .board {
+    justify-content: flex-end;
+    max-width: 100%;
+    padding-bottom: calc(var(--my) + 34px);
+  }
+}
+
+@media (max-width: 560px) {
+  .tagline { font-size: 12px; letter-spacing: 0.32em; }
+  .row { gap: 14px; }
+  .row .val { font-size: 11px; }
+  .mast { flex-wrap: wrap; gap: 10px; }
+}
+
+/* Sweeping the tick and the word is a pointer gesture. On a touch screen there
+   is no hover, so the rows would sit permanently unlit — give the tick its lit
+   length outright and let the tap be the interaction. */
+@media (hover: none) {
+  .row .tick { width: var(--tick-hot); background: rgba(158, 184, 209, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Everything the board animates is a flourish over a state that is already
+     correct, so the whole lot can simply be at rest. */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .intro .wordmark span,
+  .intro .tagline,
+  .intro .hair,
+  .intro .ledger .row { opacity: 1; transform: none; }
+  .intro .hair { transform: scaleX(1); }
+  .intro .tagline .date::before { -webkit-mask-position: 0% 0; mask-position: 0% 0; }
+  #powerline { display: none; }
+}

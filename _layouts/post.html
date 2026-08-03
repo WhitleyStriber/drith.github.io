@@ -4,8 +4,9 @@ layout: default
 
 <div class="wrap post">
 
-  <div class="head">
+  <div class="mast">
     <a class="home" href="{{ '/' | relative_url }}">Drith</a>
+    <span class="spacer"></span>
     <a class="label" href="{{ '/devlog/' | relative_url }}">&larr; Devlog</a>
   </div>
 
@@ -23,7 +24,6 @@ layout: default
 
   <div class="foot">
     {%- if page.next %}<a href="{{ page.next.url | relative_url }}">&larr; {{ page.next.title }}</a>{% endif -%}
-    {%- if page.next and page.previous %} &nbsp;&middot;&nbsp; {% endif -%}
     {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }} &rarr;</a>{% endif -%}
   </div>
 

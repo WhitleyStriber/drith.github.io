@@ -3,9 +3,39 @@
 Site + devlog for **Drith**. Jekyll, no theme gem, no build step you have to run
 — GitHub Pages builds it on push.
 
-The skin is lifted from the game's in-engine WARDECK panel
-(`drith-godot/src/hud/base/wardeck_panel.cpp` and `hud/core/console_style.h`):
-same grounds, same schematic green, same hairline borders, pips and mono labels.
+## The skin
+
+The site is **the board** — the game's main menu (`drith-godot/world/menu.tscn`
+and `world/menu.gd`), carried onto the web by way of the approved mockups next
+to it in `drith-godot/ui/mockups/`. Every colour, rule alpha and animation
+timing in `assets/css/board.css` is the sRGB of a `Color()` literal the menu
+actually uses or a shader uniform lifted verbatim, and the comment on each names
+where it came from.
+
+The rule the language turns on, from `src/hud/core/board_style.h`:
+
+> Nothing is a panel.
+
+A section is declared by a hairline rule with a tracked-out caps label sitting
+on it, and the only thing that ever gets a frame is the thing you are currently
+pointed at. No cards, no borders, no radii, no drop shadows.
+
+Type is the game's: **PT Sans Narrow Bold** for display (`WORDMARK_FONT` in
+`menu.gd`, the game's one display face through `display_face::at()`) and
+**JetBrains Mono** for every figure and readout (`console_style::mono_font`).
+Body copy asks for Helvetica metrics from the reader's own system, standing in
+for GNU FreeSans — the board's UI face — which is not worth an 850 KB download
+for the same letters.
+
+The ground is generated, not an image: `assets/js/field.js` is a port of
+`shaders/menu_field.gdshader` (the dot lattice and its travelling light band),
+and `assets/js/crystal.js` is the menu's stage object — a dark Fresnel-lit hull
+under an emissive wireframe, cross-fading on the same hold/fade loop.
+
+Two places it departs from the mockups, because a website is not a game screen:
+the mockups pin a 1600x900 stage and scale it, this reflows; and the CRT
+scanline overlay is pulled back on the devlog and post pages, where it lies over
+running paragraphs rather than over four words.
 
 ## Publishing
 
@@ -48,37 +78,38 @@ Drop a file in `_posts/` named `YYYY-MM-DD-some-slug.md`:
 ---
 title: "What I built"
 date: 2026-08-14
-build: 0.4.7           # optional — renders as a gold chip
-tags: [systems, ui]    # optional — first tag shows on the card
-description: >-        # optional — used for the card blurb and og:description
-  One or two sentences. Falls back to the post's first paragraph.
+description: >-        # optional — used for og:description
+  One or two sentences.
 ---
 
-Body in Markdown. `code`, > blockquotes (styled as CLARIS transmissions),
-## headings, lists and images all have styles already.
+Body in Markdown. `code`, > blockquotes, ## headings, lists and images all have
+styles already. A raw `<ul class="thanks">` flows into columns, for credits.
 ```
 
-That's it — the index page picks up the newest four, `/devlog/` groups
-everything by year, and `/feed.xml` updates.
+That's it — `/devlog/` lists everything newest first, and each post gets
+prev/next links.
 
 ## Layout
 
 ```
 _config.yml            site title, release string, baseurl, server address
 _includes/server.html  the PLAY panel — access code or server status
-_layouts/default.html  frame, top bar, tabs, footer
+_layouts/default.html  the ground (field, bloom, vignette, CRT) + head
 _layouts/post.html     devlog entry + prev/next
-index.html             hero, hologram, build status, latest posts, lore teasers
-devlog.html            all entries, grouped by year   → /devlog/
-lore.html              the five layers                → /lore/
+index.html             the board — wordmark, tagline, ledger
+devlog.html            all entries                    → /devlog/
 _posts/                Markdown entries
-assets/css/wardeck.css the whole skin (design tokens at the top)
-assets/js/wardeck.js   status-line typing + year stamp
+assets/css/board.css   the whole skin (palette and type at the top)
+assets/js/field.js     the generated background field + CRT power-on
+assets/js/crystal.js   the object on the stage
+assets/js/site.js      UI sound, the PLAY panel, live server status
 ```
 
-Editing the palette: everything is a CSS custom property in the `:root` block
-at the top of `wardeck.css`, named to match the C++ constants (`--acc` is
-`HUD_EMBER`, `--card` is `HUD_CARD`, and so on).
+Editing the palette: everything is a CSS custom property in the `:root` block at
+the top of `board.css`, named to match the engine (`--void` is `menu.tscn`'s
+Void, `--bone` its Hair rule, `--live` is `C_LIVE`, `--paint` is `PAINT_INK`).
+Each one carries the `Color()` literal it came from in a comment, so a change
+here can be checked against the game rather than eyeballed.
 
 ## Local preview (optional)
 

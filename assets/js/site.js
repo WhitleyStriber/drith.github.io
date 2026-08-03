@@ -63,9 +63,11 @@
   document.body.appendChild(btn);
 
   /* Hover and click on anything button-shaped. Hover is throttled so
-     sweeping the cursor across a row of buttons doesn't machine-gun it. */
+     sweeping the cursor across a row of buttons doesn't machine-gun it.
+     `.row` covers both the board's ledger entries and the devlog list, which
+     are the same row — see the note in board.css. */
   var last = 0;
-  var TARGETS = '.btn, .row, .copy, .mute, .head a';
+  var TARGETS = '.btn, .row, .copy, .mute, .mast a';
 
   document.addEventListener('pointerover', function (e) {
     var t = e.target.closest && e.target.closest(TARGETS);

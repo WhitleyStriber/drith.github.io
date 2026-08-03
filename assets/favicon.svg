@@ -1,8 +1,11 @@
+<!-- The board's monument at tab size: a dark Fresnel hull with an ice rim, on
+     the menu's void. Colours are menu_hull.gdshader's `body` and `rim_cool`
+     over menu.tscn's Void. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#0b0c10"/>
+  <rect width="64" height="64" fill="#070b0b"/>
   <polygon points="32,7 51,23 45,50 32,58 19,50 13,23"
-           fill="#4de67a" fill-opacity=".18" stroke="#4de67a" stroke-width="2.4" stroke-linejoin="round"/>
-  <g stroke="#4de67a" stroke-width="1.4" opacity=".7">
+           fill="#030607" stroke="#b8ebff" stroke-width="2.2" stroke-linejoin="round"/>
+  <g stroke="#b8ebff" stroke-width="1.2" opacity=".55">
     <path d="M32 7 L32 58"/>
     <path d="M13 23 L51 23"/>
   </g>

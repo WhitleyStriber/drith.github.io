@@ -4,19 +4,49 @@ description: >-
   Drith — siege and conquer. 202X.
 ---
 
-<main class="stage">
+{%- comment %}
+  THE BOARD. This page is the game's main menu (drith-godot: world/menu.tscn),
+  and it is laid out the way the menu is: the ledger owns the left, the object
+  stands right of centre, and DRITH is cut into the surface a letter at a time
+  before the rule wipes and the entries drop in.
 
-  <canvas id="crystal" role="img" aria-label="Rotating Drith crystal"></canvas>
+  Four entries on the board; two here, because a website has two places to go.
+  They are the same rows — tick, name, spacer, status — for the same reason the
+  in-game terminals reuse them: the ledger entry is the site's one list item.
+{%- endcomment %}
 
-  <h1 class="wordmark">Dri<span>th</span></h1>
-  <p class="tag">Siege and conquer &middot; <b>{{ site.release }}</b></p>
+<canvas id="crystal" role="img" aria-label="Rotating Drith monument"></canvas>
 
-  <div class="cta">
-    <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play</button>
-    <a class="btn blue" href="{{ '/devlog/' | relative_url }}">Devlog</a>
-  </div>
+<main class="board">
 
-  <p class="note">Pre-alpha build</p>
+  {%- comment %} Each letter is its own span so the intro can strike them one
+  after another; --i is the index _play_intro multiplies its delay by. {%- endcomment %}
+  <h1 class="wordmark" aria-label="Drith"><span style="--i:0" aria-hidden="true">D</span><span style="--i:1" aria-hidden="true">R</span><span style="--i:2" aria-hidden="true">I</span><span style="--i:3" aria-hidden="true">T</span><span style="--i:4" aria-hidden="true">H</span></h1>
+
+  <p class="tagline">
+    <span class="pre">Pre-alpha</span>
+    <span class="date">Coming {{ site.release }}</span>
+  </p>
+
+  <div class="hair" aria-hidden="true"></div>
+
+  <nav class="ledger">
+
+    <button class="row" id="play" style="--i:0" aria-expanded="false" aria-controls="server">
+      <span class="tick" aria-hidden="true"></span>
+      <span class="name">Play</span>
+      <span class="fill" aria-hidden="true"></span>
+      <span class="val">server address</span>
+    </button>
+
+    <a class="row" style="--i:1" href="{{ '/devlog/' | relative_url }}">
+      <span class="tick" aria-hidden="true"></span>
+      <span class="name">Devlog</span>
+      <span class="fill" aria-hidden="true"></span>
+      <span class="val">build notes</span>
+    </a>
+
+  </nav>
 
   {% include server.html %}
 

@@ -8,8 +8,9 @@ description: >-
 
 <div class="wrap">
 
-  <div class="head">
+  <div class="mast">
     <a class="home" href="{{ '/' | relative_url }}">Drith</a>
+    <span class="spacer"></span>
     <span class="label">Devlog</span>
   </div>
 
@@ -18,12 +19,22 @@ description: >-
   </div>
   {% include server.html %}
 
+  <div class="sec">
+    <h2>Entries</h2>
+    <span class="line" aria-hidden="true"></span>
+  </div>
+
+  {%- comment %} The post list IS the board's ledger — same row, same tick, same
+  lit-on-hover behaviour. Only the type sizes move, because an entry name at the
+  board's 32px would be a headline per post. {%- endcomment %}
   {% if site.posts.size > 0 %}
   <div class="log">
     {%- for post in site.posts %}
     <a class="row" href="{{ post.url | relative_url }}">
-      <span class="d">{{ post.date | date: "%Y.%m.%d" }}</span>
-      <span class="t">{{ post.title }}</span>
+      <span class="tick" aria-hidden="true"></span>
+      <span class="name">{{ post.title }}</span>
+      <span class="fill" aria-hidden="true"></span>
+      <span class="val">{{ post.date | date: "%Y.%m.%d" }}</span>
     </a>
     {%- endfor %}
   </div>
