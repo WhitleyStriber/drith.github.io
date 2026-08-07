@@ -10,7 +10,8 @@ description: >-
   stands right of centre, and DRITH is cut into the surface a letter at a time
   before the rule wipes and the entries drop in.
 
-  Four entries on the board; two here, because a website has two places to go.
+  Four entries on the board; three here, because a website has three places to
+  go.
   They are the same rows — tick, name, spacer, status — for the same reason the
   in-game terminals reuse them: the ledger entry is the site's one list item.
 {%- endcomment %}
@@ -45,6 +46,15 @@ description: >-
       <span class="fill" aria-hidden="true"></span>
       <span class="val">build notes</span>
     </a>
+
+    {%- if site.beta_download and site.beta_download != "" %}
+    <a class="row" style="--i:2" href="{{ site.beta_download }}" target="_blank" rel="noopener">
+      <span class="tick" aria-hidden="true"></span>
+      <span class="name">Download</span>
+      <span class="fill" aria-hidden="true"></span>
+      <span class="val">Windows build</span>
+    </a>
+    {%- endif %}
 
   </nav>
 
