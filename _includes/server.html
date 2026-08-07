@@ -11,4 +11,7 @@
   {%- else %}
   <span class="off">Server offline</span>
   {%- endif %}
+  {%- if site.beta_download and site.beta_download != "" %}
+  <a class="btn" href="{{ site.beta_download }}" target="_blank" rel="noopener">Download for Windows</a>
+  {%- endif %}
 </div>
