@@ -30,7 +30,7 @@ status_url: ""
 
 # Where players download the beta build. Leave empty and the devlog says the
 # link is coming shortly instead of printing a dead one.
-beta_download: "https://drive.google.com/file/d/1AJbgrcG2yvZX_VX2Hn-O_uLP4q5n6jQh/view?usp=drive_link"
+beta_download: "https://drive.google.com/file/d/1cZk3jXBCm6AYBmmqgIMotdmjINfy7aFG/view?usp=sharing"
 
 # --- URLs -------------------------------------------------------------------
 # Repo is WhitleyStriber/drith.github.io → a PROJECT site, so every path needs
