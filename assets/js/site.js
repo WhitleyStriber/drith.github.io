@@ -82,6 +82,115 @@
     if (e.target.closest && e.target.closest(TARGETS)) blip(click);
   });
 
+  /* ------------------------------------------------------------- ledger --- */
+  /* THE RULE TURNS. menu.gd's _spin, which is the half of the highlight that
+     survives being looked at from across the room — the board is as often
+     driven on a pad from the couch as with a cursor sitting on the row.
+
+     Lit, it is one relative, linear, looping revolution, so it keeps
+     accumulating turns for as long as the entry is highlighted. SPIN_PERIOD is
+     fast enough that running the cursor down the ledger — three tenths of a
+     second on a row — still shows a quarter turn.
+
+     Let go, it COASTS. Three things make that read as a spinning object being
+     released rather than a fault:
+       - it carries on FORWARDS. Easing back to the nearest mark would run the
+         rule backwards for up to half a turn.
+       - it stops on the next HALF turn. The rule is a straight line, so it is
+         its own mirror at pi — landing there is visually identical to landing
+         square, at half the distance to travel.
+       - sine ease-out over pi/2 times the time that arc was going to take
+         anyway. A sine out opens at pi/2 of its average speed, so stretching
+         the duration by exactly that much means it leaves at the speed it was
+         already turning. Any shorter and the release is a speed-up. */
+
+  var SPIN_PERIOD = 0.5;
+  var TAU = Math.PI * 2;
+  var spins = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+  function spinState(tick) {
+    if (!spins) return null;
+    var s = spins.get(tick);
+    if (!s) { s = { rot: 0, raf: 0 }; spins.set(tick, s); }
+    return s;
+  }
+
+  function spin(tick, on) {
+    var s = spinState(tick);
+    if (!s) return;
+    if (s.raf) { cancelAnimationFrame(s.raf); s.raf = 0; }
+
+    if (on) {
+      var last = null;
+      (function turn(now) {
+        if (last === null) last = now;
+        s.rot += (now - last) / 1000 * TAU / SPIN_PERIOD;
+        last = now;
+        tick.style.transform = 'rotate(' + s.rot + 'rad)';
+        s.raf = requestAnimationFrame(turn);
+      })(performance.now());
+      return;
+    }
+
+    var into = ((s.rot % Math.PI) + Math.PI) % Math.PI;
+    if (into < 0.001) {                    // never turned, or let go on the mark
+      s.rot = 0;
+      tick.style.transform = '';
+      return;
+    }
+    var rest = Math.PI - into;
+    var secs = rest / TAU * SPIN_PERIOD * Math.PI * 0.5;
+    var from = s.rot, t0 = null;
+    (function settle(now) {
+      if (t0 === null) t0 = now;
+      var k = Math.min(1, (now - t0) / 1000 / secs);
+      s.rot = from + rest * Math.sin(k * Math.PI / 2);
+      tick.style.transform = 'rotate(' + s.rot + 'rad)';
+      if (k < 1) { s.raf = requestAnimationFrame(settle); return; }
+      s.raf = 0;
+      s.rot = 0;                           // park, so it never spends its
+      tick.style.transform = '';           // precision on the turn count
+    })(performance.now());
+  }
+
+  var rows = [].slice.call(document.querySelectorAll('.ledger .row, .log .row'));
+  var turning = !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+                window.matchMedia('(hover: hover)').matches;
+
+  rows.forEach(function (row) {
+    var tick = row.querySelector('.tick');
+    if (!tick || !turning) return;
+    row.addEventListener('pointerenter', function () { spin(tick, true); });
+    row.addEventListener('focus', function () { spin(tick, true); });
+    row.addEventListener('pointerleave', function () { spin(tick, false); });
+    row.addEventListener('blur', function () { spin(tick, false); });
+  });
+
+  /* The wheel and the arrows walk the ledger, and what moves is FOCUS — the
+     rows already light on focus, so this rides the same path the keyboard and
+     the pad take and there stays exactly one idea of "which entry". It wraps,
+     because at three entries stopping dead at the end reads as the input having
+     broken rather than as a boundary. */
+  var ledger = document.querySelector('.ledger');
+  if (ledger) {
+    var entries = [].slice.call(ledger.querySelectorAll('.row'));
+    var step = function (dir) {
+      var cur = entries.indexOf(document.activeElement);
+      var next = cur < 0 ? (dir > 0 ? 0 : entries.length - 1)
+                         : (cur + dir + entries.length) % entries.length;
+      entries[next].focus();
+    };
+    if (entries.length) {
+      window.addEventListener('wheel', function (e) {
+        step(e.deltaY > 0 ? 1 : -1);
+      }, { passive: true });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+      });
+    }
+  }
+
   /* -------------------------------------------------------- play panel --- */
 
   var play = document.getElementById('play');
@@ -90,6 +199,13 @@
 
   var copy = document.getElementById('copy');
   var addr = document.getElementById('addr');
+
+  /* Reassigned below IF a status responder is configured. It has to exist as a
+     no-op first: with site.status_url empty this file returns before the probe
+     is set up, and a hoisted `function check()` would still be callable from the
+     click handler — reaching for a #state element that Jekyll never rendered and
+     throwing on every press of PLAY. */
+  var check = function () {};
 
   play.addEventListener('click', function () {
     var open = !panel.hidden;
@@ -150,7 +266,7 @@
     show(copy, code && !!navigator.clipboard);
   }
 
-  function check() {
+  check = function () {
     if (pending || Date.now() - checkedAt < FRESH) return;
     if (!window.fetch) {                // too old to ask; show what we were given
       light('checking', 'Status unknown');
@@ -180,7 +296,7 @@
       pending = false;
       checkedAt = Date.now();
     });
-  }
+  };
 
   /* Re-probe while someone sits with the panel open, so a server coming up
      mid-visit turns the light green without a reload. */

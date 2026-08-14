@@ -6,28 +6,37 @@ description: >-
 
 {%- comment %}
   THE BOARD. This page is the game's main menu (drith-godot: world/menu.tscn),
-  and it is laid out the way the menu is: the ledger owns the left, the object
-  stands right of centre, and DRITH is cut into the surface a letter at a time
-  before the rule wipes and the entries drop in.
+  laid out node for node against it:
 
-  Four entries on the board; three here, because a website has three places to
-  go.
-  They are the same rows — tick, name, spacer, status — for the same reason the
-  in-game terminals reuse them: the ledger entry is the site's one list item.
+    Content    MarginContainer  84 / 68        -> .board's padding
+      VBox     separation 0
+        WmPad  52                              -> .wordmark's top margin
+        Wordmark  HBox, separation 14          -> five spans in a flex row
+        TagPad 16                              -> .tagline's top margin
+        Tagline   HBox, separation 62          -> two spans in a flex row
+        HairPad 30                             -> .hair's top margin
+        Hair   560 x 1                         -> .hair
+        LedgerPad 26                           -> .ledger's top margin
+        Ledger VBox, 560 wide, separation 13   -> .ledger
+        Grow   EXPAND_FILL                     -> why the title sits at the top
+
+  The board carries four entries; there are three here, because a website has
+  three places to go. They are the same rows — tick, name, spacer, status — for
+  the same reason the in-game terminals reuse them: the ledger entry is this
+  site's one list item.
 {%- endcomment %}
-
-<canvas id="crystal" role="img" aria-label="Rotating Drith monument"></canvas>
 
 <main class="board">
 
-  {%- comment %} Each letter is its own span so the intro can strike them one
-  after another; --i is the index _play_intro multiplies its delay by. {%- endcomment %}
+  {%- comment %} Each letter is its own Label in the game and its own span here,
+  so the intro can strike them one after another; --i is the index _play_intro
+  multiplies its delay by. {%- endcomment %}
   <h1 class="wordmark" aria-label="Drith"><span style="--i:0" aria-hidden="true">D</span><span style="--i:1" aria-hidden="true">R</span><span style="--i:2" aria-hidden="true">I</span><span style="--i:3" aria-hidden="true">T</span><span style="--i:4" aria-hidden="true">H</span></h1>
 
-  <p class="tagline">
-    <span class="pre">Pre-alpha</span>
-    <span class="date">Coming {{ site.release }}</span>
-  </p>
+  {%- comment %} The letters really are spaced with spaces on the board — the
+  Label text is "P R E - A L P H A" — so they are spaced with spaces here.
+  {%- endcomment %}
+  <p class="tagline"><span class="pre" aria-label="Pre-alpha">P R E - A L P H A</span><span class="date" aria-label="Coming {{ site.release }}">C O M I N G   {{ site.release | split: "" | join: " " }}</span></p>
 
   <div class="hair" aria-hidden="true"></div>
 
@@ -61,5 +70,3 @@ description: >-
   {% include server.html %}
 
 </main>
-
-<script src="{{ '/assets/js/crystal.js' | relative_url }}" defer></script>

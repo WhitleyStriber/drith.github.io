@@ -18,39 +18,39 @@
 <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
 
 {%- comment %}
-  PT Sans Narrow is WORDMARK_FONT in the game (world/menu.gd, ui/launcher.gd)
-  and the game's one display face through display_face::at(); JetBrains Mono is
-  console_style::mono_font, the readout face. Body copy asks for Helvetica
-  metrics from the reader's own system, standing in for GNU FreeSans — the
-  board's UI face — which is not worth an 850 KB download for the same letters.
+  The game's own two faces, self-hosted and subset — PT Sans Narrow Bold is
+  WORDMARK_FONT in world/menu.gd and the display face for the whole game through
+  display_face::at(); FreeSans is the board's UI face and the project's default
+  theme font. Preloaded because the wordmark is the first thing on the screen
+  and font-display:block holds it until the file lands.
 {%- endcomment %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" href="{{ '/assets/fonts/ptsans-narrow-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ '/assets/fonts/freesans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/board.css' | relative_url }}">
 </head>
 
 {%- comment %}
-  `doc` marks the pages that are text rather than the board, and the stylesheet
-  reads it to pull the CRT back over running paragraphs. `intro` runs the
-  title's cut-in, so it goes on the front page only.
+  `board-page` is the front page, which IS the menu: it gets the logical frame,
+  the object on the stage and the letter-by-letter cut-in. `doc` marks the pages
+  that are text rather than the board, and takes the CRT overlay the menu does
+  not have.
 {%- endcomment %}
-<body data-base="{{ site.baseurl }}" class="{% if page.url == '/' %}intro{% else %}doc{% endif %}">
+<body data-base="{{ site.baseurl }}" class="{% if page.url == '/' %}board-page intro{% else %}doc{% endif %}">
 
 {%- comment %}
-  THE GROUND, back to front, in menu.tscn's own layering order: flat void (the
-  page background) -> additive dot/grid field -> radial bloom -> content ->
-  vignette -> CRT. All four are inert scenery and none of them take the mouse.
+  THE GROUND. One canvas carrying menu.tscn's whole stack in its own order —
+  void, the generated dot/grid field, the bloom, the Drith base under its hull
+  and wireframe passes, and the vignette — all of it under the content and none
+  of it taking the mouse. See assets/js/stage.js.
 {%- endcomment %}
-<canvas id="field" aria-hidden="true"></canvas>
-<div id="bloom" aria-hidden="true"></div>
+<canvas id="stage" aria-hidden="true"></canvas>
 
 {{ content }}
 
-<div id="vignette" aria-hidden="true"></div>
-<div id="crt" aria-hidden="true"></div>
+{%- if page.url != '/' %}<div id="crt" aria-hidden="true"></div>{% endif %}
 
-<script src="{{ '/assets/js/field.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/stage.js' | relative_url }}" defer></script>
+{%- if page.url == '/' %}<script src="{{ '/assets/js/paint.js' | relative_url }}" defer></script>{% endif %}
 <script src="{{ '/assets/js/site.js' | relative_url }}" defer></script>
 </body>
 </html>

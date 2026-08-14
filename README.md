@@ -5,12 +5,20 @@ Site + devlog for **Drith**. Jekyll, no theme gem, no build step you have to run
 
 ## The skin
 
-The site is **the board** — the game's main menu (`drith-godot/world/menu.tscn`
-and `world/menu.gd`), carried onto the web by way of the approved mockups next
-to it in `drith-godot/ui/mockups/`. Every colour, rule alpha and animation
-timing in `assets/css/board.css` is the sRGB of a `Color()` literal the menu
-actually uses or a shader uniform lifted verbatim, and the comment on each names
-where it came from.
+The front page **is** the game's main menu (`drith-godot/world/menu.tscn` and
+`world/menu.gd`) — not styled after it, laid out as it, node for node. Every
+colour, rule alpha, gap and animation timing in `assets/css/board.css` is a
+`Vector2`, theme override or `Color()` literal the menu actually sets, and the
+comment on each names where it came from.
+
+**The unit.** The game runs `stretch/mode="canvas_items"` with
+`aspect="keep_height"` over a 1920x1080 base, so its logical viewport is always
+1080 tall and only its width moves. `--u` is one of those logical pixels
+(`100svh / 1080`, clamped by `100vw / 728` so the board letterboxes rather than
+overflows), and every length on the page is the menu's own figure times `--u`.
+That is what makes the type land where the engine puts it at any window size —
+and, because the camera then takes the frame's aspect at a constant vertical
+fov, what makes the object land where the engine puts it too, with no offsets.
 
 The rule the language turns on, from `src/hud/core/board_style.h`:
 
@@ -20,22 +28,34 @@ A section is declared by a hairline rule with a tracked-out caps label sitting
 on it, and the only thing that ever gets a frame is the thing you are currently
 pointed at. No cards, no borders, no radii, no drop shadows.
 
-Type is the game's: **PT Sans Narrow Bold** for display (`WORDMARK_FONT` in
-`menu.gd`, the game's one display face through `display_face::at()`) and
-**JetBrains Mono** for every figure and readout (`console_style::mono_font`).
-Body copy asks for Helvetica metrics from the reader's own system, standing in
-for GNU FreeSans — the board's UI face — which is not worth an 850 KB download
-for the same letters.
+Type is the game's own, self-hosted and subset in `assets/fonts/`: **PT Sans
+Narrow Bold** for display (`WORDMARK_FONT` in `menu.gd`, the game's one display
+face through `display_face::at()`) and **GNU FreeSans** for UI text (the board's
+face, and the project's default theme font). Line heights are the fonts' own
+ascent+descent, so a Label's box on the page is the box the engine lays out.
+`JetBrains Mono` figures are for the document pages, which the menu has no
+equivalent of.
 
-The ground is generated, not an image: `assets/js/field.js` is a port of
-`shaders/menu_field.gdshader` (the dot lattice and its travelling light band),
-and `assets/js/crystal.js` is the menu's stage object — a dark Fresnel-lit hull
-under an emissive wireframe, cross-fading on the same hold/fade loop.
+The ground is generated, not an image. `assets/js/stage.js` is one WebGL canvas
+carrying menu.tscn's whole stack in its order — the flat void,
+`shaders/menu_field.gdshader`, the Bloom gradient, the **real Drith_01 mesh**
+(exported out of the .blend to `assets/models/drith_01.json`) drawn as a dark
+Fresnel-lit hull under an emissive wireframe, and the Vignette gradient. The two
+spatial shaders are ported line for line and run against a real depth buffer, so
+the wireframe's hidden-line culling is the hull's depth doing the job it does in
+the engine. `assets/js/paint.js` is `shaders/paint_stroke.gdshader`, the marker
+under COMING 202X.
 
-Two places it departs from the mockups, because a website is not a game screen:
-the mockups pin a 1600x900 stage and scale it, this reflows; and the CRT
-scanline overlay is pulled back on the devlog and post pages, where it lies over
-running paragraphs rather than over four words.
+Where it departs, and why:
+
+- The **document pages** (devlog, posts) reflow and are set for reading. They
+  keep the board's language and drop its fixed geometry — a column of paragraphs
+  pinned to a 1080-tall frame is a scroll bar, not a screen — and they take a CRT
+  scanline overlay the menu does not have.
+- The 3D pass is supersampled rather than MSAA'd, and the Environment's glow is
+  five mip levels rather than seven. At this size the rest are below a pixel.
+- Below a 1.15 aspect the camera slides back to the middle and the object dims,
+  because the game never renders a portrait window and a phone does.
 
 ## Publishing
 
@@ -92,18 +112,30 @@ prev/next links.
 ## Layout
 
 ```
-_config.yml            site title, release string, baseurl, server address
-_includes/server.html  the PLAY panel — access code or server status
-_layouts/default.html  the ground (field, bloom, vignette, CRT) + head
-_layouts/post.html     devlog entry + prev/next
-index.html             the board — wordmark, tagline, ledger
-devlog.html            all entries                    → /devlog/
-_posts/                Markdown entries
-assets/css/board.css   the whole skin (palette and type at the top)
-assets/js/field.js     the generated background field + CRT power-on
-assets/js/crystal.js   the object on the stage
-assets/js/site.js      UI sound, the PLAY panel, live server status
+_config.yml              site title, release string, baseurl, server address
+_includes/server.html    the PLAY panel — access code or server status
+_layouts/default.html    the stage canvas + head
+_layouts/post.html       devlog entry + prev/next
+index.html               the board — menu.tscn's Content, node for node
+devlog.html              all entries                    → /devlog/
+_posts/                  Markdown entries
+assets/css/board.css     the whole skin (palette, --u and type at the top)
+assets/js/stage.js       void, field, bloom, the object, vignette — in WebGL
+assets/js/paint.js       the marker under COMING 202X
+assets/js/site.js        UI sound, the turning rule, the PLAY panel, status
+assets/models/           the Drith base, exported out of Drith_01.blend
+assets/fonts/            the game's faces, subset — see the README in there
 ```
+
+Re-exporting the mesh, if the model changes:
+
+```bash
+blender -b .../Drith_01.blend --python export_drith.py -- assets/models/drith_01.json
+```
+
+The exporter must read **split** normals (`mesh.corner_normals`), not vertex
+normals — the base is a hard-surface model and smoothing its creases makes the
+hull's Fresnel go soft over faces that should be flat.
 
 Editing the palette: everything is a CSS custom property in the `:root` block at
 the top of `board.css`, named to match the engine (`--void` is `menu.tscn`'s
