@@ -36,7 +36,7 @@ status_url: "https://eric-centered-joined-medicines.trycloudflare.com/status"
 
 # Where players download the beta build. Leave empty and the devlog says the
 # link is coming shortly instead of printing a dead one.
-beta_download: "https://drive.google.com/file/d/1cZk3jXBCm6AYBmmqgIMotdmjINfy7aFG/view?usp=sharing"
+beta_download: "https://drive.google.com/file/d/1vPj5U6ewtSN4TPKXn7MdDUn87Nl-_fr0/view?usp=sharing"
 
 # --- URLs -------------------------------------------------------------------
 # Repo is WhitleyStriber/drith.github.io → a PROJECT site, so every path needs
