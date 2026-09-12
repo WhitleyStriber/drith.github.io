@@ -10,7 +10,11 @@ this is the thing that serves it. Run it on the same box as the game server.
 
 Point _config.yml's status_url at it. Stdlib only, no pip install.
 
-    python3 status_server.py --address 203.0.113.24:27015
+    python3 status_server.py --address auto
+
+`--address auto` looks up the box's own public IP instead of being told it,
+which is the difference between a code that keeps working and one that has to
+be re-committed to the site every time the lease turns over.
 
 Probes:
   bind  (default)  try to bind the game's UDP port. If the bind is refused,
@@ -26,15 +30,26 @@ it as mixed content. This needs to be reachable over HTTPS. See README.md.
 
 import argparse
 import errno
+import ipaddress
 import json
 import socket
 import ssl
 import sys
+import threading
 import time
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 CACHE_SECONDS = 3.0     # a burst of page loads shouldn't mean a burst of probes
 TCP_TIMEOUT = 1.0
+
+# `--address auto`. Several services, because the answer matters more than any
+# one of them being up, and they disagree about trailing newlines, not IPs.
+PUBLIC_IP_URLS = ("https://api.ipify.org",
+                  "https://checkip.amazonaws.com",
+                  "https://icanhazip.com")
+PUBLIC_IP_TIMEOUT = 3.0
+PUBLIC_IP_EVERY = 300.0
 
 # Both spellings of "that port is taken", since Windows uses the winsock codes.
 IN_USE = {errno.EADDRINUSE, errno.EACCES}
@@ -74,14 +89,82 @@ def probe_tcp(host, port):
 PROBES = {"bind": probe_bind, "tcp": probe_tcp}
 
 
+class PublicAddress:
+    """`--address auto`: the box's own public IP, kept fresh.
+
+    A home connection's address changes whenever the lease does, and the site
+    is a static build — so an address typed into _config.yml goes stale
+    silently, and the first anyone knows about it is players copying a code
+    that goes nowhere. The box is the one thing that can always find out what
+    its address currently is, so let it, and let the panel take the answer
+    from the same fetch it already makes for online/offline.
+    """
+
+    def __init__(self, port):
+        self.port = port
+        self.value = None       # whole "ip:port" string, or None until first hit
+
+    def refresh(self):
+        """Ask, and keep the last good answer if nobody's answering.
+
+        A failed lookup means the echo services are unreachable, which is not
+        the same as the address having changed — reporting None on a blip
+        would blank a code that is still correct.
+        """
+        ip = self._lookup()
+        if ip:
+            self.value = "%s:%d" % (ip, self.port)
+
+    def run(self):
+        """Refresh forever; meant for a daemon thread.
+
+        Never from inside a request: a lookup can sit there for seconds, and
+        the page gives the whole fetch four of them before it calls the server
+        down. One writer and readers that only want the latest whole string,
+        so a plain attribute is all the sharing this needs.
+        """
+        while True:
+            time.sleep(PUBLIC_IP_EVERY)
+            self.refresh()
+
+    @staticmethod
+    def _lookup():
+        for url in PUBLIC_IP_URLS:
+            try:
+                with urllib.request.urlopen(url, timeout=PUBLIC_IP_TIMEOUT) as r:
+                    answer = r.read(64).decode("ascii", "ignore").strip()
+                # v4 only. These services answer v6 when the box prefers it,
+                # and the game binds v4 — an AAAA answer here would publish a
+                # code that players' clients can't dial.
+                if ipaddress.ip_address(answer).version == 4:
+                    return answer
+            except (OSError, ValueError):
+                continue
+        return None
+
+
 class Status:
     """The current reading, re-probed at most every CACHE_SECONDS."""
 
     def __init__(self, opts):
         self.opts = opts
         self.probe = PROBES[opts.probe]
+        self.public = (PublicAddress(opts.game_port)
+                       if opts.address == "auto" else None)
         self.online = False
         self.checked = 0.0
+
+    def start(self):
+        """First lookup before the first request, then keep it current."""
+        if not self.public:
+            return
+        self.public.refresh()
+        threading.Thread(target=self.public.run, daemon=True).start()
+
+    def address(self):
+        if self.public:
+            return self.public.value
+        return self.opts.address or None
 
     def read(self):
         now = time.time()
@@ -90,7 +173,7 @@ class Status:
             self.checked = now
         return {
             "online": self.online,
-            "address": self.opts.address or None,
+            "address": self.address(),
             "port": self.opts.game_port,
             "checked": time.strftime("%Y-%m-%dT%H:%M:%SZ",
                                      time.gmtime(self.checked)),
@@ -154,8 +237,10 @@ def main():
     ap.add_argument("--port", type=int, default=27016,
                     help="port to serve status on (default: 27016)")
     ap.add_argument("--address", default="",
-                    help="access code handed to players, e.g. 203.0.113.24:27015. "
-                         "Overrides the one baked into the site at build time.")
+                    help="access code handed to players, e.g. 203.0.113.24:27015, "
+                         "or \"auto\" to look up this box's public IP and pair it "
+                         "with --game-port. Overrides the one baked into the site "
+                         "at build time.")
     ap.add_argument("--origin", default="*",
                     help="Access-Control-Allow-Origin; pin it to your site's "
                          "origin to stop other pages reading this (default: *)")
@@ -172,6 +257,7 @@ def main():
 
     Handler.status = Status(opts)
     Handler.opts = opts
+    Handler.status.start()
     httpd = ThreadingHTTPServer((opts.listen, opts.port), Handler)
 
     scheme = "http"
@@ -181,8 +267,10 @@ def main():
         httpd.socket = ctx.wrap_socket(httpd.socket, server_side=True)
         scheme = "https"
 
-    sys.stderr.write("drith status: %s://%s:%d/status — %s probe on udp/%d\n"
-                     % (scheme, opts.listen, opts.port, opts.probe, opts.game_port))
+    sys.stderr.write("drith status: %s://%s:%d/status — %s probe on udp/%d, "
+                     "handing out %s\n"
+                     % (scheme, opts.listen, opts.port, opts.probe,
+                        opts.game_port, Handler.status.address() or "no address"))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

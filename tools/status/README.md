@@ -12,6 +12,9 @@ The PLAY panel fetches that and shows **ONLINE** with the access code, or
 answering. Leave it empty and the panel goes back to the old build-time
 behaviour: an address in `server_ip` means online, no address means offline.
 
+Run it with `--address auto` and it finds the box's own public IP rather than
+being told it — see [The address](#the-address).
+
 Python 3.7+, standard library only.
 
 ## Read this before anything else: it has to be HTTPS
@@ -25,7 +28,7 @@ of these fixes it:
 forwarding, so the game box never exposes the status port to the internet:
 
 ```bash
-python3 status_server.py --address 203.0.113.24:27015 &
+python3 status_server.py --address auto &
 cloudflared tunnel --url http://localhost:27016
 ```
 
@@ -51,7 +54,7 @@ python3 status_server.py --cert fullchain.pem --key privkey.pem --port 443
 ## Running it
 
 ```bash
-python3 status_server.py --address 203.0.113.24:27015
+python3 status_server.py --address auto
 ```
 
 | Flag | Default | |
@@ -60,7 +63,7 @@ python3 status_server.py --address 203.0.113.24:27015
 | `--game-host` | `0.0.0.0` | address the game binds — match it, or the bind probe can miss |
 | `--port` | `27016` | port to serve status on |
 | `--listen` | `0.0.0.0` | `127.0.0.1` is right when a proxy or tunnel fronts it |
-| `--address` | — | access code handed to players; overrides `server_ip` from the site build |
+| `--address` | — | access code handed to players, or `auto`; overrides `server_ip` from the site build |
 | `--origin` | `*` | `Access-Control-Allow-Origin` |
 | `--probe` | `bind` | `bind` or `tcp` |
 | `--cert` / `--key` | — | serve HTTPS directly |
@@ -69,6 +72,28 @@ python3 status_server.py --address 203.0.113.24:27015
 `--address` is the useful one: change ports and you edit the flag, not the
 site. Set `--origin https://whitleystriber.github.io` once the URL is settled
 so other people's pages can't poll your box through a visitor's browser.
+
+## The address
+
+The access code is a home IP on a DHCP lease, so it moves. Bake it into
+`_config.yml` and the site keeps handing out the old one after every lease
+change — nothing breaks loudly, players just copy a code that dials nowhere.
+
+`--address auto` asks an echo service (ipify, then AWS, then icanhazip) what
+this box's public IPv4 is, pairs it with `--game-port`, and re-asks every five
+minutes, so the panel publishes whatever address the box actually has. The
+lookups happen on a background thread and never inside a request — a slow
+one would otherwise eat the four seconds the page waits before it decides the
+server is down. A failed round keeps the last good answer, since the echo
+services being unreachable is not the same as the address having changed.
+
+IPv4 only: the answers come back as v6 on a box that prefers it, and the game
+binds v4, so a v6 answer would publish a code nobody's client can dial.
+
+`server_ip` in `_config.yml` stays worth setting — it is what the page shows
+before the fetch lands, and all it has if no responder is configured — but
+with `auto` running, the responder's answer wins and the site build stops
+being the thing that has to keep up.
 
 ### systemd
 
@@ -80,7 +105,7 @@ Description=Drith server status
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /opt/drith/status_server.py --address 203.0.113.24:27015 --listen 127.0.0.1
+ExecStart=/usr/bin/python3 /opt/drith/status_server.py --address auto --listen 127.0.0.1
 Restart=always
 RestartSec=5
 User=drith

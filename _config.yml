@@ -17,7 +17,7 @@ release:     "202X"
 #
 # NOTE: whatever goes here is published on a public page and will be crawled
 # and cached. Use the address of the box you actually intend to expose.
-server_ip: "136.57.199.158:27015"
+server_ip: "136.57.216.29:27015"
 
 # Live status. A URL that answers JSON — {"online": true, "address": "1.2.3.4:27015"}
 # — which the PLAY panel fetches to decide between ONLINE and SERVER OFFLINE. A
@@ -26,7 +26,13 @@ server_ip: "136.57.199.158:27015"
 #
 # Leave this empty and the panel falls back to the static server_ip check above:
 # an address means "online", no address means "offline".
-status_url: ""
+#
+# This one is a cloudflared QUICK tunnel, so the hostname is handed out fresh
+# every time cloudflared starts — reboot the box and this URL is dead and the
+# panel reads SERVER OFFLINE until it's replaced. `cloudflared tunnel login`
+# plus a named tunnel gets a hostname that survives, and then this line stops
+# needing to be touched. See tools/status/README.md.
+status_url: "https://eric-centered-joined-medicines.trycloudflare.com/status"
 
 # Where players download the beta build. Leave empty and the devlog says the
 # link is coming shortly instead of printing a dead one.
