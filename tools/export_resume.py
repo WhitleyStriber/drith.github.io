@@ -501,15 +501,17 @@ def main():
     OUT.mkdir(exist_ok=True)
 
     ident = read_identity(SRC / "resume-identity.tex")
-    sections = read_content(SRC / "resume-content.tex")
-    if "20XX" in (SRC / "resume-content.tex").read_text():
-        warn("resume-content.tex still has a 20XX placeholder year, and it is on the page")
+    # The sheets keep their Education section; the web page leaves it out.
+    sections = [sec for sec in read_content(SRC / "resume-content.tex") if sec["key"] != "edu"]
 
     sizes = build_plates(sections)
     copy_textures()
     copy_pdfs()
     build_fonts()
-    (OUT / "index.html").write_text(page(ident, sections, sizes))
+    doc = page(ident, sections, sizes)
+    if "20XX" in doc:
+        warn("resume-content.tex still has a 20XX placeholder year, and it is on the page")
+    (OUT / "index.html").write_text(doc)
     print(f"wrote {OUT.relative_to(SITE)}/index.html from {SRC}")
 
 
