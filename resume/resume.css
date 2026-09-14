@@ -1,0 +1,528 @@
+/* ============================================================================
+   THE RESUME, ON THE WEB — the Human sheet from the resume repo, set to reflow
+   and brought to life.
+
+   Every colour here is a value out of resume-body.tex's theme block, light and
+   dark, so the page and the PDF it offers are the same design. What the web adds
+   is motion: the sheet's edge and each card's border rule themselves in, the
+   labels are dragged on with the marker, rows arrive one after another, the
+   lattice behind the sheet sweeps the way menu_field.gdshader does in the game,
+   and the foot wave moves.
+
+   Nothing is hidden without script: the `.js` class on <html> is what arms the
+   entrances, so a page that never runs resume.js is simply the finished sheet.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Inter Sheet";
+  src: url("fonts/inter-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Sheet";
+  src: url("fonts/inter-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- the two sheets — resume-body.tex, \ifdefined\DRITHDARK ... \else ... \fi */
+:root {
+  color-scheme: light;
+  --paper: #FAF7F1;
+  --tile:  url("tex/paper_light.png");
+  --ink:   #14181D;
+  --mut:   #5A6472;
+  --dim:   #8A929E;
+  --line:  #D6D0C4;
+  --card:  rgba(255, 255, 255, 0.78);   /* cardground at \CARDOPACITY */
+  --link:  #2272AA;
+  --edge:  #000;
+  --chip-green: #0E7E38;
+  --chip-grey:  #6D6D6D;
+  --stroke-ink: #071A15;                /* the one label ink, on the green */
+
+  /* Borders: IBM Carbon red / green / blue / purple-60, the same on both sheets. */
+  --bd-head:  #6FA8FF;
+  --bd-work:  #DA1E28;
+  --bd-skill: #198038;
+  --bd-proj:  #0072C3;
+  --bd-edu:   #8A3FFC;
+
+  /* Text accents, levelled to 4.8:1 against the stock. */
+  --ac-head:  #0062F7;
+  --ac-work:  #157B6D;
+  --ac-skill: #D02068;
+  --ac-proj:  #8D43E7;
+  --ac-edu:   #A35C00;
+
+  --font: "Inter Sheet", Inter, "Helvetica Neue", Arial, sans-serif;
+  --snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --out:  cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-sheet="dark"] {
+  color-scheme: dark;
+  --paper: #2E3237;
+  --tile:  url("tex/paper_dark.png");
+  --ink:   #E6EDF7;
+  --mut:   #8C9EB8;
+  --dim:   #707F98;
+  --line:  #46515C;
+  --card:  rgba(37, 41, 47, 0.78);
+  --link:  #6FA8FF;
+  --chip-green: #3DE97D;
+  --chip-grey:  #8A929E;
+  --ac-head:  #6FA8FF;
+  --ac-work:  #52E2CE;
+  --ac-skill: #FF7FB2;
+  --ac-proj:  #B98CF0;
+  --ac-edu:   #E5A857;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--paper); }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.45;
+  /* -calt, as on the sheet: Inter's raised punctuation beside capitals. */
+  font-feature-settings: "calt" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: color 0.35s ease;
+}
+
+/* --- the ground: stock, then the lattice over it ----------------------------- */
+.ground {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--paper) var(--tile) 0 0 / 512px repeat;
+  transition: background-color 0.35s ease;
+}
+#field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  display: block;
+}
+
+a { color: var(--link); text-decoration: none; }
+a.quiet { color: inherit; }
+a.ink { color: var(--ink); }
+a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+strong { font-weight: 700; }
+
+/* --- page and bar ------------------------------------------------------------ */
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding-block: 18px 36px;
+  padding-inline: 16px;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px 20px;
+  margin: 0 2px 12px;
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sheets { display: flex; gap: 2px; margin-right: auto; }
+.sheets button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--dim);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 6px 6px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.sheets button:hover { color: var(--ink); }
+.sheets button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ac-head); }
+
+.bar .ats { color: var(--mut); padding: 6px 2px; }
+.bar .ats:hover { color: var(--ink); text-decoration: none; }
+
+.dl { color: var(--stroke-ink); display: inline-block; transition: transform 0.2s var(--snap); }
+.dl .paint { padding: 0.45em 0.9em; }
+.dl::after { content: none; }
+.dl:hover { text-decoration: none; transform: translateY(-1px) scale(1.03); }
+.dl:active { transform: scale(0.98); }
+
+/* --- the sheet --------------------------------------------------------------- */
+.sheet {
+  position: relative;
+  padding: clamp(8px, 1.6vw, 14px);
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  --bd: var(--edge);
+}
+
+.card {
+  position: relative;
+  margin-top: 6px;
+  padding: 10px clamp(12px, 2.2vw, 18px) 12px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  transition: background-color 0.35s ease;
+}
+.card:first-child { margin-top: 0; }
+
+.k-head  { --bd: var(--bd-head);  --ac: var(--ac-head); }
+.k-work  { --bd: var(--bd-work);  --ac: var(--ac-work); }
+.k-skill { --bd: var(--bd-skill); --ac: var(--ac-skill); }
+.k-proj  { --bd: var(--bd-proj);  --ac: var(--ac-proj); }
+.k-edu   { --bd: var(--bd-edu);   --ac: var(--ac-edu); }
+
+/* The ruled border resume.js draws in. It replaces the CSS border once it is
+   there, which is why the border goes transparent only under .js. */
+.rule {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  overflow: visible;
+  pointer-events: none;
+}
+.rule rect {
+  fill: none;
+  stroke: var(--bd);
+  stroke-width: 1px;
+}
+.js .sheet, .js .card { border-color: transparent; }
+.js .sheet > .rule rect { stroke-width: 1.2px; }
+
+/* --- paint ------------------------------------------------------------------- *
+   The label on a marker drag. The stroke is the resume repo's own bake, laid
+   into the label's box and stretched along X only, which is what a longer drag
+   is. */
+.paint {
+  position: relative;
+  display: inline-block;
+  padding: 0.18em 0.42em;
+  color: var(--stroke-ink);
+  isolation: isolate;
+}
+.paint::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: 0 0 / 100% 100% no-repeat;
+}
+.s-head::before     { background-image: url("tex/stroke_head.png"); }
+.s-summ::before     { background-image: url("tex/stroke_summ.png"); }
+.s-work::before     { background-image: url("tex/stroke_work.png"); }
+.s-skill::before    { background-image: url("tex/stroke_skill.png"); }
+.s-proj::before     { background-image: url("tex/stroke_proj.png"); }
+.s-edu::before      { background-image: url("tex/stroke_edu.png"); }
+.s-live::before     { background-image: url("tex/stroke_live.png"); }
+.s-rolered::before  { background-image: url("tex/stroke_rolered.png"); }
+.s-rolegreen::before { background-image: url("tex/stroke_rolegreen.png"); }
+.s-roleblue::before { background-image: url("tex/stroke_roleblue.png"); }
+
+/* --- masthead ---------------------------------------------------------------- */
+.masthead { padding-top: 16px; padding-bottom: 12px; }
+
+.wordmark {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(20px, 6vw, 50px);
+  line-height: 1.08;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+.wordmark .w { white-space: nowrap; }
+.wordmark .l { display: inline-block; }
+
+.title {
+  margin: 8px 0 0;
+  font-weight: 700;
+  font-size: clamp(10px, 2.35vw, 13.5px);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.hrule {
+  height: 1.5px;
+  margin: 12px 0 10px;
+  background: var(--ac-head);
+  transform-origin: 0 50%;
+}
+
+.contact { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; font-size: 13.5px; color: var(--mut); }
+.contact .dot { color: var(--dim); margin: 0 0.55em; }
+.contact > a, .contact > span:not(.dot) { white-space: nowrap; }
+
+/* --- section heads ----------------------------------------------------------- */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.head h2 {
+  margin: 0;
+  flex: none;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.head .hair {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  transform-origin: 0 50%;
+}
+
+.summary { margin: 0; }
+
+/* --- ledger rows ------------------------------------------------------------- */
+.row { margin-top: 10px; }
+.head + .row { margin-top: 0; }
+
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  margin: 0;
+  font-weight: 500;
+  font-size: inherit;
+}
+.entry .name {
+  position: relative;
+  padding-left: 18px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.25;
+  color: var(--ink);
+}
+/* The disc at the head of a row, in the section's accent. */
+.entry .name::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--ac);
+  transition: transform 0.25s var(--snap);
+}
+.row:hover .entry .name::before { transform: scale(1.45); }
+.entry .meta {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--mut);
+  white-space: nowrap;
+}
+.entry a:hover { text-decoration: none; }
+.entry a.name:hover { color: var(--ac); }
+.sep { color: var(--line); padding: 0 0.1em; }
+:root[data-sheet="dark"] .sep { color: var(--dim); }
+
+.role {
+  margin: 3px 0 5px 18px;
+  font-weight: 700;
+  font-size: 10.5px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.bullets {
+  list-style: none;
+  margin: 0 0 2px;
+  padding: 0 0 0 4px;
+}
+.bullets li {
+  position: relative;
+  margin: 2px 0;
+  padding-left: 16px;
+}
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  background: var(--ac);
+}
+
+.skill { margin: 3px 0; }
+.skill b { color: var(--ink); margin-right: 4px; }
+.skill span { color: var(--mut); }
+
+.project { margin-top: 8px; }
+.project .entry .name { font-size: 15px; }
+.project .desc { margin: 1px 0 0 18px; color: var(--mut); }
+
+.chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 5px 1px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+.chip.ai { color: var(--chip-grey); }
+.chip.human { color: var(--chip-green); }
+
+/* --- showcase ---------------------------------------------------------------- */
+.plates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 16px;
+  margin-top: 4px;
+}
+.plate { margin: 0; min-width: 0; }
+.plate.wide { grid-column: 1 / -1; }
+.shot {
+  display: block;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+  outline: 1px solid var(--line);
+  outline-offset: -1px;
+  transition: outline-color 0.2s ease;
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.7s var(--out);
+}
+a.shot:hover { outline-color: var(--ac); }
+a.shot:hover img { transform: scale(1.03); }
+.plate h3 {
+  margin: 8px 0 1px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+.plate h3 a:hover { text-decoration: none; color: var(--ac); }
+.plate p { margin: 0; font-size: 13px; color: var(--mut); }
+
+/* --- foot -------------------------------------------------------------------- */
+.foot { padding: 10px 4px 0; }
+#wave { display: block; width: 100%; height: 30px; }
+
+/* ==========================================================================
+   ENTRANCES — armed by .js, fired by .on (resume.js adds it as a card scrolls
+   in). --cd is the card's own beat when several arrive together, --d a row's
+   place inside its card, --pd the moment a label's paint is dragged.
+   ========================================================================== */
+
+.js .card {
+  opacity: 0;
+  transform: scale(1.012, 0.97);
+  transition: opacity 0.2s ease var(--cd, 0s),
+              transform 0.38s var(--snap) var(--cd, 0s),
+              background-color 0.35s ease;
+}
+.js .card.on { opacity: 1; transform: none; }
+
+.js .rule rect {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.65, 0, 0.35, 1) var(--cd, 0s);
+}
+.js .on > .rule rect { stroke-dashoffset: 0; }
+
+.js [data-r] {
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.4s ease calc(var(--cd, 0s) + var(--d, 0s)),
+              transform 0.5s var(--out) calc(var(--cd, 0s) + var(--d, 0s));
+}
+.js .on [data-r] { opacity: 1; transform: none; }
+
+.js .paint::before {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.42s cubic-bezier(0.33, 1, 0.68, 1) calc(var(--cd, 0s) + var(--pd, 0.15s));
+}
+.js .on .paint::before { clip-path: inset(0 -2px 0 0); }
+
+.js .head .hair,
+.js .hrule {
+  transform: scaleX(0);
+  transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1) calc(var(--cd, 0s) + 0.3s);
+}
+.js .hrule { transition-delay: calc(var(--cd, 0s) + 0.85s); }
+.js .on .head .hair, .js .on .hrule { transform: scaleX(1); }
+
+/* DRITH's own intro, on the name: struck a letter at a time. */
+.js .wordmark .l {
+  opacity: 0;
+  transform: translateY(-0.14em);
+  transition: opacity 0.45s ease calc(var(--cd, 0s) + 0.1s + var(--i) * 0.035s),
+              transform 0.6s var(--out) calc(var(--cd, 0s) + 0.1s + var(--i) * 0.035s);
+}
+.js .on .wordmark .l { opacity: 1; transform: none; }
+
+/* A theme switch should not replay the entrances' long delays on colour. */
+.switching * { transition-delay: 0s !important; }
+
+/* ==========================================================================
+   NARROW
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .plates { grid-template-columns: 1fr; }
+  .entry .name { font-size: 16.5px; }
+  .entry .meta { margin-left: 18px; white-space: normal; }
+  .role { margin-left: 18px; }
+  .contact .dot { margin: 0 0.4em; }
+  .bar { justify-content: space-between; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .card, .js [data-r], .js .wordmark .l,
+  .js .head .hair, .js .hrule, .js .paint::before, .js .rule rect {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+@media print {
+  .bar, .ground, #field, .foot { display: none; }
+  html, body { background: #fff; }
+  .page { max-width: none; padding: 0; }
+  .card { break-inside: avoid; }
+}

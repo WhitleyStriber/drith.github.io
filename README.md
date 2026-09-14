@@ -90,6 +90,28 @@ which will bite you otherwise — is in [tools/status/README.md](tools/status/RE
 Leave `status_url` empty and nothing changes: the panel reads `server_ip` at
 build time, so an address means online and no address means offline.
 
+## The resume page
+
+`/resume/` is Andrew's resume, and nothing on the site links to it — it carries
+`noindex, nofollow` and is not in any listing, so it is reached only by its
+address. (The repo is public, so the path itself is not a secret from anyone
+reading the source.)
+
+It is the resume repo's **Human** sheet on the web, light and dark, with the
+PDF to download. The words are never copied by hand: `tools/export_resume.py`
+reads that repo's `resume-identity.tex` and `resume-content.tex` and answers
+their vocabulary in HTML, the way each LaTeX driver does. After changing the
+resume (and rebuilding its PDFs with xelatex):
+
+```bash
+python3 tools/export_resume.py            # reads ../resume by default
+```
+
+That rewrites `resume/index.html` and brings over the PDFs, the painted
+strokes, the paper tiles, web-sized showcase plates and Inter as woff2.
+`resume/resume.css` and `resume/resume.js` are the look and the motion, and are
+hand-written — the export never touches them.
+
 ## Writing a devlog entry
 
 Drop a file in `_posts/` named `YYYY-MM-DD-some-slug.md`:
