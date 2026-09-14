@@ -501,8 +501,7 @@ def main():
     OUT.mkdir(exist_ok=True)
 
     ident = read_identity(SRC / "resume-identity.tex")
-    # The sheets keep their Education section; the web page leaves it out.
-    sections = [sec for sec in read_content(SRC / "resume-content.tex") if sec["key"] != "edu"]
+    sections = read_content(SRC / "resume-content.tex")
 
     sizes = build_plates(sections)
     copy_textures()
