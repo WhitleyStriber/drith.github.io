@@ -77,7 +77,7 @@ description: >-
   <section class="plates" aria-label="Screenshots">
     <div class="plates-head" aria-hidden="true"><span>From the build</span><i></i></div>
     <div class="plates-grid">
-      {%- assign plates = "plaza|The plaza at night;library|Spellweave library;falls|The falls;gazebo|Gazebo over the cloud sea;glass|The glass, up close;overlook|The overlook" | split: ";" %}
+      {%- assign plates = "monarch|The Monarch at night;caldera|The Caldera at night;forest|The forest at night;plaza|The plaza at night;library|Spellweave library;gazebo|Gazebo over the cloud sea" | split: ";" %}
       {%- for plate in plates %}
       {%- assign bits = plate | split: "|" %}
       <a class="plate" style="--i:{{ forloop.index0 }}" href="{{ '/assets/img/shots/' | append: bits[0] | append: '.jpg' | relative_url }}" data-caption="{{ bits[1] }}">

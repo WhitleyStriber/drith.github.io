@@ -357,6 +357,7 @@
     'uniform mat4 uMV;',
     'uniform mat4 uProj;',
     'uniform mat3 uNrmMat;',
+    'uniform float uBias;',
     'varying vec3 vN;',
     'varying vec3 vV;',
     'void main() {',
@@ -364,6 +365,7 @@
     '  vN = uNrmMat * aNrm;',
     '  vV = -p.xyz;',                    // Godot's VIEW: normalize(-VERTEX)
     '  gl_Position = uProj * p;',
+    '  gl_Position.z -= uBias * gl_Position.w;',
     '}'
   ].join('\n');
 
@@ -511,7 +513,16 @@
   // See FAR_16BIT: 24-bit depth is what lets the edge lift survive at the
   // scene's own far plane, and WebGL2 has it unconditionally.
   var DEPTH_FMT = GL2 ? gl.DEPTH_COMPONENT24 : gl.DEPTH_COMPONENT16;
-  var FAR = GL2 ? CAM_FAR : FAR_16BIT;
+  //
+  // That was not enough on every GPU: with the base standing level its faces
+  // meet the camera square-on, and there the lifted edges still lost the depth
+  // test to the hull and the pass came through as a bare silhouette. So the
+  // depth range is drawn tight round the object on every path (nothing is
+  // nearer than two metres or past six, so no pixel moves), and the wireframe
+  // is pulled a further hair toward the eye in clip space — see uBias.
+  var NEAR = 0.5;
+  var FAR = FAR_16BIT;
+  var WIRE_BIAS = 4e-4;                   // NDC depth, about a centimetre here
 
   function target(w, h, depth) {
     var t = { w: w, h: h };
@@ -658,7 +669,7 @@
     var base = document.body.getAttribute('data-base') || '';
     fetch(base + '/assets/models/drith_01.json', { cache: 'force-cache' })
       .then(function (r) { return r.json(); })
-      .then(function (d) { mesh = buildMesh(d); redraw(); })
+      .then(function (d) { mesh = buildMesh(d); if (still) redraw(); })
       ['catch'](function () { /* no model, the board runs without it */ });
   }
 
@@ -832,7 +843,7 @@
     // See NARROW. Zero on any window the game would recognise.
     var shift = PIVOT[0] * clamp01((NARROW - aspect) / (NARROW - 0.5));
 
-    var proj = perspective(CAM_FOV, aspect, CAM_NEAR, FAR);
+    var proj = perspective(CAM_FOV, aspect, NEAR, FAR);
     var mv = mul(viewMatrix(shift),
                  modelMatrix(spin, MODEL_TILT * Math.PI / 180, mesh.scale, mesh.centre));
 
@@ -872,6 +883,7 @@
     gl.uniform1f(pHull.u.warm_at, 0.55);
     gl.uniform1f(pHull.u.pulse_amt, 0.12);
     gl.uniform1f(pHull.u.pulse_hz, 0.22);
+    gl.uniform1f(pHull.u.uBias, 0);
     gl.uniform1f(pHull.u.wire_blend, wire);
     gl.uniform1f(pHull.u.uTime, time);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.tris);
@@ -880,6 +892,7 @@
     /* --- the wireframe. cull_disabled, depth_draw_never, blend_add. ------- */
     if (wire > 0.002) {
       gl.depthMask(false);
+      gl.depthFunc(gl.LEQUAL);
       gl.disable(gl.CULL_FACE);
       gl.enable(gl.BLEND);
       gl.blendEquation(gl.FUNC_ADD);
@@ -898,7 +911,8 @@
       gl.uniform1f(pWire.u.warm_at, 0.62);
       gl.uniform1f(pWire.u.pulse_amt, 0.16);
       gl.uniform1f(pWire.u.pulse_hz, 0.24);
-      gl.uniform1f(pWire.u.wire_blend, wire);
+      gl.uniform1f(pWire.u.uBias, WIRE_BIAS);
+    gl.uniform1f(pWire.u.wire_blend, wire);
       gl.uniform1f(pWire.u.uTime, time);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.lines);
       gl.drawElements(gl.LINES, mesh.lineCount, mesh.idxType, 0);
