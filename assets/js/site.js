@@ -1,7 +1,8 @@
 /* PLAY reveals the server address, plus UI sound.
    Sounds are the real in-game ones (SFX_HoverSlot / SFX_UI_Click) and an
-   ambient computer hum. Browsers block audio until the page has been
-   interacted with, so the hum starts on the first click or keypress. */
+   ambient computer hum. The hum is tried on load; where the browser blocks
+   audio until the page has been interacted with, it starts on the first
+   click, tap or keypress instead. */
 
 (function () {
   'use strict';
@@ -33,6 +34,12 @@
     } catch (e) {}
   }
 
+  /* The hum is tried the moment the page is up, and a browser that allows
+     autoplay for this site starts it there. Most refuse until the page has been
+     touched, so the first gesture anywhere starts it instead — and until it is
+     actually sounding the toggle reads "Sound off", because that is the truth,
+     and a press on it then turns the sound ON rather than muting a hum nobody
+     has heard yet. */
   var started = false;
   function startHum() {
     if (started || muted) return;
@@ -41,25 +48,43 @@
     if (p) p.catch(function () { started = false; });
   }
 
-  document.addEventListener('pointerdown', startHum, { once: false });
-  document.addEventListener('keydown', startHum, { once: false });
-
   /* Mute toggle, bottom-right, remembers the choice. */
   var btn = document.createElement('button');
   btn.className = 'mute';
   btn.type = 'button';
   function paint() {
-    btn.textContent = muted ? 'Sound off' : 'Sound on';
-    btn.setAttribute('aria-pressed', String(muted));
+    var on = !muted && !hum.paused;
+    btn.textContent = on ? 'Sound on' : 'Sound off';
+    btn.setAttribute('aria-pressed', String(!on));
   }
   paint();
+  hum.addEventListener('playing', paint);
+  hum.addEventListener('pause', paint);
+
   btn.addEventListener('click', function () {
+    if (!muted && hum.paused) {          // wanted, but the browser held it back
+      started = false; startHum(); blip(click);
+      return;
+    }
     muted = !muted;
     localStorage.setItem(KEY, muted ? '1' : '0');
     paint();
     if (muted) { hum.pause(); }
     else { started = false; startHum(); blip(click); }
   });
+
+  /* The toggle answers for itself above, so a gesture that lands on it is left
+     to it. pointerup and touchend are there because a touch's pointerdown is
+     not a gesture a browser will unlock audio on. */
+  function wake(e) {
+    if (e.target && e.target.closest && e.target.closest('.mute')) return;
+    startHum();
+  }
+  ['pointerdown', 'pointerup', 'touchend', 'keydown'].forEach(function (t) {
+    document.addEventListener(t, wake);
+  });
+  startHum();
+
   document.body.appendChild(btn);
 
   /* Hover and click on anything button-shaped. Hover is throttled so

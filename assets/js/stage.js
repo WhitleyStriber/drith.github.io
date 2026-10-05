@@ -87,7 +87,10 @@
   /* --- menu.gd's stage ---------------------------------------------------- */
   var MODEL_PERIOD = 34.0;              // seconds per revolution
   var MODEL_SPAN   = 2.6;               // longest axis, metres, once on stage
-  var MODEL_TILT   = 13.0;              // degrees of look-down
+  // menu.gd leans the base 13 degrees, and because the turn wraps the lean the
+  // lean goes round with it — side-on, it reads as a base sitting crooked. Here
+  // it stands level and only turns.
+  var MODEL_TILT   = 0.0;               // degrees of look-down
   var HOLD = 5.0, FADE = 1.8;           // material_hold / material_fade
   var CYCLE = (HOLD + FADE) * 2;
   var EDGE_LIFT = 0.004;                // world metres, converted by _build_model
