@@ -67,7 +67,7 @@
      `.row` covers both the board's ledger entries and the devlog list, which
      are the same row — see the note in board.css. */
   var last = 0;
-  var TARGETS = '.btn, .row, .copy, .mute, .mast a';
+  var TARGETS = '.btn, .row, .copy, .mute, .mast a, .plate, .step';
 
   document.addEventListener('pointerover', function (e) {
     var t = e.target.closest && e.target.closest(TARGETS);
@@ -189,6 +189,59 @@
         else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
       });
     }
+  }
+
+  /* ------------------------------------------------------------ plates --- */
+  /* The plates under the ledger open at full size over the board. The links
+     are real links to the image, so with this file missing they still go
+     somewhere; here they are caught and shown in place instead. */
+  var plates = [].slice.call(document.querySelectorAll('.plate'));
+  if (plates.length) {
+    var viewer = document.createElement('div');
+    viewer.className = 'viewer';
+    viewer.hidden = true;
+    viewer.setAttribute('role', 'dialog');
+    viewer.setAttribute('aria-modal', 'true');
+    viewer.innerHTML =
+      '<img alt="">' +
+      '<div class="bar">' +
+        '<button class="step" data-dir="-1" aria-label="Previous">&#9664;</button>' +
+        '<span class="cap"></span><span class="count"></span>' +
+        '<button class="step" data-dir="1" aria-label="Next">&#9654;</button>' +
+      '</div>';
+    document.body.appendChild(viewer);
+
+    var vImg = viewer.querySelector('img');
+    var vCap = viewer.querySelector('.cap');
+    var vCount = viewer.querySelector('.count');
+    var at = 0;
+
+    var show = function (i) {
+      at = (i + plates.length) % plates.length;
+      vImg.src = plates[at].href;
+      vImg.alt = vCap.textContent = plates[at].getAttribute('data-caption') || '';
+      vCount.textContent = (at + 1) + ' / ' + plates.length;
+      viewer.hidden = false;
+    };
+    var shut = function () {
+      viewer.hidden = true;
+      plates[at].focus();
+    };
+
+    plates.forEach(function (a, i) {
+      a.addEventListener('click', function (e) { e.preventDefault(); show(i); });
+    });
+    viewer.addEventListener('click', function (e) {
+      var s = e.target.closest('.step');
+      if (s) show(at + Number(s.getAttribute('data-dir')));
+      else shut();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (viewer.hidden) return;
+      if (e.key === 'Escape') shut();
+      else if (e.key === 'ArrowRight') show(at + 1);
+      else if (e.key === 'ArrowLeft') show(at - 1);
+    });
   }
 
   /* -------------------------------------------------------- play panel --- */

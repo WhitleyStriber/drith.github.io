@@ -146,8 +146,13 @@ assets/js/stage.js       void, field, bloom, the object, vignette — in WebGL
 assets/js/paint.js       the marker under COMING 202X
 assets/js/site.js        UI sound, the turning rule, the PLAY panel, status
 assets/models/           the Drith base, exported out of Drith_01.blend
+assets/img/shots/        the plates under the ledger — name.jpg + name-thumb.jpg
 assets/fonts/            the game's faces, subset — see the README in there
 ```
+
+Adding a plate: drop a 16:9 `name.jpg` and a 480x270 `name-thumb.jpg` in
+`assets/img/shots/` and add `name|Caption` to the `plates` list in `index.html`.
+The grid is three across, so keep the count a multiple of three.
 
 Re-exporting the mesh, if the model changes:
 

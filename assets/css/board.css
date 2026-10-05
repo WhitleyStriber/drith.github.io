@@ -496,6 +496,108 @@ a { color: var(--ice); text-decoration: none; }
 @keyframes blink { 50% { opacity: 0.25; } }
 
 /* ==========================================================================
+   THE PLATES — captures from the build, under the ledger.
+   No counterpart on the menu, so, like the access panel, set in the board's
+   language: the section is a hairline with its label on it, the plates carry no
+   border at rest, and the one you are pointed at gets the frame — in C_LIVE,
+   because that is what "this one" is on this screen. Six at 16:9 across the
+   ledger's own 560, which leaves the frame's lower third to the ground.
+   ========================================================================== */
+
+.plates {
+  width: calc(560 * var(--u));
+  margin: calc(34 * var(--u)) 0 0;
+}
+.plates-head {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--u));
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: calc(12 * var(--u));
+  line-height: var(--lh-ui);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(158, 184, 209, 0.6);
+  white-space: nowrap;
+}
+.plates-head i { flex: 1; height: 1px; background: var(--rule-faint); }
+
+.plates-grid {
+  margin: calc(12 * var(--u)) 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(8 * var(--u));
+}
+.plate {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: rgba(158, 184, 209, 0.06);
+  outline: 1px solid transparent;
+  outline-offset: calc(2 * var(--u));
+  cursor: zoom-in;
+  transition: outline-color var(--hover) ease;
+}
+.plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.78;
+  transition: opacity var(--hover) ease;
+}
+.plate:hover, .plate:focus-visible { outline-color: var(--live); }
+.plate:hover img, .plate:focus-visible img { opacity: 1; }
+
+/* THE VIEWER — a plate at full size over the void. One image, its name and its
+   place in the run; a click anywhere, or Escape, puts it away. */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 4vh 4vw;
+  background: rgba(7, 11, 11, 0.94);
+  cursor: zoom-out;
+  animation: fade-in var(--crt-fade) ease both;
+}
+.viewer[hidden] { display: none; }
+.viewer img {
+  max-width: 92vw;
+  max-height: calc(92vh - 54px);
+  width: auto;
+  height: auto;
+  animation: crt-snap var(--crt-pop) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.viewer .bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bone);
+}
+.viewer .bar .count { color: rgba(158, 184, 209, 0.6); }
+.viewer .step {
+  background: none;
+  border: 0;
+  padding: 6px 10px;
+  font: inherit;
+  letter-spacing: 0;
+  color: rgba(158, 184, 209, 0.6);
+  cursor: pointer;
+  transition: color var(--hover) ease;
+}
+.viewer .step:hover, .viewer .step:focus-visible { color: var(--live); outline: none; }
+
+/* ==========================================================================
    BUTTONS — a tracked-out word over a rule. Lights on hover. That is all.
    ========================================================================== */
 
@@ -794,6 +896,12 @@ a { color: var(--ice); text-decoration: none; }
   animation-delay: calc(0.82s + var(--i) * 0.09s);   /* _pop_ledger */
 }
 
+/* The plates come up last, as one region, once the ledger has landed. */
+.intro .plates {
+  opacity: 0;
+  animation: fade-in 0.5s linear forwards 1.2s;
+}
+
 /* The document pages open on the same snap, as one region rather than row by
    row: there is no title to cut in, so the screen simply arrives. */
 .doc .wrap { animation: crt-snap var(--crt-pop) cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -828,6 +936,7 @@ a { color: var(--ice); text-decoration: none; }
   .intro .wordmark span,
   .intro .tagline,
   .intro .hair,
-  .intro .ledger .row { opacity: 1; transform: none; }
+  .intro .ledger .row,
+  .intro .plates { opacity: 1; transform: none; }
   .intro .hair { transform: scaleX(1); }
 }
