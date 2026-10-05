@@ -891,8 +891,12 @@
 
     /* --- the wireframe. cull_disabled, depth_draw_never, blend_add. ------- */
     if (wire > 0.002) {
+      // No depth test: the WHOLE wireframe, far side included. The game culls
+      // the hidden lines against the hull; here that culling kept eating edges
+      // it should have kept, and a cage you can see through reads as the whole
+      // object where a half-drawn one reads as broken.
       gl.depthMask(false);
-      gl.depthFunc(gl.LEQUAL);
+      gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.CULL_FACE);
       gl.enable(gl.BLEND);
       gl.blendEquation(gl.FUNC_ADD);
