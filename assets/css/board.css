@@ -670,7 +670,7 @@ a { color: var(--ice); text-decoration: none; }
 .label {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.6);
@@ -686,7 +686,7 @@ a { color: var(--ice); text-decoration: none; }
   margin: 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--bone);
@@ -700,10 +700,14 @@ a { color: var(--ice); text-decoration: none; }
    to a header, and the post list is the board's ledger.
    ========================================================================== */
 
+/* Document pages are for reading, so their type is set large: 19px body, and
+   no label under 14. The board keeps its own sizes, which are the menu's. */
+.doc { font-size: 19px; }
+
 .wrap {
   position: relative;
   z-index: 10;
-  max-width: 760px;
+  max-width: 860px;
   margin: 0 auto;
   padding: var(--my) clamp(22px, 5vw, 40px) 90px;
 }
@@ -719,7 +723,7 @@ a { color: var(--ice); text-decoration: none; }
 .mast .home {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 26px;
+  font-size: 32px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--bone);
@@ -742,14 +746,14 @@ a { color: var(--ice); text-decoration: none; }
 }
 .log .row .tick { width: 26px; height: 2px; }
 .log .row:hover .tick, .log .row:focus-visible .tick { width: 46px; }
-.log .row .name { font-size: 21px; letter-spacing: 0.05em; text-transform: uppercase; }
-.log .row .val { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; }
+.log .row .name { font-size: 28px; letter-spacing: 0.05em; text-transform: uppercase; }
+.log .row .val { font-family: var(--mono); font-size: 14px; letter-spacing: 0.16em; }
 
 .empty {
   padding: 60px 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.45);
@@ -764,8 +768,8 @@ a { color: var(--ice); text-decoration: none; }
   gap: 18px;
 }
 .wrap .server code, .wrap .server .off,
-.wrap .server .state, .wrap .server .label { font-size: 13px; }
-.wrap .btn, .wrap .copy { font-size: 12px; }
+.wrap .server .state, .wrap .server .label { font-size: 16px; }
+.wrap .btn, .wrap .copy { font-size: 15px; }
 
 /* --- the post itself ------------------------------------------------------ */
 
@@ -773,7 +777,7 @@ a { color: var(--ice); text-decoration: none; }
   margin: 10px 0 30px;
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(30px, 6vw, 48px);
+  font-size: clamp(36px, 7vw, 60px);
   line-height: 1.06;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -786,7 +790,7 @@ a { color: var(--ice); text-decoration: none; }
 .prose h2 {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 17px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--bone);
@@ -797,7 +801,7 @@ a { color: var(--ice); text-decoration: none; }
 .prose h3 {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.8);
@@ -848,7 +852,7 @@ a { color: var(--ice); text-decoration: none; }
   border-top: 1px solid var(--rule-faint);
   font-family: var(--display);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }

@@ -134,8 +134,8 @@ prev/next links.
 ## An update page
 
 A post with `layout: update` (see `_posts/2026-10-10-progress.html`) is laid out
-as a poster instead of a column of prose: the front page of a paper over the
-void, then chapters of renders. Its styles are `assets/css/update.css`.
+as a poster instead of a column of prose: a signpost in Dynamis pointing down,
+then chapters of renders. Its styles are `assets/css/update.css`.
 
 The renders are the game's own models out of Blender, in `assets/img/progress/`.
 `tools/plates/` makes them: `render.py` shoots one .blend as a transparent
@@ -144,6 +144,15 @@ plate, `jobs.txt` lists the shots, and `finish.py` trims them and writes the Web
 ```bash
 tools/plates/batch.sh tools/plates/jobs.txt /tmp/plates "samples=96"
 python3 tools/plates/finish.py /tmp/plates assets/img/progress
+```
+
+The signpost at the top is `tools/plates/sign.py`: it opens the Dynamis arena,
+builds the sign where it stands and renders it with its ground.
+
+```bash
+blender -b ~/Documents/gamemodels/models/Dynamis/Dynamis_Arena/Dynamis_Arena.blend \
+  --python tools/plates/sign.py -- /tmp/plates/sign.png samples=160 sx=-40 sy=-60 face=215 \
+  dist=3.7 lens=27 ch=0.42 az=12 halo=2.5 glow=0.6 th=1.42 key=1900
 ```
 
 ## Layout

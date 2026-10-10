@@ -4,164 +4,70 @@
    Loaded only by _layouts/update.html, on top of board.css. Everything here
    uses the board's palette and its two faces; nothing new is brought in.
 
-   THE PAPER is the one place on the site where the palette is turned inside
-   out: bone is the ground and void is the ink. It is the front page of a
-   paper, and a paper is a lit thing printed dark, where the board is a dark
-   thing lit. The rule from board_style.h still holds everywhere under it —
-   nothing is a panel. A story is a hairline rule with its name on it, and a
-   render stands on the void with no frame round it.
+   THE SIGN is the top of the page: a wooden post driven into Dynamis that
+   says DEVLOG and points down at the story. It is a render like every other
+   plate, but the one that keeps its ground — so its edges are faded out into
+   the void rather than cut. The rule from board_style.h still holds everywhere
+   under it — nothing is a panel. A story is a hairline rule with its name on
+   it, and a render stands on the void with no frame round it.
    ========================================================================== */
 
 .wrap.update { max-width: 1040px; }
 
-/* --- the paper ------------------------------------------------------------ */
+/* --- the sign -------------------------------------------------------------- */
 
-.paper-stage {
-  position: relative;
+.sign-stage {
   margin: 8px auto 0;
-  max-width: 820px;
-  padding-bottom: 6%;
+  max-width: 940px;
+}
+/* No frame: the picture runs out into the void on every side. Two gradients
+   intersected, one for each axis. */
+.sign-stage .sign {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 80%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 14%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 12%, #000 80%, transparent 100%);
+  mask-composite: intersect;
 }
 
-/* The sheets under the top one. Same bone, a step darker each, turned a
-   degree or two — a stack on a doorstep, not a card with a shadow. */
-.paper-stage::before,
-.paper-stage::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 6% 0;
-  background: #b9b09c;
-  transform: rotate(-2.2deg) translate(-8px, 6px);
-}
-.paper-stage::after {
-  background: #cfc6b0;
-  transform: rotate(1.3deg) translate(6px, 3px);
-}
-
-.paper {
-  position: relative;
-  z-index: 1;
-  background: var(--bone);
-  color: var(--void);
-  padding: 4.2% 5% 0;
-  transform: rotate(-0.6deg);
-  overflow: hidden;
-  /* every size on the sheet is in cqw, so it is set once and scales as print */
-  container-type: inline-size;
-  /* the height the cut-out figure needs to stand in front of */
-  aspect-ratio: 820 / 1010;
-}
-
-.paper .flag {
-  display: flex;
-  align-items: center;
-  gap: 3%;
-}
-.paper .extra {
-  flex: none;
+.update .headline {
+  margin: -2% 0 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 3.2cqw;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  padding: 0.28em 0.4em 0.2em;
-  border: 0.14em solid var(--void);
-  outline: 0.07em solid var(--void);
-  outline-offset: 0.12em;
-}
-.paper .name {
-  flex: 1;
-  text-align: center;
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: 6.4cqw;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.paper .dateline {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 2.2%;
-  padding: 0.5em 0 0.4em;
-  border-top: 3px double var(--void);
-  border-bottom: 1px solid var(--void);
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: 1.45cqw;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.paper .headline {
-  margin: 2.5% 0 0;
-  font-family: var(--display);
-  font-weight: 700;
-  /* 9 characters across the measure */
-  font-size: 21.4cqw;
+  font-size: clamp(64px, 17vw, 176px);
   line-height: 0.92;
   letter-spacing: -0.012em;
   text-align: center;
   text-transform: uppercase;
-  color: var(--void);
+  color: var(--bone);
   white-space: nowrap;
 }
-
-.paper .deck {
-  margin: 1.2% 0 0;
+.update .deck {
+  margin: 10px 0 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 3.9cqw;
+  font-size: clamp(16px, 3.2vw, 30px);
   letter-spacing: 0.05em;
   line-height: 1.1;
   text-align: center;
   text-transform: uppercase;
+  color: var(--paint);
 }
 
-/* The columns of the story nobody reads: four columns of ruled lines, greeked
-   the way a poster greeks them. */
-.paper .greek {
-  margin-top: 3.4%;
-  height: 60%;
-  column-count: 4;
-  column-gap: 3%;
-  opacity: 0.78;
-  background:
-    repeating-linear-gradient(to right,
-      transparent 0, transparent 22.087%,
-      var(--bone) 22.087%, var(--bone) 25%),
-    repeating-linear-gradient(to bottom,
-      var(--void) 0, var(--void) 2px,
-      transparent 2px, transparent 6px);
-  background-size: 103% 100%, 100% 6px;
-}
-
-/* The figure stands in front of the paper and runs off its bottom edge. */
-.paper-stage .figure {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  bottom: 0;
-  width: 120%;
-  height: auto;
-  max-width: none;
-  transform: translateX(-50%);
-  pointer-events: none;
-  filter: drop-shadow(0 18px 26px rgba(7, 11, 11, 0.55));
-}
-
-/* --- the lede under the paper --------------------------------------------- */
+/* --- the lede under the sign - --------------------------------------------- */
 
 .update .lede {
-  max-width: 660px;
+  max-width: 760px;
   margin: 44px auto 0;
   color: #c3cfdd;
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: 22px;
+  line-height: 1.55;
   text-align: center;
 }
 .update .lede strong { color: var(--bone); }
@@ -178,7 +84,7 @@
   display: block;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--paint);
@@ -194,8 +100,9 @@
   color: var(--bone);
 }
 .chapter .sub {
-  max-width: 600px;
+  max-width: 720px;
   margin: 14px auto 0;
+  font-size: 20px;
   color: var(--hint);
 }
 .chapter::after {
@@ -248,14 +155,14 @@
   margin: 10px 0 4px;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 24px;
+  font-size: 30px;
   letter-spacing: 0.06em;
   line-height: 1.05;
   text-transform: uppercase;
   color: var(--bone);
 }
 .lineup .who .kicker { display: block; }
-.lineup .who p { margin: 0; font-size: 14px; line-height: 1.5; color: #c3cfdd; }
+.lineup .who p { margin: 0; font-size: 17px; line-height: 1.5; color: #c3cfdd; }
 
 /* --- the short list at the end -------------------------------------------- */
 
