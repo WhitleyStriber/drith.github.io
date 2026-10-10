@@ -136,7 +136,19 @@ body {
           mask-repeat: no-repeat, repeat, repeat;
   -webkit-mask-composite: source-in;
           mask-composite: intersect;
-  transition: background-color 0.35s ease;
+  animation: fractal-hue 80s linear infinite;
+}
+/* It changes colour slowly, as it does on the Drith pages — here through the
+   sheet's own five accents, so it follows the light and dark sheets too. */
+@keyframes fractal-hue {
+  0%, 100% { background-color: var(--ac-head); }
+  20%      { background-color: var(--ac-work); }
+  40%      { background-color: var(--ac-edu); }
+  60%      { background-color: var(--ac-skill); }
+  80%      { background-color: var(--ac-proj); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ground::after { animation: none; }
 }
 #field {
   position: fixed;

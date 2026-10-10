@@ -333,6 +333,10 @@
      is 3 px, which is the wallpaper exactly, and elsewhere it is the nearest
      whole number that still fits the mask across the window's longer side.
      Additive over the void, like the field that goes down on top of it.
+
+     Its colour turns, slowly: once round the wheel every HUE_PERIOD seconds,
+     with a third of a turn laid across the width so the fractal is never one
+     flat colour. Kept pale — it is a wash over the wallpaper's grey, not paint.
      ======================================================================== */
 
   var FRACTAL_FS = [
@@ -343,16 +347,27 @@
     'uniform float uCell;',          // one cell, in pixels
     'uniform float uDot;',           // the dot inside it, in pixels
     'uniform float uGain;',
+    'uniform float uHue;',           // turns of the colour wheel
     'void main() {',
     '  vec2 px = floor(vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y));',
     '  vec2 p = px - floor((uRes - uCells * uCell) * 0.5);',
-    '  vec2 cell = floor(p / uCell);',
+    // The half is not decoration. A GPU is free to divide by multiplying by a
+    // reciprocal, and then 6.0 / 3.0 can land a hair under 2 and floor to 1 —
+    // which puts the first pixel of every cell in the cell before it. With a
+    // one-pixel dot that first pixel IS the dot, so at a 3px cell the whole
+    // fractal vanished on real hardware and only the field was left.
+    '  vec2 cell = floor((p + 0.5) / uCell);',
     '  vec2 at = p - cell * uCell;',
     '  float on = step(at.x, uDot - 0.5) * step(at.y, uDot - 0.5)',
     '           * step(0.0, cell.x) * step(cell.x, uCells.x - 1.0)',
     '           * step(0.0, cell.y) * step(cell.y, uCells.y - 1.0);',
     '  float v = texture2D(uTex, (cell + 0.5) / uCells).a;',
-    '  gl_FragColor = vec4(vec3(v), on * uGain);',
+    '  float h = uHue + cell.x / uCells.x * 0.33;',
+    '  vec3 hue = 0.5 + 0.5 * cos(6.2831853 * (h + vec3(0.0, 0.33, 0.67)));',
+    '  vec3 col = mix(vec3(1.0), hue, 0.7);',
+    // Level the wheel: blue is far darker than yellow at the same value.
+    '  col /= max(dot(col, vec3(0.299, 0.587, 0.114)), 0.35);',
+    '  gl_FragColor = vec4(col * v, on * uGain);',
     '}'
   ].join('\n');
 
@@ -715,6 +730,7 @@
   // A document page has a column of text over the middle of it, the board does
   // not, so the pages that are read get it quieter.
   var FRACTAL_GAIN = wantsObject ? 0.50 : 0.48;
+  var HUE_PERIOD = 80.0;                // seconds for the colour to go once round
   var fractal = null;
 
   (function () {
@@ -1053,7 +1069,7 @@
     if (fractal) {
       var across = Math.min(Math.max(W, H), H * 16 / 9);
       var cell = Math.max(2, Math.floor(across / FRACTAL_CELLS[0] + 0.4));
-      var dot = Math.max(1, Math.floor(cell / 3));
+      var dot = Math.max(1, Math.round(cell / 3));
       gl.useProgram(pFractal);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, fractal);
@@ -1062,9 +1078,12 @@
       gl.uniform2f(pFractal.u.uCells, FRACTAL_CELLS[0], FRACTAL_CELLS[1]);
       gl.uniform1f(pFractal.u.uCell, cell);
       gl.uniform1f(pFractal.u.uDot, dot);
-      // The same grey reads brighter the closer the dots are packed, so the
-      // gain follows the pitch and the fractal holds its weight between sizes.
-      gl.uniform1f(pFractal.u.uGain, FRACTAL_GAIN * cell / (3 * dot));
+      // How bright it reads is the dot's grey times the share of the cell the
+      // dot covers, so the gain goes up with the square of the pitch and the
+      // fractal holds its weight between sizes. FRACTAL_GAIN is the 2px cell.
+      var open = cell / dot;
+      gl.uniform1f(pFractal.u.uGain, Math.min(1.0, FRACTAL_GAIN * open * open / 6));
+      gl.uniform1f(pFractal.u.uHue, time / HUE_PERIOD);
       drawQuad(pFractal);
     }
 
