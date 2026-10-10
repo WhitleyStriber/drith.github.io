@@ -27,6 +27,9 @@
 <link rel="preload" href="{{ '/assets/fonts/ptsans-narrow-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/freesans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ '/assets/css/board.css' | relative_url }}">
+{%- if page.layout == 'update' %}
+<link rel="stylesheet" href="{{ '/assets/css/update.css' | relative_url }}">
+{%- endif %}
 </head>
 
 {%- comment %}

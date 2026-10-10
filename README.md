@@ -131,6 +131,21 @@ styles already. A raw `<ul class="thanks">` flows into columns, for credits.
 That's it — `/devlog/` lists everything newest first, and each post gets
 prev/next links.
 
+## An update page
+
+A post with `layout: update` (see `_posts/2026-10-10-progress.html`) is laid out
+as a poster instead of a column of prose: the front page of a paper over the
+void, then chapters of renders. Its styles are `assets/css/update.css`.
+
+The renders are the game's own models out of Blender, in `assets/img/progress/`.
+`tools/plates/` makes them: `render.py` shoots one .blend as a transparent
+plate, `jobs.txt` lists the shots, and `finish.py` trims them and writes the WebP.
+
+```bash
+tools/plates/batch.sh tools/plates/jobs.txt /tmp/plates "samples=96"
+python3 tools/plates/finish.py /tmp/plates assets/img/progress
+```
+
 ## Layout
 
 ```

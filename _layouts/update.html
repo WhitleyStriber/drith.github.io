@@ -1,0 +1,33 @@
+---
+layout: default
+---
+
+{%- comment %}
+  An UPDATE is a post that is laid out as a poster rather than set as a column
+  of prose: the front page of a paper pinned over the void, then the story
+  under it, plate by plate. It keeps the document pages' masthead, PLAY panel
+  and prev/next, so it is still an entry in the devlog — only the middle is
+  its own. Styles are in assets/css/update.css.
+{%- endcomment %}
+
+<div class="wrap update">
+
+  <div class="mast">
+    <a class="home" href="{{ '/' | relative_url }}">Drith</a>
+    <span class="spacer"></span>
+    <a class="label" href="{{ '/devlog/' | relative_url }}">&larr; Devlog</a>
+  </div>
+
+  {{ content }}
+
+  <div class="playbar">
+    <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the pre-alpha</button>
+  </div>
+  {% include server.html %}
+
+  <div class="foot">
+    {%- if page.next %}<a href="{{ page.next.url | relative_url }}">&larr; {{ page.next.title }}</a>{% endif -%}
+    {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }} &rarr;</a>{% endif -%}
+  </div>
+
+</div>

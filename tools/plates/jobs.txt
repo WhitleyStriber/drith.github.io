@@ -1,0 +1,27 @@
+# name|blend under gamemodels/models|render.py options
+hero|Characters/Player/Player.blend|void=1 action=Cast_Fire frame=16 az=25 el=3 lens=80 w=1800 h=1800 rimgain=1.6
+you_run|Characters/Player/Player.blend|void=1 action=Arm_Run frame=6 az=-40 el=3 lens=80 w=1200 h=1200 rimgain=1.6
+you_guard|Characters/Player/Player.blend|void=1 action=Guard frame=12 az=25 el=3 lens=80 w=1200 h=1200 rimgain=1.6
+you_roll|Characters/Player/Player.blend|void=1 action=Roll frame=12 az=60 el=5 lens=80 w=1200 h=1200 rimgain=1.6
+you_glide|Characters/Player/Player.blend|void=1 action=Glide frame=10 az=40 el=-5 lens=80 w=1200 h=1200 rimgain=1.6
+bigal|Characters/NPC_BigAl/NPC_BigAl.blend|action=Tip frame=22 az=25 el=3 lens=80 w=1200 h=1200 rimmat=BigAl_Coat rimgain=1.3
+forgie|Characters/NPC_Forgie/NPC_Forgie.blend|action=Idle frame=1 az=32 el=8 lens=80 w=1200 h=1200
+gideon|Characters/NPC_Gideon/NPC_Gideon.blend|action=Scrub frame=8 az=32 el=-8 roll=180 lens=80 w=1200 h=1200
+windshield|Characters/NPC_Windshield/NPC_Windshield.blend|az=50 el=8 lens=80 w=1200 h=1200
+gull|Characters/Seagull.blend|az=55 el=6 lens=80 w=1200 h=1200
+minion_a|Characters/Minion/Minion.blend|only=_Std,Eyes_POP,Hat_Pan,Tool_Sword az=30 el=6 lens=80 w=1200 h=1200 exp=1.0 rim=5
+minion_b|Characters/Minion/Minion.blend|only=_LUG,Tool_Door az=25 el=6 lens=80 w=1200 h=1200 exp=1.0 rim=5
+minion_c|Characters/Minion/Minion.blend|only=_FUSE,Hat_Fuse,Head_Std,Limbs_Std,Aerial_Std,Tool_Gun az=35 el=6 lens=80 w=1200 h=1200 exp=1.0 rim=5
+deli|Monuments/EddiesDeli/EddiesDeli.blend|az=24 el=7 lens=45 w=2000 h=1300 exp=0.5
+venaria|Monuments/Venaria/Venaria.blend|az=28 el=17 lens=45 w=2000 h=1300 exp=0.1
+beachtown|Monuments/BeachTown/BeachTown.blend|az=60 el=18 lens=45 w=2000 h=1300 exp=0.15 amb=0.45
+forest|Monuments/Forest/Forest.blend|az=120 el=20 lens=45 w=2000 h=1300 exp=0.7 amb=0.5
+elite|Rifles/Rifle_Elite/Rifle_Elite.blend|az=18 el=10 lens=100 w=2000 h=1000 exp=1.6 rim=5 amb=0.6
+havoc|LMGs/LMG_Havoc/LMG_Havoc.blend|az=18 el=10 lens=100 w=2000 h=1000 exp=1.6 rim=5 amb=0.6
+cleaver|LMGs/LMG_Cleaver/LMG_Cleaver.blend|az=18 el=10 lens=100 w=2000 h=1000 exp=1.4 rim=5 amb=0.6
+hw01|Howitzer/HW_01/HW_01.blend|az=38 el=9 lens=60 w=1400 h=1200 exp=0.6
+ml08|MissleLaunchers/ML_08/ML_08.blend|az=38 el=9 lens=60 w=1200 h=1200
+apache|Vehicles/Apache/Apache.blend|az=38 el=-4 lens=50 w=2000 h=1300 exp=1.4 rim=5 amb=0.6
+minicopter|Vehicles/Minicopter/Minicopter.blend|az=38 el=6 lens=60 w=1600 h=1200 exp=0.3
+genesis|Card Packs/Genesis_Pack/Genesis_Pack.blend|az=22 el=4 lens=100 w=1000 h=1300
+nb26|Blades/Nightblade_26/Nightblade_26.blend|az=90 el=4 roll=-28 lens=100 w=1800 h=1200
