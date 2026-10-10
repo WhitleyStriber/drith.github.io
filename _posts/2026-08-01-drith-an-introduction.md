@@ -15,18 +15,8 @@ I jumped from Unity, to UE5, to Godot. First VR, then first person, now 3rd
 person. It took a long time to land on the right engine and workflow, but
 that's sorted now and the game is finally coming together.
 
-## Inspirations
-
 I've had the idea since I was playing on CRTs in my parents basement around
-2004-2008. A lot of it came from Ratchet and Clank: Up Your Arsenal and Ratchet:
-Deadlocked, which ironically is the same name as Valve's upcoming MOBA hero
-shooter.
-
-In 2023 I spent most of the year just playing games. I replayed a bunch of
-classics like the Pokemon games, Final Fantasy 11, Ape Escape and Ico. During
-that time I was looking for something to play next, so I asked my friend Richard
-in a Discord and he said Kingdom Hearts 2. That's the one that inspired me
-enough to actually make this game.
+2004-2008.
 
 ## How it plays
 
@@ -37,7 +27,7 @@ enough to actually make this game.
 - From there you push out further. There's 12+ monuments and they're the places
   worth going, which means everyone else is going to them too.
 - Be careful out there. Other players are crawling the same monuments you are.
-  PvP is Rust styled, so you can lose everything you're carrying.
+  PvP is full loot, so you can lose everything you're carrying.
 - Looting is a big part of it. Random drops, airdrops, and rare monsters that
   drop exclusive loot you can't get anywhere else.
 - Then you come back, reinforce what you've got, and go out again.
