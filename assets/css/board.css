@@ -69,6 +69,17 @@
   font-style: normal;
   font-display: swap;
 }
+/* The small caps labels — a kicker, a button, a section name on its rule. Inter
+   Black, a Helvetica descendant at its heaviest: at 12-17px the narrow face
+   went thin and reedy, and a label that small needs weight to be read at all.
+   The narrow face keeps the wordmark and the headlines, where it has room. */
+@font-face {
+  font-family: "Board Label";
+  src: url("../fonts/inter-black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* THE LOGICAL PIXEL. See the header. */
@@ -112,6 +123,7 @@
      re-fitting its width as it changes. */
   --display: "Board Display", "PT Sans Narrow", "Arial Narrow", sans-serif;
   --body: "Board UI", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --label: "Board Label", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
   --mono: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
 
   /* FreeSans and PT Sans Narrow Bold measure ascent+descent at 1.1 and 1.294
@@ -466,10 +478,10 @@ a { color: var(--ice); text-decoration: none; }
 }
 
 .server .off, .server .state, .server .label {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: calc(13 * var(--u));
-  letter-spacing: 0.24em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.6);
 }
@@ -512,11 +524,11 @@ a { color: var(--ice); text-decoration: none; }
   display: flex;
   align-items: center;
   gap: calc(12 * var(--u));
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: calc(12 * var(--u));
   line-height: var(--lh-ui);
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.6);
   white-space: nowrap;
@@ -577,10 +589,10 @@ a { color: var(--ice); text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 18px;
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 12px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--bone);
 }
@@ -602,10 +614,10 @@ a { color: var(--ice); text-decoration: none; }
    ========================================================================== */
 
 .btn {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: calc(13 * var(--u));
-  letter-spacing: 0.24em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ice);
   background: none;
@@ -622,10 +634,10 @@ a { color: var(--ice); text-decoration: none; }
 }
 
 .copy {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: calc(12 * var(--u));
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.6);
   background: none;
@@ -645,10 +657,10 @@ a { color: var(--ice); text-decoration: none; }
   right: var(--mx);
   bottom: calc(var(--my) * 0.55);
   z-index: 46;
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.45);
   background: none;
@@ -668,10 +680,10 @@ a { color: var(--ice); text-decoration: none; }
    ========================================================================== */
 
 .label {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 14px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.6);
 }
@@ -684,10 +696,10 @@ a { color: var(--ice); text-decoration: none; }
 }
 .sec h2 {
   margin: 0;
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 15px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--bone);
   white-space: nowrap;
@@ -751,10 +763,10 @@ a { color: var(--ice); text-decoration: none; }
 
 .empty {
   padding: 60px 0;
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 15px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.45);
 }
@@ -788,10 +800,10 @@ a { color: var(--ice); text-decoration: none; }
 .prose p, .prose ul, .prose ol { margin: 0 0 20px; }
 
 .prose h2 {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 17px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--bone);
   margin: 40px 0 14px;
@@ -799,10 +811,10 @@ a { color: var(--ice); text-decoration: none; }
   border-bottom: 1px solid var(--rule-faint);
 }
 .prose h3 {
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 15px;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(158, 184, 209, 0.8);
   margin: 28px 0 10px;
@@ -850,10 +862,10 @@ a { color: var(--ice); text-decoration: none; }
   margin-top: 54px;
   padding-top: 14px;
   border-top: 1px solid var(--rule-faint);
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 14px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .foot a { color: rgba(158, 184, 209, 0.6); transition: color var(--hover) ease; }

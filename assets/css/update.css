@@ -2,7 +2,7 @@
    DRITH — AN UPDATE, laid out as a poster.
 
    Loaded only by _layouts/update.html, on top of board.css. Everything here
-   uses the board's palette and its two faces; nothing new is brought in.
+   uses the board's palette and its faces; nothing new is brought in.
 
    THE SIGN is the top of the page: a wooden post driven into Dynamis that
    says DEVLOG and points down at the story. It is a render like every other
@@ -82,10 +82,10 @@
 .story .kicker,
 .lineup .kicker {
   display: block;
-  font-family: var(--display);
-  font-weight: 700;
+  font-family: var(--label);
+  font-weight: 900;
   font-size: 15px;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--paint);
 }
