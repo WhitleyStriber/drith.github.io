@@ -35,7 +35,25 @@
   that are text rather than the board, and takes the CRT overlay the menu does
   not have.
 {%- endcomment %}
-<body data-base="{{ site.baseurl }}" class="{% if page.url == '/' %}board-page intro{% else %}doc{% endif %}">
+
+{%- comment %}
+  THE FRACTAL behind the page — see THE FRACTAL in assets/js/stage.js. A page
+  names its own in front matter (`fractal: gosper`); a post that does not takes
+  the next one off site.post_fractals, counted from the oldest post so that
+  writing a new entry never changes the fractal behind an old one.
+{%- endcomment %}
+{%- assign fractal = page.fractal -%}
+{%- unless fractal -%}
+  {%- assign fractal = site.post_fractals | first -%}
+  {%- assign oldest_first = site.posts | reverse -%}
+  {%- for p in oldest_first -%}
+    {%- if p.url == page.url -%}
+      {%- assign n = forloop.index0 | modulo: site.post_fractals.size -%}
+      {%- assign fractal = site.post_fractals[n] -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless %}
+<body data-base="{{ site.baseurl }}" data-fractal="{{ '/assets/img/fractals/' | append: fractal | append: '.png' | relative_url }}" class="{% if page.url == '/' %}board-page intro{% else %}doc{% endif %}">
 
 {%- comment %}
   THE GROUND. One canvas carrying menu.tscn's whole stack in its own order —

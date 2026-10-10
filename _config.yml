@@ -38,6 +38,13 @@ status_url: "https://eric-centered-joined-medicines.trycloudflare.com/status"
 # link is coming shortly instead of printing a dead one.
 beta_download: "https://drive.google.com/file/d/1vPj5U6ewtSN4TPKXn7MdDUn87Nl-_fr0/view?usp=sharing"
 
+# --- Fractals ---------------------------------------------------------------
+# Every page has a fractal behind it (tools/make_fractals.py draws them into
+# assets/img/fractals/). The board, the devlog and the resume each name their
+# own; posts take these in turn, oldest post first, and go round again when
+# the list runs out. Add a name here after adding it to the script.
+post_fractals: [mandelbrot, koch, pythagoras, apollonian, julia, terdragon]
+
 # --- URLs -------------------------------------------------------------------
 # Repo is WhitleyStriber/drith.github.io → a PROJECT site, so every path needs
 # the /drith.github.io prefix (handled by the `relative_url` filter).

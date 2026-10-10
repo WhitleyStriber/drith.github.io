@@ -108,6 +108,36 @@ body {
   background: var(--paper) var(--tile) 0 0 / 512px repeat;
   transition: background-color 0.35s ease;
 }
+/* The fractal every page of the site carries behind it — here the Clifford
+   attractor out of tools/make_fractals.py, in the sheet's own ink. The PNG is a
+   mask of one cell per dot; the two 3px rules cut it back down to the single
+   dots the Drith pages draw (assets/js/stage.js, THE FRACTAL), and the three
+   are intersected so only a dot that is inside the fractal lands. It is set
+   wider than the window because the sheet stands over the middle of it: this
+   way the attractor's two arms come out either side. */
+.ground::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  opacity: 0.5;
+  image-rendering: pixelated;
+  -webkit-mask-image: url("../assets/img/fractals/clifford.png"),
+                      linear-gradient(to right, #000 1px, transparent 1px),
+                      linear-gradient(to bottom, #000 1px, transparent 1px);
+          mask-image: url("../assets/img/fractals/clifford.png"),
+                      linear-gradient(to right, #000 1px, transparent 1px),
+                      linear-gradient(to bottom, #000 1px, transparent 1px);
+  -webkit-mask-size: max(165vw, 165vh) auto, 3px 3px, 3px 3px;
+          mask-size: max(165vw, 165vh) auto, 3px 3px, 3px 3px;
+  -webkit-mask-position: center, 0 0, 0 0;
+          mask-position: center, 0 0, 0 0;
+  -webkit-mask-repeat: no-repeat, repeat, repeat;
+          mask-repeat: no-repeat, repeat, repeat;
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+  transition: background-color 0.35s ease;
+}
 #field {
   position: fixed;
   inset: 0;

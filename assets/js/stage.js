@@ -1,9 +1,12 @@
 /* ============================================================================
    THE BOARD'S GROUND AND ITS OBJECT — world/menu.tscn, in WebGL.
 
-   The menu stacks five layers back to front and this file is all five of them:
+   The menu stacks five layers back to front and this file is all five of them,
+   with one of its own slipped in above the void:
 
      Void       flat ColorRect, Color(0.027, 0.043, 0.043)
+     Fractal    the page's own fractal, in single dots — not in menu.tscn; see
+                THE FRACTAL below
      Field      shaders/menu_field.gdshader, additive over the void
      Bloom      a radial GradientTexture2D sat right of centre
      StageView  a 3D SubViewport: the real Drith base, drawn as a dark
@@ -316,6 +319,44 @@
   ].join('\n');
 
   /* ========================================================================
+     THE FRACTAL — the one layer here the game does not have.
+
+     Every page carries a fractal behind it, drawn the way the desktop
+     wallpapers it comes from are: one small grey dot per cell on a square
+     grid, nothing between them. The body's data-fractal names a MASK out of
+     tools/make_fractals.py — 853 x 480 cells, the dot's brightness in alpha —
+     and this puts the dots back.
+
+     A cell is always a WHOLE number of render-target pixels. Scale a picture
+     of single-pixel dots by anything else and they smear into moire, so the
+     fractal steps between sizes instead of stretching: at 2560 x 1440 a cell
+     is 3 px, which is the wallpaper exactly, and elsewhere it is the nearest
+     whole number that still fits the mask across the window's longer side.
+     Additive over the void, like the field that goes down on top of it.
+     ======================================================================== */
+
+  var FRACTAL_FS = [
+    'precision highp float;',
+    'uniform vec2 uRes;',
+    'uniform sampler2D uTex;',
+    'uniform vec2 uCells;',          // the mask's size, in cells
+    'uniform float uCell;',          // one cell, in pixels
+    'uniform float uDot;',           // the dot inside it, in pixels
+    'uniform float uGain;',
+    'void main() {',
+    '  vec2 px = floor(vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y));',
+    '  vec2 p = px - floor((uRes - uCells * uCell) * 0.5);',
+    '  vec2 cell = floor(p / uCell);',
+    '  vec2 at = p - cell * uCell;',
+    '  float on = step(at.x, uDot - 0.5) * step(at.y, uDot - 0.5)',
+    '           * step(0.0, cell.x) * step(cell.x, uCells.x - 1.0)',
+    '           * step(0.0, cell.y) * step(cell.y, uCells.y - 1.0);',
+    '  float v = texture2D(uTex, (cell + 0.5) / uCells).a;',
+    '  gl_FragColor = vec4(vec3(v), on * uGain);',
+    '}'
+  ].join('\n');
+
+  /* ========================================================================
      THE TWO GRADIENTS — Bloom and Vignette, as GradientTexture2D does them:
      a radial fill from the middle of the rect out to the middle of its right
      edge, sampled in the rect's own normalised space so it is an ellipse, and
@@ -558,9 +599,10 @@
 
   /* ------------------------------------------------------------- programs --- */
 
-  var pField, pGrad, pHull, pWire, pBright, pBlur, pPost;
+  var pField, pFractal, pGrad, pHull, pWire, pBright, pBlur, pPost;
   try {
     pField  = program(QUAD_VS, FIELD_FS);
+    pFractal = program(QUAD_VS, FRACTAL_FS);
     pGrad   = program(QUAD_VS, GRAD_FS);
     pBright = program(QUAD_VS, BRIGHT_FS);
     pBlur   = program(QUAD_VS, BLUR_FS);
@@ -664,6 +706,35 @@
       idxType: (n > 65535) ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT
     };
   }
+
+  /* --------------------------------------------------------------- fractal ---
+     The page's mask. NEAREST, because a cell is one texel and must stay one;
+     CLAMP because it is not a power of two and WebGL1 will not repeat those. */
+
+  var FRACTAL_CELLS = [853, 480];
+  // A document page has a column of text over the middle of it, the board does
+  // not, so the pages that are read get it quieter.
+  var FRACTAL_GAIN = wantsObject ? 0.50 : 0.48;
+  var fractal = null;
+
+  (function () {
+    var src = document.body.getAttribute('data-fractal');
+    if (!src) return;
+    var img = new Image();
+    img.onload = function () {
+      var t = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      FRACTAL_CELLS = [img.naturalWidth, img.naturalHeight];
+      fractal = t;
+      if (still) redraw();
+    };
+    img.src = src;
+  })();
 
   if (wantsObject) {
     var base = document.body.getAttribute('data-base') || '';
@@ -973,10 +1044,32 @@
     gl.clearColor(VOID[0], VOID[1], VOID[2], 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    /* Field — blend_add, so everything it writes is a light contribution over
-       the void and never a surface colour. */
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+    /* The fractal. Fitted to the longer side of the frame, but never wider than
+       16:9 of its height, so a wide window holds all of it and a phone held
+       upright gets the middle of it at a size worth looking at. */
+    if (fractal) {
+      var across = Math.min(Math.max(W, H), H * 16 / 9);
+      var cell = Math.max(2, Math.floor(across / FRACTAL_CELLS[0] + 0.4));
+      var dot = Math.max(1, Math.floor(cell / 3));
+      gl.useProgram(pFractal);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, fractal);
+      gl.uniform1i(pFractal.u.uTex, 0);
+      gl.uniform2f(pFractal.u.uRes, W, H);
+      gl.uniform2f(pFractal.u.uCells, FRACTAL_CELLS[0], FRACTAL_CELLS[1]);
+      gl.uniform1f(pFractal.u.uCell, cell);
+      gl.uniform1f(pFractal.u.uDot, dot);
+      // The same grey reads brighter the closer the dots are packed, so the
+      // gain follows the pitch and the fractal holds its weight between sizes.
+      gl.uniform1f(pFractal.u.uGain, FRACTAL_GAIN * cell / (3 * dot));
+      drawQuad(pFractal);
+    }
+
+    /* Field — blend_add, so everything it writes is a light contribution over
+       the void and never a surface colour. */
     gl.useProgram(pField);
     gl.uniform2f(pField.u.uRes, W, H);
     gl.uniform1f(pField.u.uTime, time);
