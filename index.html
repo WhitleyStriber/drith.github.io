@@ -106,14 +106,15 @@ description: >-
   </section>
 
   {%- comment %} THE REEL. Blender renders out of tools/plates (render.py, and
-  armed_base.py for the base on its hardpoints) and night captures out of the
-  game's own tools/_*_shot.gd scripts, one at a time. The links are real links
+  armed_base.py for the base on its hardpoints), the monuments under the names
+  the world map gives them (world_map.cpp), one at a time. A capture from the
+  build goes in as kind `shot` and is read out of assets/img/shots/. The links are real links
   to the full image, so with site.js missing they still open something.
   {%- endcomment %}
   <section class="reel" id="reel" aria-label="Renders and screenshots">
     <p class="caption"><span data-paint="#4ce67a">From the build</span><i></i></p>
 
-    {%- assign reel = "base-render.webp|The Drith, armed|Blender render|Main batteries off both flanks, plasma cannons forward, flamethrowers aft, radar and howitzer on the roof.|render;tower-render.webp|The Tower|Blender render|A granite shaft with the lookout on top and the beacon globe lit.|render;monarch.jpg|The Monarch|In the build|Her blades over the forest ring at night, the orb burning red between them.|shot;monarca-render.webp|The Monarch|Blender render|Two leaning walls of blades meeting at the spire, the orb held in its rings.|render;forest.jpg|The forest|In the build|The grove at night, under the old tree.|shot;forest-render.webp|The forest|Blender render|The whole monument from above, blossom and all.|render;plaza.jpg|The garden|In the build|The medallion in the middle of the garden, lamps lit round it.|shot;caldera.jpg|The Caldera|In the build|The Caldera at night.|shot;library.jpg|Spellweave library|In the build|The library's ring of runes over the orb.|shot;gazebo.jpg|The gazebo|In the build|Over the cloud sea at dusk.|shot;base-low-render.webp|The Drith, from the ground|Blender render|What a raider sees coming up the pad.|render" | split: ";" %}
+    {%- assign reel = "base-render.webp|The Drith, armed|Blender render|Main batteries off both flanks, plasma cannons forward, flamethrowers aft, radar and howitzer on the roof.|render;haven-render.webp|Rokken|Blender render|The town inside its ring wall, out in a field of broken stone.|render;monarca-render.webp|The Monarch|Blender render|Two leaning walls of blades meeting at the spire, the orb held in its rings.|render;tower-render.webp|The Tower|Blender render|A granite shaft with the lookout on top and the beacon globe lit.|render;radiotower-render.webp|Radio Tower|Blender render|The mast over its hedged compound.|render;hazard-render.webp|The Hazard|Blender render|The cooling tower and its reactor domes, walled in.|render;oilrig-render.webp|Oil Rig|Blender render|Decks, derrick and helipads up on yellow legs.|render;shipwreck-render.webp|Oumo Maru|Blender render|The wreck the charts mark by her name.|render;provingground-render.webp|The Prison|Blender render|Cell blocks and yards behind the walls.|render;warehouse-render.webp|The Warehouse|Blender render|Sheds, tanks and the yard inside the fence.|render;icecavern-render.webp|Ice Cavern|Blender render|Blue ice under drifts of snow.|render;grotto-render.webp|The Grotto|Blender render|The rock over the grotto's mouth, lit green inside.|render;forest-render.webp|The forest|Blender render|The whole monument from above, blossom and all.|render;base-low-render.webp|The Drith, from the ground|Blender render|What a raider sees coming up the pad.|render" | split: ";" %}
 
     <div class="slides" tabindex="0" aria-roledescription="carousel">
       {%- for item in reel %}
