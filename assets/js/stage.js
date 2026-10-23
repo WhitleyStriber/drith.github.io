@@ -106,6 +106,11 @@
   // it stands level and only turns.
   var MODEL_TILT   = 0.0;               // degrees of look-down
   var HOLD = 5.0, FADE = 1.8;           // material_hold / material_fade
+  /* The front page does not cycle the materials. The menu's hold-fade-hold
+     reads, on a page someone is reading, as the model snapping back to solid
+     every fourteen seconds — so there the wireframe is simply held, over the
+     faint shell of the hull, and the only thing that moves is the turn. */
+  var WIRE_HOLD = 0.85;                 // 0 = hull, 1 = bare wireframe
   var CYCLE = (HOLD + FADE) * 2;
   var EDGE_LIFT = 0.004;                // world metres, converted by _build_model
 
@@ -657,7 +662,7 @@
   var mesh = null;
   var redraw = function () {};        // set to pose() below, for the still path
 
-  function buildMesh(data) {
+  function buildMesh(data, span, ink) {
     var v = data.v, t = data.t;
     var n = v.length / 6, i, k;
 
@@ -673,7 +678,7 @@
     }
     var longest = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
     if (!(longest > 0)) return null;
-    var scale = MODEL_SPAN / longest;
+    var scale = (span || MODEL_SPAN) / longest;
     var centre = [(hi[0] + lo[0]) / 2, (hi[1] + lo[1]) / 2, (hi[2] + lo[2]) / 2];
 
     var pos = new Float32Array(n * 3);
@@ -729,6 +734,7 @@
 
     return {
       scale: scale,
+      ink: ink || 1,
       centre: centre,
       pos: buf(gl.ARRAY_BUFFER, pos),
       nrm: buf(gl.ARRAY_BUFFER, nrm),
@@ -771,12 +777,81 @@
     img.src = src;
   })();
 
-  if (wantsObject) {
+  /* THE MODELS ON THE STAGE. The page lists them as the camera frame's view
+     chips (data-model names a file in assets/models/), and the stage turns
+     through them: each one holds for DWELL seconds, then the next fades in as
+     this one fades out. A chip puts its model up at once. A chip's data-span is
+     the model's longest axis on the stage, in metres, since a squat sentinel and
+     a spire fill the frame very differently at the same span; data-ink scales its
+     wireframe, since a model of a thousand blades adds up to a white blot at the
+     brightness a hull of a hundred edges wants. The turn itself never
+     stops or restarts across a swap, so the change reads as one object being
+     traded for another on the same turntable.
+
+     The first model is fetched straight away and the rest one after another
+     behind it, so the page's own first paint never waits on a tower. */
+  var chips = [].slice.call(document.querySelectorAll('[data-model]'));
+  var camName = document.getElementById('cam-name');
+  var meshes = [];
+  var shown = 0, want = 0;              // the model on stage, and the one asked for
+  var swapAt = -1, shownAt = 0, clock = 0;
+  var DWELL = 14.0, SWAP = 1.4;         // seconds
+
+  function label() {
+    chips.forEach(function (c, i) {
+      c.classList.toggle('on', i === want);
+      c.setAttribute('aria-pressed', String(i === want));
+    });
+    if (camName && chips[shown]) camName.textContent = 'Cam 1 · ' + chips[shown].textContent;
+  }
+
+  function ask(i) {
+    if (!meshes[i] || i === want) return;
+    want = i;
+    if (still) { shown = i; shownAt = clock; mesh = meshes[i]; redraw(); }
+    else swapAt = clock;
+    label();
+  }
+
+  // Swaps in flight and the turn of the clock: how bright the stage is right
+  // now, 1 at rest and a cosine dip to 0 halfway through a swap, where the
+  // model under the dip is traded for the one asked for.
+  function stageFade(time) {
+    if (swapAt >= 0) {
+      var k = (time - swapAt) / SWAP;
+      if (k >= 0.5 && shown !== want) { shown = want; mesh = meshes[shown]; shownAt = time; label(); }
+      if (k >= 1) { swapAt = -1; return 1; }
+      return 0.5 + 0.5 * Math.cos(k * Math.PI * 2);
+    }
+    if (!still && chips.length > 1 && time - shownAt > DWELL) {
+      for (var n = 1; n < chips.length; n++) {
+        var i = (want + n) % chips.length;
+        if (meshes[i]) { ask(i); break; }
+      }
+    }
+    return 1;
+  }
+
+  if (wantsObject && chips.length) {
     var base = document.body.getAttribute('data-base') || '';
-    fetch(base + '/assets/models/drith_01.json', { cache: 'force-cache' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { mesh = buildMesh(d); if (still) redraw(); })
-      ['catch'](function () { /* no model, the board runs without it */ });
+    (function load(i) {
+      if (i >= chips.length) return;
+      fetch(base + '/assets/models/' + chips[i].getAttribute('data-model') + '.json',
+            { cache: 'force-cache' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          meshes[i] = buildMesh(d, parseFloat(chips[i].getAttribute('data-span')),
+                                parseFloat(chips[i].getAttribute('data-ink')));
+          if (i === 0) { mesh = meshes[0]; if (still) redraw(); }
+        })
+        ['catch'](function () { /* that one is skipped; the stage runs on the rest */ })
+        .then(function () { load(i + 1); });
+    })(0);
+
+    chips.forEach(function (c, i) {
+      c.addEventListener('click', function () { ask(i); });
+    });
+    label();
   }
 
   /* ------------------------------------------------------------------ maths --- */
@@ -951,7 +1026,7 @@
   }
 
   function drawObject(time, aspect, fade) {
-    var wire = blendAt(time);
+    var wire = wantsObject ? WIRE_HOLD : blendAt(time);
     var spin = (time / MODEL_PERIOD) * Math.PI * 2;
 
     // See NARROW. Zero on any window the game would recognise.
@@ -1024,8 +1099,8 @@
       gl.uniform3fv(pWire.u.rim_cool, HULL_COOL);
       gl.uniform3fv(pWire.u.rim_warm, HULL_WARM);
       gl.uniform1f(pWire.u.power, 1.6);
-      gl.uniform1f(pWire.u.gain, 1.8);
-      gl.uniform1f(pWire.u.base, 0.88);
+      gl.uniform1f(pWire.u.gain, 1.8 * mesh.ink);
+      gl.uniform1f(pWire.u.base, 0.88 * mesh.ink);
       gl.uniform1f(pWire.u.warm_at, 0.62);
       gl.uniform1f(pWire.u.pulse_amt, 0.16);
       gl.uniform1f(pWire.u.pulse_hz, 0.24);
@@ -1145,6 +1220,7 @@
 
     /* The object. */
     var fade = heroFade();
+    fade *= stageFade(time);
     if (mesh && fade > 0.004) drawObject(time, aspect, fade);
 
     /* Vignette, over the stage and under the type. */
@@ -1156,14 +1232,19 @@
 
   /* ------------------------------------------------------------------ loop --- */
 
-  var t0 = null;
+  var last = null;
   var queued = false;
 
+  /* The clock only runs while the page is drawn. A tab put away and brought
+     back carries on from where it was, rather than jumping the turn by however
+     long it was hidden; a step is capped at a tenth of a second for the same
+     reason after a stall. */
   function loop(now) {
     requestAnimationFrame(loop);
-    if (document.hidden) return;
-    if (t0 === null) t0 = now;
-    frame((now - t0) / 1000);
+    if (document.hidden) { last = null; return; }
+    if (last !== null) clock += Math.min(0.1, (now - last) / 1000);
+    last = now;
+    frame(clock);
   }
 
   /* A pose, not the resting state: far enough into the cycle that the hull is
@@ -1173,7 +1254,7 @@
   function pose() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(function () { queued = false; frame(2.4); });
+    requestAnimationFrame(function () { queued = false; frame(clock = 2.4); });
   }
   redraw = pose;
 

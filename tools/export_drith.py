@@ -1,17 +1,38 @@
+"""Export a .blend's render meshes as {v: [x,y,z,nx,ny,nz]*, t: [i,j,k]*} for stage.js.
+
+blender -b model.blend --python tools/export_drith.py -- out.json [decimate=0.3] [hide=Name,Other]
+
+decimate collapses each mesh to that ratio first, for a model whose every edge
+would otherwise crowd the wireframe into a white blot. hide drops objects whose
+name contains any of the given pieces; the game's collision-only hulls (Col_*,
+*-colonly, *-convcolonly) are always dropped. A -col mesh is kept: in Godot it is
+the visible mesh WITH a collider, which is how the Monarch's blades are named.
+"""
 import bpy, json, sys, os
 from mathutils import Matrix
 
-out = sys.argv[-1]
+args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[-1:]
+out = args[0]
+opt = dict(a.split("=", 1) for a in args[1:])
+DECIMATE = float(opt.get("decimate", 1.0))
+HIDE = [h for h in opt.get("hide", "").split(",") if h] + ["Col_", "colonly"]
 
 # Godot imports .blend through Blender's own glTF exporter, which is Y-up.
 # Blender is Z-up, so the whole scene turns -90 about X on the way out.
 YUP = Matrix.Rotation(-1.5707963267948966, 4, 'X')
 
-deps = bpy.context.evaluated_depsgraph_get()
 verts = []
 tris = []
 
-meshes = [o for o in bpy.data.objects if o.type == 'MESH' and not o.hide_render]
+meshes = [o for o in bpy.data.objects if o.type == 'MESH' and not o.hide_render
+          and not any(h in o.name for h in HIDE)]
+if DECIMATE < 1.0:
+    for ob in meshes:
+        m = ob.modifiers.new("web_decimate", 'DECIMATE')
+        m.ratio = DECIMATE
+
+# Read the evaluated scene only now, so the decimation is in it.
+deps = bpy.context.evaluated_depsgraph_get()
 print("objects:", [o.name for o in meshes], file=sys.stderr)
 
 for ob in meshes:

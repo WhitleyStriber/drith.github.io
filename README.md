@@ -67,9 +67,12 @@ The front page is no longer the menu. It is dressed as the **WARDECK**
 
 - the deck bar: the name, the Monarch's mark (her map glyph, with the orb drawn
   as sun and moon, red by day and cyan by night), and the page tabs;
-- the pitch on the left, and the base turning on the right inside the deck's
-  camera frame. `stage.js` draws that base in HUD_EMBER green and dims it as
-  the page scrolls;
+- the pitch on the left, and on the right the deck's camera frame, where
+  `stage.js` turns the Drith, the Monarch, a Sentinel and the Tower one after
+  another on one unbroken spin. They are drawn as held wireframes in HUD_EMBER
+  green, and the frame's chips pick one. The meshes are in `assets/models/`,
+  exported with `blender -b X.blend --python tools/export_drith.py -- out.json
+  [decimate=0.35] [hide=Name,...]`;
 - the slot strip: a base's twelve hardpoints, each in its kind's colour;
 - the reel: Blender renders and night captures from the build. Prev and next,
   thumbnails, swipe and the arrow keys all step it, it pauses while it is

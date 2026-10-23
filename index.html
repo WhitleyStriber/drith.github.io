@@ -84,12 +84,19 @@ description: >-
     </div>
 
     {%- comment %} The WARDECK's camera frame, laid over the right of the stage
-    where the base is turning. The view chips and the LIVE clock are the
-    panel's own furniture; the clock runs. {%- endcomment %}
-    <div class="cam" aria-hidden="true">
-      <div class="cam-views"><span>Front</span><span class="on">Base</span><span>Roof</span></div>
-      <span class="cam-name">Cam 1 · Drith_01</span>
-      <span class="cam-live">Live <b id="live-clock">00.00.00</b></span>
+    where the models turn. Its view chips pick what is on the stage — each
+    data-model is a mesh in assets/models/, and stage.js turns through them in
+    this order. The LIVE clock is the panel's own furniture, and it runs.
+    {%- endcomment %}
+    <div class="cam">
+      <div class="cam-views" role="group" aria-label="Model on the stage">
+        <button type="button" data-model="drith_01" data-span="2.25" class="on" aria-pressed="true">Drith</button>
+        <button type="button" data-model="monarch" data-span="1.9" data-ink="0.3" aria-pressed="false">Monarch</button>
+        <button type="button" data-model="sentinel" data-span="1.6" data-ink="0.8" aria-pressed="false">Sentinel</button>
+        <button type="button" data-model="tower" data-span="1.85" data-ink="0.7" aria-pressed="false">Tower</button>
+      </div>
+      <span class="cam-name" id="cam-name" aria-hidden="true">Cam 1 · Drith</span>
+      <span class="cam-live" aria-hidden="true">Live <b id="live-clock">00.00.00</b></span>
     </div>
 
     {%- comment %} THE SLOT STRIP. One cell per hardpoint on a base, named the
@@ -112,7 +119,6 @@ description: >-
   to the full image, so with site.js missing they still open something.
   {%- endcomment %}
   <section class="reel" id="reel" aria-label="Renders and screenshots">
-    <p class="caption"><span data-paint="#4ce67a">From the build</span><i></i></p>
 
     {%- assign reel = "base-render.webp|The Drith, armed|Blender render|Main batteries off both flanks, plasma cannons forward, flamethrowers aft, radar and howitzer on the roof.|render;haven-render.webp|Rokken|Blender render|The town inside its ring wall, out in a field of broken stone.|render;monarca-render.webp|The Monarch|Blender render|Two leaning walls of blades meeting at the spire, the orb held in its rings.|render;tower-render.webp|The Tower|Blender render|A granite shaft with the lookout on top and the beacon globe lit.|render;radiotower-render.webp|Radio Tower|Blender render|The mast over its hedged compound.|render;hazard-render.webp|The Hazard|Blender render|The cooling tower and its reactor domes, walled in.|render;oilrig-render.webp|Oil Rig|Blender render|Decks, derrick and helipads up on yellow legs.|render;shipwreck-render.webp|Oumo Maru|Blender render|The wreck the charts mark by her name.|render;provingground-render.webp|The Prison|Blender render|Cell blocks and yards behind the walls.|render;warehouse-render.webp|The Warehouse|Blender render|Sheds, tanks and the yard inside the fence.|render;icecavern-render.webp|Ice Cavern|Blender render|Blue ice under drifts of snow.|render;grotto-render.webp|The Grotto|Blender render|The rock over the grotto's mouth, lit green inside.|render;forest-render.webp|The forest|Blender render|The whole monument from above, blossom and all.|render;base-low-render.webp|The Drith, from the ground|Blender render|What a raider sees coming up the pad.|render" | split: ";" %}
 
@@ -125,7 +131,6 @@ description: >-
         <figcaption>
           <span class="kind">{{ bits[2] }}</span>
           <strong>{{ bits[1] }}</strong>
-          <span class="note">{{ bits[3] }}</span>
         </figcaption>
       </figure>
       {%- endfor %}

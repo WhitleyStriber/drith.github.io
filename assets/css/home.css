@@ -353,12 +353,31 @@
   text-transform: uppercase;
   color: var(--deck-mut);
 }
-.cam-views { position: absolute; top: 14px; left: 14px; display: flex; gap: 6px; }
-.cam-views span {
-  padding: 4px 9px;
+.cam-views {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: auto;                /* the frame is scenery; its chips are not */
+}
+.cam-views button {
+  padding: 6px 11px;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--deck-mut);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 3px;
   background: rgba(7, 10, 14, 0.6);
+  cursor: pointer;
+  transition: color var(--hover) ease, border-color var(--hover) ease;
+}
+.cam-views button:hover, .cam-views button:focus-visible {
+  outline: none;
+  color: #fff;
+  border-color: color-mix(in srgb, var(--deck-green) 75%, transparent);
 }
 .cam-views .on { color: #fff; border-color: rgba(255, 255, 255, 0.5); }
 .cam-name { position: absolute; left: 16px; bottom: 14px; }
@@ -419,12 +438,13 @@
 .reel {
   max-width: 1320px;
   margin: 0 auto;
-  padding: 56px var(--gx) 72px;
+  padding: 24px var(--gx) 72px;
+  scroll-margin-top: 76px;             /* the SCREENS tab lands it under the bar */
 }
 
 .slides {
   position: relative;
-  margin: 22px 0 0;
+  margin: 0;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--deck-card);
@@ -489,7 +509,6 @@
 }
 .slide-shot .kind { color: var(--deck-void); background: var(--deck-guns); }
 .slide strong { font-weight: 700; font-size: 34px; line-height: 1.1; color: #fff; text-transform: uppercase; letter-spacing: 0.02em; }
-.slide .note { flex-basis: 100%; max-width: 62ch; font-size: 19px; color: color-mix(in srgb, var(--deck-txt) 85%, transparent); }
 
 .reel-bar {
   position: absolute;

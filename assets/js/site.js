@@ -92,7 +92,7 @@
      `.row` covers both the board's ledger entries and the devlog list, which
      are the same row — see the note in board.css. */
   var last = 0;
-  var TARGETS = '.btn, .row, .copy, .mute, .mast a, .plate, .step, .key, .tab, .thumb';
+  var TARGETS = '.btn, .row, .copy, .mute, .mast a, .plate, .step, .key, .tab, .thumb, .cam-views button';
 
   document.addEventListener('pointerover', function (e) {
     var t = e.target.closest && e.target.closest(TARGETS);
