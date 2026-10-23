@@ -21,6 +21,14 @@ THE GAME'S OWN FACES, subset to the characters this site sets.
                              fonttools varLib.instancer InterVariable.ttf wght=900 opsz=32
                              then the pyftsubset line below, plus U+2190,U+2192.
 
+  cinetype-*.woff2           GT Cinetype (Trial) Regular, Bold and Mono
+                             from drith-godot/ui/fonts/: the WARDECK's face, on
+                             the front page. Subset to U+0020-007E without : ? !
+                             (the trial draws those three as a period, so they
+                             fall through to the next face). (c) Grilli Type. A
+                             TRIAL licence, so it needs a paid web licence
+                             before the site counts as published work.
+
 Regenerate with, from the game repo's fonts/ directory:
 
   pyftsubset PTSansNarrow-Bold.ttf --unicodes='U+0020-007E,U+00A0,U+2013,U+2014,U+2018,U+2019,U+201C,U+201D,U+2026' \

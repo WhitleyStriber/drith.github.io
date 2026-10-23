@@ -24,19 +24,26 @@
   theme font. Preloaded because the wordmark is the first thing on the screen
   and font-display:block holds it until the file lands.
 {%- endcomment %}
+{%- if page.url == '/' %}
+<link rel="preload" href="{{ '/assets/fonts/cinetype-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ '/assets/fonts/cinetype-regular.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- else %}
 <link rel="preload" href="{{ '/assets/fonts/ptsans-narrow-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/freesans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- endif %}
 <link rel="stylesheet" href="{{ '/assets/css/board.css' | relative_url }}">
+{%- if page.url == '/' %}
+<link rel="stylesheet" href="{{ '/assets/css/home.css' | relative_url }}">
+{%- endif %}
 {%- if page.layout == 'update' %}
 <link rel="stylesheet" href="{{ '/assets/css/update.css' | relative_url }}">
 {%- endif %}
 </head>
 
 {%- comment %}
-  `board-page` is the front page, which IS the menu: it gets the logical frame,
-  the object on the stage and the letter-by-letter cut-in. `doc` marks the pages
-  that are text rather than the board, and takes the CRT overlay the menu does
-  not have.
+  `home` is the front page, dressed as the WARDECK (assets/css/home.css): it
+  gets the object on the stage and the intro. `doc` marks the pages that are
+  text, and takes the CRT overlay the deck does not have.
 {%- endcomment %}
 
 {%- comment %}
@@ -56,7 +63,7 @@
     {%- endif -%}
   {%- endfor -%}
 {%- endunless %}
-<body data-base="{{ site.baseurl }}" data-fractal="{{ '/assets/img/fractals/' | append: fractal | append: '.png' | relative_url }}" class="{% if page.url == '/' %}board-page intro{% else %}doc{% endif %}">
+<body data-base="{{ site.baseurl }}" data-fractal="{{ '/assets/img/fractals/' | append: fractal | append: '.png' | relative_url }}" class="{% if page.url == '/' %}home intro{% else %}doc{% endif %}">
 
 {%- comment %}
   THE GROUND. One canvas carrying menu.tscn's whole stack in its own order —

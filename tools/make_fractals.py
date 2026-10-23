@@ -243,6 +243,88 @@ def clifford():
     return halftone(np.clip((dens - 0.30) / 0.55, 0, 1) ** 0.9)
 
 
+# ------------------------------------------------------------- ray marched ---
+
+def _bulb_de(p, power=8.0, iters=9):
+    """Distance to the Mandelbulb, the usual power-n estimator. p is (n, 3)."""
+    z = p.copy()
+    dr = np.ones(len(p))
+    r = np.zeros(len(p))
+    live = np.ones(len(p), bool)
+    for _ in range(iters):
+        r = np.where(live, np.linalg.norm(z, axis=1), r)
+        live &= r < 2.0
+        if not live.any():
+            break
+        rl = np.maximum(r[live], 1e-9)
+        zl = z[live]
+        theta = np.arccos(np.clip(zl[:, 2] / rl, -1, 1)) * power
+        phi = np.arctan2(zl[:, 1], zl[:, 0]) * power
+        dr[live] = rl ** (power - 1) * power * dr[live] + 1.0
+        zr = rl ** power
+        z[live] = zr[:, None] * np.column_stack([np.sin(theta) * np.cos(phi),
+                                                  np.sin(theta) * np.sin(phi),
+                                                  np.cos(theta)]) + p[live]
+    return 0.5 * np.log(np.maximum(r, 1e-9)) * r / dr
+
+
+def bulb():
+    """A Mandelbulb, sphere-traced and lit, then halftoned like the rest — the
+    same kind of solid-looking fractal the desktop wallpapers carry."""
+    # Camera on a slow three-quarter, looking at the origin.
+    yaw, pitch, dist = math.radians(38), math.radians(24), 2.75
+    eye = np.array([math.cos(pitch) * math.sin(yaw), math.sin(pitch),
+                    math.cos(pitch) * math.cos(yaw)]) * dist
+    fwd = -eye / dist
+    right = np.cross(fwd, [0.0, 1.0, 0.0]); right /= np.linalg.norm(right)
+    up = np.cross(right, fwd)
+
+    ys, xs = np.mgrid[0:H, 0:W]
+    s = 1.5 / BOX_H                                   # fit the bulb in the box
+    u = ((xs - W / 2 + 0.5) * s).ravel()
+    v = (-(ys - H / 2 + 0.5) * s).ravel()
+    d = fwd[None, :] * 1.9 + u[:, None] * right + v[:, None] * up
+    d /= np.linalg.norm(d, axis=1, keepdims=True)
+
+    # Bound by the sphere of radius 1.25 so most rays never march at all.
+    b = (eye[None, :] * d).sum(1)
+    disc = b * b - (dist * dist - 1.25 ** 2)
+    t = np.where(disc > 0, -b - np.sqrt(np.maximum(disc, 0)), np.inf)
+    active = np.isfinite(t)
+    hit = np.zeros(len(d), bool)
+    steps = np.zeros(len(d))
+    for i in range(160):
+        idx = np.nonzero(active)[0]
+        if not len(idx):
+            break
+        p = eye + d[idx] * t[idx, None]
+        de = _bulb_de(p)
+        t[idx] += de * 0.9
+        steps[idx] += 1
+        done = de < 6e-4 * t[idx]
+        hit[idx[done]] = True
+        gone = t[idx] > dist + 1.4
+        active[idx[done | gone]] = False
+
+    idx = np.nonzero(hit)[0]
+    p = eye + d[idx] * t[idx, None]
+    e = 1e-3
+    n = np.column_stack([_bulb_de(p + o) - _bulb_de(p - o)
+                         for o in (np.array([e, 0, 0]), np.array([0, e, 0]),
+                                   np.array([0, 0, e]))])
+    n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-12)
+    light = np.array([-0.5, 0.75, 0.45]); light /= np.linalg.norm(light)
+    diff = np.clip((n * light).sum(1), 0, 1)
+    rim = np.clip(1 - np.abs((n * -d[idx]).sum(1)), 0, 1) ** 3
+    occl = 1 - np.clip(steps[idx] / 90.0, 0, 1)      # marching cost as occlusion
+
+    shade = np.zeros(len(d))
+    # Hard light: lit faces near full, crevices gone, so the lobes read as
+    # shapes rather than a grey fog of dots.
+    shade[idx] = np.clip(0.04 + 1.1 * diff * occl ** 1.5 + 0.6 * rim, 0, 1)
+    return halftone(shade.reshape(H, W) ** 1.6)
+
+
 # ---------------------------------------------------------- from wallpaper ---
 
 def from_wallpaper(path):
@@ -265,6 +347,7 @@ GENERATED = {
     'mandelbrot': mandelbrot,
     'julia': julia,
     'clifford': clifford,
+    'bulb': bulb,
 }
 
 if __name__ == '__main__':

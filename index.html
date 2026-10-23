@@ -1,91 +1,153 @@
 ---
 layout: default
-fractal: dragon
+fractal: bulb
 description: >-
   Drith — siege and conquer. 202X.
 ---
 
 {%- comment %}
-  THE BOARD. This page is the game's main menu (drith-godot: world/menu.tscn),
-  laid out node for node against it:
+  THE FRONT PAGE, dressed as the WARDECK (drith-godot: src/hud/base/
+  wardeck_panel.cpp) — the screen a base is armed from. Its parts, top down:
 
-    Content    MarginContainer  84 / 68        -> .board's padding
-      VBox     separation 0
-        WmPad  52                              -> .wordmark's top margin
-        Wordmark  HBox, separation 14          -> five spans in a flex row
-        TagPad 16                              -> .tagline's top margin
-        Tagline   HBox, separation 62          -> two spans in a flex row
-        HairPad 30                             -> .hair's top margin
-        Hair   560 x 1                         -> .hair
-        LedgerPad 26                           -> .ledger's top margin
-        Ledger VBox, 560 wide, separation 13   -> .ledger
-        Grow   EXPAND_FILL                     -> why the title sits at the top
+    Deck bar   the WARDECK's top bar: the name left, page tabs right, and the
+               Monarch's mark in the middle
+    Hero       the pitch on the left; the base itself turning on the right, in
+               the camera frame the WARDECK shows it in (stage.js draws it)
+    Slots      the WARDECK's slot strip — the base's real hardpoints, each in
+               its own kind's colour (KIND_GROUPS)
+    Reel       renders out of Blender and captures out of the build
 
-  The board carries four entries; there are three here, because a website has
-  three places to go. They are the same rows — tick, name, spacer, status — for
-  the same reason the in-game terminals reuse them: the ledger entry is this
-  site's one list item.
+  Everything is set in GT Cinetype, the WARDECK's only face.
 {%- endcomment %}
 
-<main class="board">
+<header class="deckbar">
+  <a class="deckbar-name" href="{{ '/' | relative_url }}">Drith</a>
 
-  {%- comment %} Each letter is its own Label in the game and its own span here,
-  so the intro can strike them one after another; --i is the index _play_intro
-  multiplies its delay by. {%- endcomment %}
-  <h1 class="wordmark" aria-label="Drith"><span style="--i:0" aria-hidden="true">D</span><span style="--i:1" aria-hidden="true">R</span><span style="--i:2" aria-hidden="true">I</span><span style="--i:3" aria-hidden="true">T</span><span style="--i:4" aria-hidden="true">H</span></h1>
+  {%- comment %} THE MONARCH'S MARK — the map's glyph for her (ui/mockups/
+  icon_set_ideas.html, g-caldera): two leaning walls of blades meeting at the
+  spire. Her orb is the sun and the moon at once, red by day and cyan by night
+  (shaders/monarca_orb.gdshader), so it is drawn as both: the day's disc with
+  the night's crescent coming round its edge. {%- endcomment %}
+  <a class="crest" href="{{ '/' | relative_url }}" aria-hidden="true" tabindex="-1">
+    <svg viewBox="0 0 64 64" width="64" height="64" focusable="false">
+      <g class="blades">
+        <path d="M1 61 L18 24 L9.5 61 Z"/>
+        <path d="M11.5 61 L25 11 L17 61 Z"/>
+        <path d="M19 61 L30.7 1 L24.5 61 Z"/>
+        <path d="M63 61 L46 24 L54.5 61 Z"/>
+        <path d="M52.5 61 L39 11 L47 61 Z"/>
+        <path d="M45 61 L33.3 1 L39.5 61 Z"/>
+      </g>
+      <g class="rings rings-cut">
+        <ellipse cx="32" cy="40" rx="13" ry="3.6" transform="rotate(-16 32 40)"/>
+        <ellipse cx="32" cy="40" rx="13" ry="3.6" transform="rotate(16 32 40)"/>
+      </g>
+      <g class="rings">
+        <ellipse cx="32" cy="40" rx="13" ry="3.6" transform="rotate(-16 32 40)"/>
+        <ellipse cx="32" cy="40" rx="13" ry="3.6" transform="rotate(16 32 40)"/>
+      </g>
+      <circle class="moon" cx="32" cy="40" r="6.4"/>
+      <circle class="sun" cx="30.1" cy="39.2" r="5.7"/>
+    </svg>
+  </a>
 
-  {%- comment %} The letters really are spaced with spaces on the board — the
-  Label text is "P R E - A L P H A" — so they are spaced with spaces here.
-  {%- endcomment %}
-  <p class="tagline"><span class="pre" aria-label="Pre-alpha">P R E - A L P H A</span><span class="date" aria-label="Coming {{ site.release }}">C O M I N G   {{ site.release | split: "" | join: " " }}</span></p>
-
-  <div class="hair" aria-hidden="true"></div>
-
-  <nav class="ledger">
-
-    <button class="row" id="play" style="--i:0" aria-expanded="false" aria-controls="server">
-      <span class="tick" aria-hidden="true"></span>
-      <span class="name">Play</span>
-      <span class="fill" aria-hidden="true"></span>
-      <span class="val">server address</span>
-    </button>
-
-    <a class="row" style="--i:1" href="{{ '/devlog/' | relative_url }}">
-      <span class="tick" aria-hidden="true"></span>
-      <span class="name">Devlog</span>
-      <span class="fill" aria-hidden="true"></span>
-      <span class="val">build notes</span>
-    </a>
-
+  <nav class="tabs" aria-label="Site">
+    <a class="tab tab-live" href="#play">Play</a>
+    <a class="tab tab-guns" href="#reel">Screens</a>
+    <a class="tab tab-core" href="{{ '/devlog/' | relative_url }}">Devlog</a>
     {%- if site.beta_download and site.beta_download != "" %}
-    <a class="row" style="--i:2" href="{{ site.beta_download }}" target="_blank" rel="noopener">
-      <span class="tick" aria-hidden="true"></span>
-      <span class="name">Download</span>
-      <span class="fill" aria-hidden="true"></span>
-      <span class="val">Windows build</span>
-    </a>
+    <a class="tab tab-oumo" href="{{ site.beta_download }}" target="_blank" rel="noopener">Download</a>
     {%- endif %}
-
   </nav>
+</header>
 
-  {% include server.html %}
+<main>
 
-  {%- comment %} THE PLATES. Not a node on the menu — the game's menu has no
-  gallery — so, like the access panel, it is set in the board's language rather
-  than lifted from one: a hairline with its label sitting on it, and frames
-  only on the plate you are pointed at. The captures are the game's own, taken
-  by its tools/_*_shot.gd scripts. {%- endcomment %}
-  <section class="plates" aria-label="Screenshots">
-    <div class="plates-head" aria-hidden="true"><span>From the build</span><i></i></div>
-    <div class="plates-grid">
-      {%- assign plates = "monarch|The Monarch at night;caldera|The Caldera at night;forest|The forest at night;plaza|The plaza at night;library|Spellweave library;gazebo|Gazebo over the cloud sea" | split: ";" %}
-      {%- for plate in plates %}
-      {%- assign bits = plate | split: "|" %}
-      <a class="plate" style="--i:{{ forloop.index0 }}" href="{{ '/assets/img/shots/' | append: bits[0] | append: '.jpg' | relative_url }}" data-caption="{{ bits[1] }}">
-        <img src="{{ '/assets/img/shots/' | append: bits[0] | append: '-thumb.jpg' | relative_url }}" alt="{{ bits[1] }}" width="480" height="270" decoding="async">
-      </a>
+  <section class="hero" aria-labelledby="title">
+    <div class="pitch">
+      <p class="caption"><span data-paint="#4ce67a" data-delay="0.35">Pre-alpha</span><i></i></p>
+      <h1 id="title" class="title">Drith</h1>
+      <p class="kicker">Siege and conquer <span class="date" data-paint="#ff9429" data-delay="0.9">Coming {{ site.release }}</span></p>
+      <p class="lede">Drop in, plant a base, and hold it. Arm its hardpoints, raise
+        it out of the ground and fight for the monuments on a world that never
+        stops coming for you.</p>
+
+      <div class="actions">
+        <button class="key key-live" id="play" type="button" aria-expanded="false" aria-controls="server">Play</button>
+        {%- if site.beta_download and site.beta_download != "" %}
+        <a class="key" href="{{ site.beta_download }}" target="_blank" rel="noopener">Download for Windows</a>
+        {%- endif %}
+        <a class="key" href="{{ '/devlog/' | relative_url }}">Read the devlog</a>
+      </div>
+
+      {% include server.html %}
+    </div>
+
+    {%- comment %} The WARDECK's camera frame, laid over the right of the stage
+    where the base is turning. The view chips and the LIVE clock are the
+    panel's own furniture; the clock runs. {%- endcomment %}
+    <div class="cam" aria-hidden="true">
+      <div class="cam-views"><span>Front</span><span class="on">Base</span><span>Roof</span></div>
+      <span class="cam-name">Cam 1 · Drith_01</span>
+      <span class="cam-live">Live <b id="live-clock">00.00.00</b></span>
+    </div>
+
+    {%- comment %} THE SLOT STRIP. One cell per hardpoint on a base, named the
+    way the WARDECK names them, in KIND_GROUPS' colours, holding what the
+    armed render below carries. {%- endcomment %}
+    <ol class="slots" aria-label="A base's hardpoints">
+      {%- assign slots = "main|Main · L|MB-01|#4ce67a;main|Main · R|MB-01|#4ce67a;front|Front · L|PC-01|#42e08a;front|Front · R|PC-01|#42e08a;back|Back · L|FT-01|#9ed94d;back|Back · R|FT-01|#9ed94d;fdeck|FDeck · L|empty|#4dd1eb;fdeck|FDeck · R|empty|#4dd1eb;rdeck|RDeck · L|empty|#4fb8ff;rdeck|RDeck · R|empty|#4fb8ff;radar|Radar|RD-01|#b88cff;silo|Silo|HW-01|#ff5c5c" | split: ";" %}
+      {%- for s in slots %}
+      {%- assign bits = s | split: "|" %}
+      <li class="slot{% if bits[2] == 'empty' %} is-empty{% endif %}" style="--k:{{ bits[3] }}; --i:{{ forloop.index0 }}"><span>{{ bits[1] }}</span><b>{{ bits[2] }}</b></li>
+      {%- endfor %}
+    </ol>
+
+  </section>
+
+  {%- comment %} THE REEL. Blender renders out of tools/plates (render.py, and
+  armed_base.py for the base on its hardpoints) and night captures out of the
+  game's own tools/_*_shot.gd scripts, one at a time. The links are real links
+  to the full image, so with site.js missing they still open something.
+  {%- endcomment %}
+  <section class="reel" id="reel" aria-label="Renders and screenshots">
+    <p class="caption"><span data-paint="#4ce67a">From the build</span><i></i></p>
+
+    {%- assign reel = "base-render.webp|The Drith, armed|Blender render|Main batteries off both flanks, plasma cannons forward, flamethrowers aft, radar and howitzer on the roof.|render;tower-render.webp|The Tower|Blender render|A granite shaft with the lookout on top and the beacon globe lit.|render;monarch.jpg|The Monarch|In the build|Her blades over the forest ring at night, the orb burning red between them.|shot;monarca-render.webp|The Monarch|Blender render|Two leaning walls of blades meeting at the spire, the orb held in its rings.|render;forest.jpg|The forest|In the build|The grove at night, under the old tree.|shot;forest-render.webp|The forest|Blender render|The whole monument from above, blossom and all.|render;plaza.jpg|The garden|In the build|The medallion in the middle of the garden, lamps lit round it.|shot;caldera.jpg|The Caldera|In the build|The Caldera at night.|shot;library.jpg|Spellweave library|In the build|The library's ring of runes over the orb.|shot;gazebo.jpg|The gazebo|In the build|Over the cloud sea at dusk.|shot;base-low-render.webp|The Drith, from the ground|Blender render|What a raider sees coming up the pad.|render" | split: ";" %}
+
+    <div class="slides" tabindex="0" aria-roledescription="carousel">
+      {%- for item in reel %}
+      {%- assign bits = item | split: "|" %}
+      {%- if bits[4] == "render" %}{% assign src = '/assets/img/slides/' | append: bits[0] %}{% else %}{% assign src = '/assets/img/shots/' | append: bits[0] %}{% endif %}
+      <figure class="slide slide-{{ bits[4] }}{% if forloop.first %} is-on{% endif %}" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ reel.size }}">
+        <a class="plate" href="{{ src | relative_url }}" data-caption="{{ bits[1] }} · {{ bits[2] }}"><img src="{{ src | relative_url }}" alt="{{ bits[1] }} — {{ bits[3] }}" {% if forloop.index > 2 %}loading="lazy" {% endif %}decoding="async"></a>
+        <figcaption>
+          <span class="kind">{{ bits[2] }}</span>
+          <strong>{{ bits[1] }}</strong>
+          <span class="note">{{ bits[3] }}</span>
+        </figcaption>
+      </figure>
+      {%- endfor %}
+
+      <div class="reel-bar">
+        <button class="step" type="button" data-dir="-1" aria-label="Previous">&larr;</button>
+        <span class="count" aria-live="polite"><b>01</b> / {{ reel.size | prepend: "0" | slice: -2, 2 }}</span>
+        <button class="step" type="button" data-dir="1" aria-label="Next">&rarr;</button>
+      </div>
+    </div>
+
+    <div class="thumbs" role="tablist" aria-label="Choose a picture">
+      {%- for item in reel %}
+      {%- assign bits = item | split: "|" %}
+      {%- if bits[4] == "render" %}{% assign src = '/assets/img/slides/' | append: bits[0] %}{% else %}{% assign src = '/assets/img/shots/' | append: bits[0] | replace: '.jpg', '-thumb.jpg' %}{% endif %}
+      <button class="thumb thumb-{{ bits[4] }}{% if forloop.first %} is-on{% endif %}" type="button" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="{{ bits[1] }}, {{ bits[2] }}"><img src="{{ src | relative_url }}" alt="" loading="lazy" decoding="async"></button>
       {%- endfor %}
     </div>
   </section>
+
+  <footer class="deckfoot">
+    <span>Drith · pre-alpha · coming {{ site.release }}</span>
+    <a href="{{ '/devlog/' | relative_url }}">Devlog</a>
+  </footer>
 
 </main>

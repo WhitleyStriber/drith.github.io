@@ -55,7 +55,13 @@
   if (!gl) { cv.style.display = 'none'; return; }
 
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var wantsObject = document.body.classList.contains('board-page');
+  var wantsObject = document.body.classList.contains('home');
+
+  /* THE WARDECK'S GREEN. The front page is dressed as the deck, so its ground
+     takes HUD_EMBER where the menu's takes ice: the field's lattice, the
+     fractal's wash and the cool half of the base's rim all go green, and the
+     warm half stays gold. The document pages keep the menu's colours. */
+  var GREEN = wantsObject;
 
   /* ---------------------------------------------------------------- scene ---
      menu.tscn's own numbers. Void is the ColorRect's colour; the two gradients
@@ -76,6 +82,11 @@
            [0.59, 0.78, 0.92, 0.025],
            [0.59, 0.78, 0.92, 0.000]]
   };
+  if (GREEN) {                          // its cool rings, in HUD_EMBER
+    BLOOM.cols[1] = [0.30, 0.90, 0.48, 0.070];
+    BLOOM.cols[2] = [0.26, 0.72, 0.40, 0.025];
+    BLOOM.cols[3] = [0.26, 0.72, 0.40, 0.000];
+  }
 
   // Vignette TextureRect: full rect.
   var VIGNETTE = {
@@ -125,6 +136,12 @@
 
   // Pivot node: right of centre, because the ledger owns the left half.
   var PIVOT = [1.28, -0.08, 0];
+  // The front page frames the base in the deck's camera window, which sits
+  // further right than the menu's empty half: 1.8 m puts it at three quarters
+  // of a 16:9 window, the middle of that frame.
+  // It also stands a little smaller than on the menu, so it turns inside that
+  // frame rather than filling it.
+  if (wantsObject) { PIVOT[0] = 1.8; MODEL_SPAN = 2.25; }
 
   // Environment: tonemap_mode 2 (filmic), glow at intensity 0.5 / bloom 0.12.
   var GLOW_INTENSITY = 0.5, GLOW_BLOOM = 0.12;
@@ -348,6 +365,7 @@
     'uniform float uDot;',           // the dot inside it, in pixels
     'uniform float uGain;',
     'uniform float uHue;',           // turns of the colour wheel
+    'uniform vec4 uTint;',           // rgb, and how far toward it
     'void main() {',
     '  vec2 px = floor(vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y));',
     '  vec2 p = px - floor((uRes - uCells * uCell) * 0.5);',
@@ -365,6 +383,7 @@
     '  float h = uHue + cell.x / uCells.x * 0.33;',
     '  vec3 hue = 0.5 + 0.5 * cos(6.2831853 * (h + vec3(0.0, 0.33, 0.67)));',
     '  vec3 col = mix(vec3(1.0), hue, 0.7);',
+    '  col = mix(col, uTint.rgb, uTint.a);',
     // Level the wheel: blue is far darker than yellow at the same value.
     '  col /= max(dot(col, vec3(0.299, 0.587, 0.114)), 0.35);',
     '  gl_FragColor = vec4(col * v, on * uGain);',
@@ -729,7 +748,7 @@
   var FRACTAL_CELLS = [853, 480];
   // A document page has a column of text over the middle of it, the board does
   // not, so the pages that are read get it quieter.
-  var FRACTAL_GAIN = wantsObject ? 0.50 : 0.48;
+  var FRACTAL_GAIN = wantsObject ? 0.85 : 0.48;
   var HUE_PERIOD = 80.0;                // seconds for the colour to go once round
   var fractal = null;
 
@@ -882,10 +901,10 @@
 
   /* ------------------------------------------------------------------ draw --- */
 
-  var COOL = [0.72, 0.92, 1.00];
+  var COOL = GREEN ? [0.30, 0.90, 0.48] : [0.72, 0.92, 1.00];   // HUD_EMBER
   var WARM = [1.00, 0.88, 0.55];
   var HULL_BODY = toLinear([0.012, 0.024, 0.028]);
-  var HULL_COOL = toLinear([0.72, 0.92, 1.00]);
+  var HULL_COOL = toLinear(GREEN ? [0.55, 1.00, 0.68] : [0.72, 0.92, 1.00]);
   var HULL_WARM = toLinear([1.00, 0.84, 0.43]);
 
   function gradient(g) {
@@ -923,7 +942,15 @@
     drawQuad(prog);
   }
 
-  function drawObject(time, aspect) {
+  /* The base belongs to the hero. Scrolled a window's height down the page, the
+     reel is over it, so it goes: dimmed out over the first screenful, and not
+     drawn at all once it is gone. */
+  function heroFade() {
+    var h = window.innerHeight || 1;
+    return 1 - clamp01((window.scrollY || 0) / (h * 0.85));
+  }
+
+  function drawObject(time, aspect, fade) {
     var wire = blendAt(time);
     var spin = (time / MODEL_PERIOD) * Math.PI * 2;
 
@@ -1043,7 +1070,7 @@
     gl.uniform1f(pPost.u.uGlow, GLOW_INTENSITY);
     // The fade is for the portrait case only, where the ledger ends up sitting
     // on the object rather than beside it.
-    gl.uniform1f(pPost.u.uDim, 1.0 - 0.45 * clamp01((1.0 - aspect) / 0.4));
+    gl.uniform1f(pPost.u.uDim, (1.0 - 0.45 * clamp01((1.0 - aspect) / 0.4)) * fade);
     drawQuad(pPost);
     gl.disable(gl.BLEND);
   }
@@ -1084,6 +1111,9 @@
       var open = cell / dot;
       gl.uniform1f(pFractal.u.uGain, Math.min(1.0, FRACTAL_GAIN * open * open / 6));
       gl.uniform1f(pFractal.u.uHue, time / HUE_PERIOD);
+      // Mostly green on the deck, with enough of the turning wheel left in it
+      // that the fractal is never one flat colour.
+      gl.uniform4f(pFractal.u.uTint, 0.45, 1.0, 0.62, GREEN ? 0.72 : 0.0);
       drawQuad(pFractal);
     }
 
@@ -1114,7 +1144,8 @@
     gl.disable(gl.BLEND);
 
     /* The object. */
-    if (mesh) drawObject(time, aspect);
+    var fade = heroFade();
+    if (mesh && fade > 0.004) drawObject(time, aspect, fade);
 
     /* Vignette, over the stage and under the type. */
     gl.enable(gl.BLEND);
@@ -1149,6 +1180,7 @@
   if (still) {
     pose();
     window.addEventListener('resize', pose);
+    if (wantsObject) window.addEventListener('scroll', pose, { passive: true });
   } else {
     requestAnimationFrame(loop);
   }

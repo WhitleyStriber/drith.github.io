@@ -1,0 +1,638 @@
+/* ============================================================================
+   THE FRONT PAGE, dressed as the WARDECK.
+
+   The design source is drith-godot's src/hud/base/wardeck_panel.cpp — the
+   screen a base is armed from — and the colours below are its HUD_* constants
+   and KIND_GROUPS, read off that file. Where board.css is the main menu laid
+   out node for node, this is the WARDECK's language carried onto a page that
+   has to scroll: its top bar, its keys with their coloured feet, its brush-paint
+   captions on a hairline, its camera frame and its slot strip.
+
+   Type is GT Cinetype throughout, the WARDECK's only face — Bold for the name,
+   headings and figures, Regular for reading.
+
+   board.css still loads first, for the server panel, the plate viewer and the
+   mute switch the page shares with the rest of the site; what is restyled here
+   is scoped under .home.
+   ========================================================================== */
+
+/* THE TRIAL CUT draws : ? and ! as a period, so those three are subset out of
+   these files and fall through to the next face in the stack. */
+@font-face {
+  font-family: "Cinetype";
+  src: url("../fonts/cinetype-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cinetype";
+  src: url("../fonts/cinetype-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cinetype Mono";
+  src: url("../fonts/cinetype-mono.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.home {
+  /* --- wardeck_panel.cpp ------------------------------------------------- */
+  --deck-void:  #070a0e;                 /* board::VOID                       */
+  --deck-panel: #11141d;                 /* HUD_PANEL                         */
+  --deck-card:  #0d0f17;                 /* HUD_CARD                          */
+  --deck-line:  rgba(140, 158, 199, 0.16); /* HUD_LINE                       */
+  --deck-rule:  rgba(238, 244, 249, 0.13); /* board::rule_faint, BONE at 13%  */
+  --deck-txt:   #d4dbeb;                 /* HUD_TXT                           */
+  --deck-mut:   #808ca6;                 /* HUD_MUT                           */
+  --deck-dim:   #596175;                 /* HUD_DIM                           */
+  --deck-bone:  #eef4f9;                 /* board::BONE                       */
+
+  /* The green. HUD_EMBER is the DECK of the WARDECK wordmark; the ECFS page's
+     button runs top to bottom across the other two, with its own dark ink. */
+  --deck-green: #4ce67a;                 /* HUD_EMBER                         */
+  --deck-ok:    #42e08a;                 /* HUD_OK                            */
+  --deck-deep:  #1a853d;                 /* ECFS deep                         */
+  --deck-btn-a: #b2ffad;                 /* ECFS button top                   */
+  --deck-btn-b: #38b857;                 /* ECFS button bottom                */
+  --deck-ink:   #00240a;                 /* ink on the ECFS button            */
+
+  /* The other page tabs keep their own pigments, as they do on the deck. */
+  --deck-guns:  #ffd638;                 /* HUD_GUNS                          */
+  --deck-core:  #c78cff;                 /* HUD_CORE                          */
+  --deck-oumo:  #ff9429;                 /* HUD_OUMO                          */
+
+  --deck-face: "Cinetype", "Board UI", "Helvetica Neue", Arial, sans-serif;
+  --deck-mono: "Cinetype Mono", ui-monospace, Menlo, Consolas, monospace;
+  --gx: clamp(16px, 4vw, 64px);          /* the page's side gutter            */
+
+  background: var(--deck-void);
+  color: var(--deck-txt);
+  font-family: var(--deck-face);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+/* The stage is the whole window here, not the menu's letterboxed frame: the
+   page scrolls under it, and stage.js dims the base as the hero goes by. */
+.home #stage { top: 0; height: 100%; }
+
+/* Paint sits behind the word it marks, so each marked word is its own stacking
+   context for the canvas paint.js puts in it. */
+.home [data-paint] { position: relative; isolation: isolate; }
+.home [data-paint] .paint { position: absolute; z-index: -1; pointer-events: none; }
+
+/* ==========================================================================
+   THE DECK BAR — the WARDECK's top bar. Name left, page tabs right, and the
+   Monarch's mark standing in the middle of it.
+   ========================================================================== */
+
+.deckbar {
+  position: fixed;
+  top: 12px;
+  left: var(--gx);
+  right: var(--gx);
+  z-index: 50;
+  height: 72px;
+  padding: 0 14px 0 22px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: rgba(13, 15, 23, 0.82);
+  border: 1px solid var(--deck-line);
+  border-radius: 6px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.deckbar-name {
+  justify-self: start;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.crest {
+  justify-self: center;
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+.crest svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.crest .blades { fill: var(--deck-bone); }
+.crest .rings { fill: none; stroke: var(--deck-bone); stroke-width: 1.5; }
+/* The rings cross the blades, so each runs in a groove cut out of them. */
+.crest .rings-cut { stroke: #0d0f17; stroke-width: 4; }
+/* monarca_orb.gdshader: red by day, cyan by night. */
+.crest .moon { fill: #00fef0; filter: drop-shadow(0 0 3px rgba(0, 254, 240, 0.8)); }
+.crest .sun  { fill: #ee2c34; filter: drop-shadow(0 0 4px rgba(238, 44, 52, 0.9)); }
+
+.tabs {
+  justify-self: end;
+  display: flex;
+  gap: 8px;
+}
+
+/* A page tab: its word in the page's pigment, a hairline box, and the pigment
+   coming up under it when pointed at. The live one is filled, as the selected
+   tab is on the deck. */
+.tab {
+  --c: var(--deck-txt);
+  padding: 10px 18px;
+  font-size: 18px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--c);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  transition: background-color var(--hover) ease, border-color var(--hover) ease;
+}
+.tab-live { --c: var(--deck-green); }
+.tab-guns { --c: var(--deck-guns); }
+.tab-core { --c: var(--deck-core); }
+.tab-oumo { --c: var(--deck-oumo); }
+
+.tab:hover, .tab:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--c) 75%, transparent);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+.tab-live {
+  color: #fff;
+  border-color: var(--deck-green);
+  background: color-mix(in srgb, var(--deck-deep) 55%, transparent);
+}
+
+/* ==========================================================================
+   THE HERO — the pitch on the left, the base turning on the right in the
+   WARDECK's camera frame, the slot strip along the bottom.
+   ========================================================================== */
+
+.home main { position: relative; z-index: 10; }
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 128px var(--gx) 150px;
+  display: flex;
+  align-items: center;
+}
+@supports (height: 1svh) { .hero { min-height: 100svh; } }
+
+.pitch {
+  position: relative;
+  z-index: 2;
+  width: min(640px, 100%);
+}
+
+/* A caption: a tracked word knocked out of a brush stroke, and a hairline
+   running on from it — make_marked_caption. */
+.caption {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.caption span { padding: 4px 8px; color: var(--deck-ink); white-space: nowrap; }
+.caption i { flex: 1; height: 1px; background: var(--deck-rule); }
+
+.title {
+  margin: 18px 0 6px;
+  font-weight: 700;
+  font-size: clamp(88px, 12vw, 196px);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 60px rgba(76, 230, 122, 0.18);
+}
+
+.kicker {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 26px;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--deck-txt);
+}
+/* VOID, read off the orange — the marker board.css puts COMING 202X on. */
+.kicker .date { padding: 2px 8px; color: var(--deck-void); }
+
+.lede {
+  margin: 26px 0 0;
+  max-width: 34em;
+  font-size: 22px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--deck-txt) 88%, transparent);
+}
+
+.actions {
+  margin: 34px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* A key, the deck's button: a faint fill in a hairline box, standing on a
+   coloured foot that comes up when it is pointed at. */
+.key {
+  --foot: transparent;
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 24px 13px;
+  font-family: inherit;
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: var(--deck-txt);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  box-shadow: inset 0 -3px 0 var(--foot), 0 3px 0 rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: border-color var(--hover) ease, box-shadow var(--hover) ease, color var(--hover) ease;
+}
+.key:hover, .key:focus-visible {
+  outline: none;
+  --foot: var(--deck-green);
+  color: #fff;
+  border-color: color-mix(in srgb, var(--deck-green) 75%, transparent);
+}
+
+/* The ECFS page's own button: lit green, dark ink. */
+.key-live {
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-left: 34px;
+  padding-right: 34px;
+  color: var(--deck-ink);
+  background: linear-gradient(to bottom, var(--deck-btn-a), var(--deck-btn-b));
+  border-color: var(--deck-deep);
+  --foot: var(--deck-deep);
+}
+.key-live:hover, .key-live:focus-visible,
+.key-live[aria-expanded="true"] {
+  color: var(--deck-ink);
+  border-color: var(--deck-btn-a);
+  --foot: var(--deck-deep);
+  filter: brightness(1.08);
+}
+
+/* --- the access panel, as a deck card ------------------------------------ */
+
+.home .server {
+  width: auto;
+  max-width: 640px;
+  margin: 18px 0 0;
+  padding: 14px 18px;
+  gap: 16px;
+  background: rgba(13, 15, 23, 0.86);
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+}
+.home .server code {
+  font-family: var(--deck-mono);
+  font-size: 20px;
+  color: var(--deck-bone);
+}
+.home .server .off,
+.home .server .state {
+  font-family: var(--deck-face);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.16em;
+}
+.home .server .state.on { color: var(--deck-green); }
+.home .server .copy {
+  font-family: var(--deck-face);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  padding: 8px 12px;
+  color: var(--deck-txt);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+}
+.home .server .copy:hover { color: #fff; border-color: var(--deck-green); }
+/* The hero already carries the download as a key of its own. */
+.home .server .btn { display: none; }
+
+/* --- the camera frame ---------------------------------------------------- */
+
+.cam {
+  position: absolute;
+  top: 116px;
+  bottom: 136px;
+  right: var(--gx);
+  width: min(44vw, 860px);
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+  pointer-events: none;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--deck-mut);
+}
+.cam-views { position: absolute; top: 14px; left: 14px; display: flex; gap: 6px; }
+.cam-views span {
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: rgba(7, 10, 14, 0.6);
+}
+.cam-views .on { color: #fff; border-color: rgba(255, 255, 255, 0.5); }
+.cam-name { position: absolute; left: 16px; bottom: 14px; }
+.cam-live { position: absolute; right: 16px; bottom: 14px; }
+.cam-live b { font-family: var(--deck-mono); font-weight: 400; color: var(--deck-txt); letter-spacing: 0.04em; }
+.cam-live::before {
+  content: "";
+  display: inline-block;
+  width: 8px; height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--deck-green);
+  vertical-align: 1px;
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+/* --- the slot strip ------------------------------------------------------ */
+
+.slots {
+  position: absolute;
+  left: var(--gx);
+  right: var(--gx);
+  bottom: 36px;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+}
+.slot {
+  padding: 9px 10px 8px;
+  background: rgba(13, 15, 23, 0.8);
+  border: 1px solid var(--deck-line);
+  border-radius: 6px;
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--k) 55%, transparent);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.slot span {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k);
+}
+.slot b { display: block; margin-top: 3px; font-weight: 400; font-size: 19px; color: var(--deck-txt); }
+.slot.is-empty b { color: var(--deck-dim); }
+
+/* ==========================================================================
+   THE REEL — one picture at a time, a strip of the rest under it.
+   ========================================================================== */
+
+.reel {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 56px var(--gx) 72px;
+}
+
+.slides {
+  position: relative;
+  margin: 22px 0 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--deck-card);
+  border: 1px solid var(--deck-line);
+  border-radius: 14px;
+}
+.slides:focus-visible { outline: 2px solid var(--deck-green); outline-offset: 3px; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+}
+.slide.is-on { opacity: 1; visibility: visible; transition: opacity 0.6s ease; }
+
+/* The plate link from the board, restyled: a whole slide, no frame. */
+.home .slide .plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  background: none;
+  outline: 0;
+}
+.home .slide .plate img { opacity: 1; }
+.slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* A render stands on the deck's camera floor — a green glow and a lattice —
+   rather than on a flat box, so it reads as a model on display. */
+.slide-render {
+  background:
+    radial-gradient(ellipse 55% 60% at 50% 58%, rgba(76, 230, 122, 0.16), transparent 70%),
+    repeating-linear-gradient(to right, rgba(76, 230, 122, 0.05) 0 1px, transparent 1px 56px),
+    repeating-linear-gradient(to bottom, rgba(76, 230, 122, 0.05) 0 1px, transparent 1px 56px),
+    var(--deck-card);
+}
+.slide-render img { object-fit: contain; padding: 5% 8% 17%; }
+
+.slide figcaption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 72px 30px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+  background: linear-gradient(to bottom, rgba(7, 10, 14, 0), rgba(7, 10, 14, 0.92) 60%);
+  pointer-events: none;
+}
+.slide .kind {
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--deck-ink);
+  background: var(--deck-green);
+  border-radius: 3px;
+}
+.slide-shot .kind { color: var(--deck-void); background: var(--deck-guns); }
+.slide strong { font-weight: 700; font-size: 34px; line-height: 1.1; color: #fff; text-transform: uppercase; letter-spacing: 0.02em; }
+.slide .note { flex-basis: 100%; max-width: 62ch; font-size: 19px; color: color-mix(in srgb, var(--deck-txt) 85%, transparent); }
+
+.reel-bar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(7, 10, 14, 0.7);
+  border: 1px solid var(--deck-line);
+  border-radius: 8px;
+}
+.home .reel-bar .step {
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  font-family: var(--deck-face);
+  font-size: 22px;
+  color: var(--deck-txt);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+}
+.home .reel-bar .step:hover, .home .reel-bar .step:focus-visible { color: #fff; border-color: var(--deck-green); outline: none; }
+.reel-bar .count { min-width: 76px; text-align: center; font-family: var(--deck-mono); font-size: 17px; color: var(--deck-mut); }
+.reel-bar .count b { font-weight: 400; color: #fff; }
+
+.thumbs {
+  margin: 12px 0 0;
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: 8px;
+}
+.thumb {
+  display: block;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  overflow: hidden;
+  background: var(--deck-card);
+  border: 1px solid var(--deck-line);
+  border-radius: 6px;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity var(--hover) ease, border-color var(--hover) ease;
+}
+.thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.thumb-render img { object-fit: contain; padding: 4px; }
+.thumb:hover, .thumb:focus-visible { opacity: 0.9; outline: none; border-color: rgba(255, 255, 255, 0.4); }
+.thumb.is-on { opacity: 1; border-color: var(--deck-green); box-shadow: inset 0 -3px 0 var(--deck-green); }
+
+.deckfoot {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px var(--gx) 72px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  border-top: 1px solid var(--deck-rule);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--deck-mut);
+}
+.deckfoot span { flex: 1; }
+.deckfoot a { color: var(--deck-txt); }
+.deckfoot a:hover { color: var(--deck-green); }
+
+.home .mute {
+  bottom: 8px;
+  font-family: var(--deck-face);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--deck-mut);
+}
+
+/* ==========================================================================
+   THE INTRO — the deck opens on the CRT snap every screen in the game opens
+   on, then the pitch arrives line by line and the slots drop in after it,
+   _pop_ledger's beat. `both` rather than a resting opacity:0, so with motion
+   reduced (board.css drops every animation) everything is simply there.
+   ========================================================================== */
+
+.intro .deckbar { animation: crt-snap var(--crt-pop) cubic-bezier(0.22, 1, 0.36, 1) both; }
+.intro .pitch > * {
+  animation: fade-in 0.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+.intro .pitch > :nth-child(2) { animation-delay: 0.10s; }
+.intro .pitch > :nth-child(3) { animation-delay: 0.30s; }
+.intro .pitch > :nth-child(4) { animation-delay: 0.45s; }
+.intro .pitch > :nth-child(5) { animation-delay: 0.60s; }
+.intro .cam { animation: fade-in 0.9s linear both 0.5s; }
+.intro .slot {
+  animation: fade-in var(--crt-fade) cubic-bezier(0.33, 1, 0.68, 1) both,
+             crt-snap var(--crt-pop) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(0.8s + var(--i, 0) * 0.05s);
+}
+
+/* ==========================================================================
+   SMALLER WINDOWS
+   ========================================================================== */
+
+@media (max-width: 1180px) {
+  .slots { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .hero { padding-bottom: 210px; }
+  .cam { bottom: 196px; }
+}
+
+/* Below this the camera frame and the pitch would share the same ground, so
+   the frame goes and the base is left turning behind the words, dimmed by
+   stage.js as the window goes portrait. The strip joins the flow. */
+@media (max-width: 980px) {
+  .cam { display: none; }
+  .hero { flex-direction: column; justify-content: center; align-items: stretch; padding-bottom: 40px; }
+  .slots { position: static; margin-top: 44px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .thumbs { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 132px; overflow-x: auto; padding-bottom: 6px; }
+}
+
+@media (max-width: 720px) {
+  .deckbar { height: auto; padding: 10px 12px; grid-template-columns: auto 1fr; gap: 10px; }
+  .deckbar-name { display: none; }
+  .crest { justify-self: start; width: 48px; height: 48px; }
+  .tabs { justify-self: end; gap: 6px; min-width: 0; }
+  .tab { padding: 8px 9px; font-size: 15px; letter-spacing: 0.02em; }
+  /* A Windows build is no use on a phone, and the hero still carries it. */
+  .tab-oumo { display: none; }
+  .home .mute {
+    padding: 6px 10px;
+    background: rgba(13, 15, 23, 0.88);
+    border: 1px solid var(--deck-line);
+    border-radius: 6px;
+  }
+  .deckfoot span { flex-basis: 100%; }
+  .hero { padding-top: 112px; }
+  .kicker { font-size: 18px; }
+  .lede { font-size: 20px; }
+  .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .slides { aspect-ratio: 4 / 5; }
+  .slide strong { font-size: 26px; }
+  .slide figcaption { padding: 60px 18px 18px; }
+  .slide-render img { padding: 14% 6% 34%; }
+  .key { font-size: 18px; padding: 13px 18px 12px; }
+}

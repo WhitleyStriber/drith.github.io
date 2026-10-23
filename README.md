@@ -5,8 +5,9 @@ Site + devlog for **Drith**. Jekyll, no theme gem, no build step you have to run
 
 ## The skin
 
-The front page **is** the game's main menu (`drith-godot/world/menu.tscn` and
-`world/menu.gd`) — not styled after it, laid out as it, node for node. Every
+The document pages are set in the game's main menu (`drith-godot/world/menu.tscn` and
+`world/menu.gd`) — not styled after it, laid out as it, node for node. (The
+front page has moved to the WARDECK; see below.) Every
 colour, rule alpha, gap and animation timing in `assets/css/board.css` is a
 `Vector2`, theme override or `Color()` literal the menu actually sets, and the
 comment on each names where it came from.
@@ -56,6 +57,34 @@ Where it departs, and why:
   five mip levels rather than seven. At this size the rest are below a pixel.
 - Below a 1.15 aspect the camera slides back to the middle and the object dims,
   because the game never renders a portrait window and a phone does.
+
+## The front page
+
+The front page is no longer the menu. It is dressed as the **WARDECK**
+(`src/hud/base/wardeck_panel.cpp`), the screen a base is armed from, and
+`assets/css/home.css` takes its colours from that file's `HUD_*` constants and
+`KIND_GROUPS`. The page is laid out the way the deck is:
+
+- the deck bar: the name, the Monarch's mark (her map glyph, with the orb drawn
+  as sun and moon, red by day and cyan by night), and the page tabs;
+- the pitch on the left, and the base turning on the right inside the deck's
+  camera frame. `stage.js` draws that base in HUD_EMBER green and dims it as
+  the page scrolls;
+- the slot strip: a base's twelve hardpoints, each in its kind's colour;
+- the reel: Blender renders and night captures from the build. Prev and next,
+  thumbnails, swipe and the arrow keys all step it, it pauses while it is
+  looked at, and a click opens the full image.
+
+The type is **GT Cinetype**, the deck's only face. The fractal behind it is
+`bulb`, a Mandelbulb that `tools/make_fractals.py` ray-marches and halftones.
+The renders are in `assets/img/slides/`. `tools/plates/render.py` draws them,
+and `tools/plates/armed_base.py` first stands a base up with every hardpoint
+filled, from the slot positions in `drith_base.cpp`:
+
+```bash
+blender -b --factory-startup --python tools/plates/armed_base.py -- /tmp/armed.blend
+blender -b /tmp/armed.blend --python tools/plates/render.py -- base.png az=35 el=14 lens=50 w=2200 h=1400 fit=0.7 exp=0.8 rim=5 amb=0.5 ground=1
+```
 
 ## Publishing
 

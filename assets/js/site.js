@@ -92,7 +92,7 @@
      `.row` covers both the board's ledger entries and the devlog list, which
      are the same row — see the note in board.css. */
   var last = 0;
-  var TARGETS = '.btn, .row, .copy, .mute, .mast a, .plate, .step';
+  var TARGETS = '.btn, .row, .copy, .mute, .mast a, .plate, .step, .key, .tab, .thumb';
 
   document.addEventListener('pointerover', function (e) {
     var t = e.target.closest && e.target.closest(TARGETS);
@@ -241,32 +241,111 @@
     var vCount = viewer.querySelector('.count');
     var at = 0;
 
-    var show = function (i) {
+    var showPlate = function (i) {
       at = (i + plates.length) % plates.length;
       vImg.src = plates[at].href;
       vImg.alt = vCap.textContent = plates[at].getAttribute('data-caption') || '';
       vCount.textContent = (at + 1) + ' / ' + plates.length;
       viewer.hidden = false;
     };
-    var shut = function () {
+    var shutPlate = function () {
       viewer.hidden = true;
       plates[at].focus();
     };
 
     plates.forEach(function (a, i) {
-      a.addEventListener('click', function (e) { e.preventDefault(); show(i); });
+      a.addEventListener('click', function (e) { e.preventDefault(); showPlate(i); });
     });
     viewer.addEventListener('click', function (e) {
       var s = e.target.closest('.step');
-      if (s) show(at + Number(s.getAttribute('data-dir')));
-      else shut();
+      if (s) showPlate(at + Number(s.getAttribute('data-dir')));
+      else shutPlate();
     });
     document.addEventListener('keydown', function (e) {
       if (viewer.hidden) return;
-      if (e.key === 'Escape') shut();
-      else if (e.key === 'ArrowRight') show(at + 1);
-      else if (e.key === 'ArrowLeft') show(at - 1);
+      if (e.key === 'Escape') shutPlate();
+      else if (e.key === 'ArrowRight') showPlate(at + 1);
+      else if (e.key === 'ArrowLeft') showPlate(at - 1);
     });
+  }
+
+  /* -------------------------------------------------------------- reel --- */
+  /* The front page's slideshow: one slide lit at a time, the thumbnails under
+     it as the index. It walks on by itself every few seconds, and stops walking
+     while it is being looked at — a pointer over it, focus in it, or the tab
+     hidden — because a picture changing under the cursor is a picture taken
+     away from the person reading it. */
+  var reel = document.querySelector('.slides');
+  if (reel) {
+    var slides = [].slice.call(reel.querySelectorAll('.slide'));
+    var thumbs = [].slice.call(document.querySelectorAll('.thumbs .thumb'));
+    var countEl = reel.querySelector('.count b');
+    var cur = 0, held = false, timer = 0;
+    var DWELL = 6500;
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var go = function (i) {
+      cur = (i + slides.length) % slides.length;
+      slides.forEach(function (s, k) { s.classList.toggle('is-on', k === cur); });
+      thumbs.forEach(function (t, k) {
+        t.classList.toggle('is-on', k === cur);
+        t.setAttribute('aria-selected', String(k === cur));
+      });
+      if (countEl) countEl.textContent = pad(cur + 1);
+      var th = thumbs[cur];
+      if (th && th.parentNode.scrollWidth > th.parentNode.clientWidth) {
+        th.parentNode.scrollTo({ left: th.offsetLeft - th.parentNode.clientWidth / 2 + th.offsetWidth / 2,
+                                 behavior: calm ? 'auto' : 'smooth' });
+      }
+    };
+    var arm = function () {
+      clearTimeout(timer);
+      if (calm || held || document.hidden) return;
+      timer = setTimeout(function () { go(cur + 1); arm(); }, DWELL);
+    };
+    var hold = function (on) { held = on; arm(); };
+
+    reel.querySelectorAll('.reel-bar .step').forEach(function (b) {
+      b.addEventListener('click', function () { go(cur + Number(b.getAttribute('data-dir'))); arm(); });
+    });
+    thumbs.forEach(function (t, k) {
+      t.addEventListener('click', function () { go(k); arm(); });
+    });
+    reel.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+    });
+
+    // A swipe across the picture steps it; a tap still opens the plate.
+    var sx = null;
+    reel.addEventListener('pointerdown', function (e) { sx = e.pointerType === 'mouse' ? null : e.clientX; });
+    reel.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx;
+      sx = null;
+      if (Math.abs(dx) > 48) { go(cur + (dx < 0 ? 1 : -1)); arm(); }
+    });
+
+    reel.addEventListener('pointerenter', function () { hold(true); });
+    reel.addEventListener('pointerleave', function () { hold(false); });
+    reel.addEventListener('focusin', function () { hold(true); });
+    reel.addEventListener('focusout', function () { hold(false); });
+    document.addEventListener('visibilitychange', arm);
+    arm();
+  }
+
+  /* --------------------------------------------------------- live clock --- */
+  /* The camera frame's LIVE readout, as the deck's: the time of day, ticking. */
+  var clock = document.getElementById('live-clock');
+  if (clock) {
+    var stamp = function () {
+      var d = new Date();
+      var two = function (n) { return (n < 10 ? '0' : '') + n; };
+      clock.textContent = two(d.getHours()) + '.' + two(d.getMinutes()) + '.' + two(d.getSeconds());
+    };
+    stamp();
+    setInterval(stamp, 1000);
   }
 
   /* -------------------------------------------------------- play panel --- */
@@ -290,6 +369,16 @@
     panel.hidden = open;
     play.setAttribute('aria-expanded', String(!open));
     if (!open) check();                 // opening — take a fresh reading
+  });
+
+  /* The deck bar's PLAY tab is a link to the button; following it opens the
+     panel too, rather than only scrolling to the key that would. */
+  [].slice.call(document.querySelectorAll('a[href="#play"]')).forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (panel.hidden) play.click();
+      play.focus();
+    });
   });
 
   if (copy && addr && navigator.clipboard) {
