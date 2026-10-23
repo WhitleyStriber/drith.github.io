@@ -1,0 +1,767 @@
+---
+layout: guide
+title: "Garden Party"
+date: 2026-10-23
+cover: /assets/img/garden/g_island.webp
+deck: The Oumo Garden opens, Rokken gets a high street, and the Caldera fills up.
+description: >-
+  A garden of creatures to raise, a high street in Rokken, ten monuments new or
+  rebuilt, new things living in the grass, grenades and base upgrades, and a
+  server that has the final say. Everything since Progress!
+---
+{%- assign G = '/assets/img/garden/' | relative_url -%}
+
+<section class="g-hero" style="--hero: url('{{ G }}r_plaza.webp')">
+  <h1 class="g-title" aria-label="Garden Party">
+    <span class="ln" aria-hidden="true"><span class="ol">Garden</span><span class="fill">Garden</span></span>
+    <span class="ln" aria-hidden="true"><span class="ol">Party</span><span class="fill">Party</span></span>
+  </h1>
+  <div><span class="g-tag">Major update</span></div>
+
+  <div class="g-cast">
+    <figure style="--c:#cfd8b9; --r:-2.5deg; --y:10px">
+      <img class="fill" src="{{ G }}oumo/light.webp" alt="A Light Oumo with a gold halo">
+      <figcaption>Oumos</figcaption>
+    </figure>
+    <figure style="--c:#d97a5c; --r:1.5deg; --y:-6px; --w:74%">
+      <img src="{{ G }}cut/marina.webp" alt="Marina, a shark woman in a teal jacket">
+      <figcaption>Marina</figcaption>
+    </figure>
+    <figure style="--c:#4e86b8; --r:-1deg; --y:14px; --w:84%">
+      <img src="{{ G }}cut/tori.webp" alt="Tori, a dolphin woman sitting with her feet down">
+      <figcaption>Tori</figcaption>
+    </figure>
+    <figure style="--c:#e9b44c; --r:2deg; --y:-4px; --w:120%">
+      <img src="{{ G }}cut/monarch_bash.webp" alt="A Monarch butterfly rearing up, wings wide">
+      <figcaption>Monarchs</figcaption>
+    </figure>
+    <figure style="--c:#7aa15a; --r:-2deg; --y:8px; --w:96%">
+      <img src="{{ G }}cut/leafling.webp" alt="A Leafling, a small sprite in a leaf hood with one glowing eye">
+      <figcaption>Leaflings</figcaption>
+    </figure>
+    <figure style="--c:#b0988a; --r:1.8deg; --y:-8px; --w:84%">
+      <img src="{{ G }}cut/strider_kettle.webp" alt="The Kettle strider, a two-legged scrap walker with a boiler body">
+      <figcaption>Striders</figcaption>
+    </figure>
+  </div>
+
+  <div class="g-lede">
+    <h2>The island keeps changing, and these shores<br>are nothing like you remember.</h2>
+    <p>
+      Thirteen days since <a href="{{ site.baseurl }}{% post_url 2026-10-10-progress %}">Progress!</a>
+      This update brings a garden of creatures to raise and a high street in Rokken.
+      There are ten monuments, new or rebuilt, and new things living in the grass.
+      There are grenades and base upgrades. And the server now has the final say.
+    </p>
+  </div>
+</section>
+
+<div class="torn"></div>
+
+<!-- ======================================================== THE GARDEN === -->
+
+<div class="g-open">
+  <span class="kicker">Presenting</span>
+  <h2>Your <span class="hl">first</span> visitor's guide<br>to the Oumo Garden</h2>
+  <p class="sub">A floating island over the clouds where small soft creatures live, and where you raise them.</p>
+  <div class="prop"><img src="{{ G }}cut/oumo_egg.webp" alt="A Night egg: black, with white spots and a zigzag band"></div>
+</div>
+
+<section class="lane garden" id="garden">
+  <div class="lane-head">
+    <div class="sky" style="--sky: url('{{ G }}sky-garden.png')"></div>
+    <div class="row">
+      <div class="chart">
+        <img src="{{ G }}badge-garden.webp" alt="The Oumo Garden seen from above">
+        <span class="flag">The Garden</span>
+        <span class="dot" style="--dx:30%; --dy:28%">1</span>
+        <span class="dot" style="--dx:62%; --dy:22%">2</span>
+        <span class="dot" style="--dx:78%; --dy:52%">3</span>
+        <span class="dot" style="--dx:52%; --dy:62%">4</span>
+        <span class="dot" style="--dx:26%; --dy:70%">5</span>
+        <span class="dot" style="--dx:56%; --dy:88%">6</span>
+      </div>
+      <div class="signpost">
+        <span class="kicker">Raise one in the</span><br>
+        <span class="pill"><b>G</b>Garden</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="vista plate" href="{{ G }}g_island.webp" data-caption="The Oumo Garden, over the clouds">
+    <img src="{{ G }}g_island.webp" alt="The Oumo Garden: a floating island of grass, trees and a domed temple, with crystals hanging under it, over a sea of pink cloud">
+  </a>
+
+  <div class="stops">
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}g_shells.webp" data-caption="Eggs on the lawn, by the STITCHES sign">
+        <img src="{{ G }}g_shells.webp" alt="Four eggs on the lawn: a striped Neutral egg, a gold Light egg, a black Night egg and an Outline egg" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">1</span>The Hatchery</h3>
+        <p>Eggs come from Stitches. You pick a boy or a girl in one of eight coats.</p>
+        <p>Neutral, Outline, Light and Night eggs each hatch a different look. The spots on the shell tell you its class.</p>
+        <p>Set the egg on the lawn and wait. The garden lays wild ones of its own, too.</p>
+      </div>
+    </article>
+
+    <aside class="note">
+      <div class="stamp"><small>Super rare</small><span>Shiny</span></div>
+      <div class="art"><img src="{{ G }}g_hatch.webp" alt="Three hatchlings: a black Night Oumo, a blue one and a white one" style="--m:0; border:6px solid rgba(247,233,213,.5)" loading="lazy"></div>
+      <div>
+        <span class="kicker">One egg in 256 hatches a</span>
+        <h4>Yarn Oumo</h4>
+        <p>It comes out knitted, with a seam and a pom-pom, to sparkles and a chime instead of a pop. It hatches at level 40 with every grade a step up.</p>
+      </div>
+    </aside>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}g_lawn.webp" data-caption="On the lawn">
+        <img src="{{ G }}g_lawn.webp" alt="A white Oumo with horns waddling across the lawn under fruit trees, a black one behind it" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">2</span>The Lawn</h3>
+        <p>Oumos crawl until level 10, then walk, and sometimes fall flat on their faces. Tap E to pet one, hold E to pick it up, and press E again to hug it.</p>
+        <p>Love turns into experience, and hunger slows it down. At level 30 an Oumo spins a cocoon and comes out grown up. At 90 a gold cocoon makes it Ultima.</p>
+      </div>
+    </article>
+
+    <aside class="note right">
+      <div class="stamp"><small>Growing</small><span>Up</span></div>
+      <div class="art grid">
+        <img src="{{ G }}oumo/gun.webp" alt="A GUN Oumo with swept horns and a crest" loading="lazy">
+        <img src="{{ G }}oumo/magic.webp" alt="A MAGIC Oumo with a swept crest" loading="lazy">
+        <img src="{{ G }}oumo/health.webp" alt="A HEALTH Oumo with drooping leaf ears" loading="lazy">
+      </div>
+      <div>
+        <span class="kicker">What it eats is what it becomes</span>
+        <h4>Gun, Magic, Health</h4>
+        <p>Its class shows on its head. GUN Oumos grow swept horns, MAGIC ones a crest, and HEALTH ones drooping leaf ears. Girls are slimmer and have their own softer shapes.</p>
+      </div>
+    </aside>
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}g_fruit.webp" data-caption="Gold fruit in the orchard">
+        <img src="{{ G }}g_fruit.webp" alt="Glowing gold fruit hanging from a tree over the player, who holds an Oumo" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">3</span>The Orchard</h3>
+        <p>There are three trees, one for each class. Fruit drops when it is ripe. Shake a tree and everything comes down, ripe or not.</p>
+        <p>One fruit in 164 is <strong>Rainbow</strong>, which feeds all three classes. Another one in 164 is <strong>Gold</strong>, which doubles levelling for half an hour. Hungry Oumos go and find fallen fruit for themselves. Walk past with one in your hand and they beg.</p>
+      </div>
+    </article>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}g_souldrop.webp" data-caption="The Imbuer">
+        <img src="{{ G }}g_souldrop.webp" alt="The Imbuer: a dark machine with a glowing rainbow tank, an Oumo on its red cushion" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">4</span>The Imbuer</h3>
+        <p>Carry an Oumo onto the machine. At the terminal you can store its soul in a glass tank, put it on a gun, or carry it as an item. If the gun breaks, the soul comes home.</p>
+        <p>An Oumo can also sit on a base turret and toughen it, by up to 45% for an Ultima.</p>
+      </div>
+    </article>
+
+    <aside class="note">
+      <div class="stamp"><small>Born</small><span>Again</span></div>
+      <div class="art grid">
+        <img src="{{ G }}oumo/fire.webp" alt="A Fire Oumo" loading="lazy">
+        <img src="{{ G }}oumo/frost.webp" alt="A Frost Oumo" loading="lazy">
+        <img src="{{ G }}oumo/thunder.webp" alt="A Thunder Oumo" loading="lazy">
+        <img src="{{ G }}oumo/earth.webp" alt="An Earth Oumo" loading="lazy">
+        <img src="{{ G }}oumo/light.webp" alt="A Light Oumo" loading="lazy">
+        <img src="{{ G }}oumo/dark.webp" alt="A Dark Oumo" loading="lazy">
+      </div>
+      <div>
+        <span class="kicker">Twenty crystals make an</span>
+        <h4>Elemental Oumo</h4>
+        <p>Take an Ultima to level 99 and the Imbuer can make it a child again. It keeps its name and its clothes, and earns a gold star and better grades.</p>
+        <p>Only a reborn Oumo eats crystals. Twenty of them make it Fire, Frost, Thunder, Water, Wind, Earth, Light or Dark, with skin made of the element.</p>
+      </div>
+    </aside>
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}g_grotto_pink.webp" data-caption="The Blue Grotto">
+        <img src="{{ G }}g_grotto_pink.webp" alt="The player in a glowing blue sea cave, pink flowers floating overhead" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">5</span>The Blue Grotto</h3>
+        <p>A glowing sea cave under the garden. Follow the GROTTO signs and the vines part as you walk through. A wide arch joins the east bay to the nursery.</p>
+        <p>An Oumo raised down here leans towards MAGIC.</p>
+      </div>
+    </article>
+
+    <aside class="note right">
+      <div class="stamp"><small>Say hello to</small><span>New</span></div>
+      <div class="art"><img src="{{ G }}cut/tori.webp" alt="Tori, sitting" style="--w:74%; --m:-80px 0 -40px" loading="lazy"></div>
+      <div>
+        <span class="kicker">Feet in the water</span>
+        <h4>Tori</h4>
+        <p>Tori, a dolphin woman, sits on the edge of the little islet in the lagoon. She doesn't say much, and seems happy just to be there. A skyhook over the islet takes you back up to the ledge.</p>
+      </div>
+    </aside>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}g_counter.webp" data-caption="Stitches, Marina at the counter">
+        <img src="{{ G }}g_counter.webp" alt="Inside Stitches: bunting, a round counter, Marina and a beret Oumo behind it, dressed dolls on the shelves" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">6</span>Stitches</h3>
+        <p>A little floating island next door, two skyhooks away. Stitches sells eggs, furniture for the lawn, and clothes for your Oumo.</p>
+        <p>There are hats, bows, shirts, skirts, headphones and cat ears. Each piece adds a little turret resist. Set your Oumo on the changing plinth on the lawn to dress it, and rename it at the counter.</p>
+      </div>
+    </article>
+
+    <aside class="note">
+      <div class="stamp"><small>Behind the counter</small><span>New</span></div>
+      <div class="art"><img src="{{ G }}cut/marina.webp" alt="Marina" style="--w:50%; --m:-90px 0 -50px" loading="lazy"></div>
+      <div>
+        <span class="kicker">She'll measure you up</span>
+        <h4>Marina</h4>
+        <p>A shark who runs a tailor's. A beret Oumo waves at you from her counter, and nine dressed dolls sit on the shelves behind her.</p>
+      </div>
+    </aside>
+
+    <aside class="note right">
+      <div class="stamp"><small>Furnish the</small><span>Lawn</span></div>
+      <div class="art row" style="--n:2"><img src="{{ G }}cut/teddy.webp" alt="A teddy bear" loading="lazy"><img src="{{ G }}cut/tv.webp" alt="An old wooden TV" loading="lazy"></div>
+      <div>
+        <span class="kicker">Something to do all day</span>
+        <h4>Decor</h4>
+        <p>There's a teddy, an old TV, a bookshelf, a beach ball, a skull and a pumpkin. There's also the Drith Playset, a little base that scrap minions attack while tiny turrets pop them.</p>
+        <p>Oumos read at the shelf, watch the TV together, and cheer at the playset.</p>
+      </div>
+    </aside>
+
+    <aside class="note">
+      <div class="stamp"><small>Getting around</small><span>Skyhooks</span></div>
+      <div class="art"><img src="{{ G }}cut/skyhook.webp" alt="A skyhook: a brass ball with a glowing green face" style="--w:70%; --m:-40px 0" loading="lazy"></div>
+      <div>
+        <span class="kicker">Hang on</span>
+        <h4>Hookshot a ball</h4>
+        <p>Skyhooks are brass balls with glowing faces that hover and spin. Hookshot one and it carries you across, hanging underneath. They link the Garden, Stitches and the Grotto.</p>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<!-- ========================================================= ROKKEN ====== -->
+
+<section class="lane rokken" id="rokken">
+  <div class="lane-head">
+    <div class="sky" style="--sky: url('{{ G }}sky-rokken.png')"></div>
+    <div class="row">
+      <div class="chart">
+        <img src="{{ G }}badge-rokken.webp" alt="Rokken from above: a ring of streets round the piazza">
+        <span class="flag">The Town</span>
+        <span class="dot" style="--dx:50%; --dy:50%">7</span>
+        <span class="dot" style="--dx:30%; --dy:34%">8</span>
+        <span class="dot" style="--dx:70%; --dy:34%">9</span>
+        <span class="dot" style="--dx:70%; --dy:68%">10</span>
+        <span class="dot" style="--dx:30%; --dy:68%">11</span>
+      </div>
+      <div class="signpost">
+        <span class="kicker">Spend it all in</span><br>
+        <span class="pill"><b>R</b>Rokken</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="vista plate" href="{{ G }}r_fountain.webp" data-caption="The fountain on Rokken's piazza">
+    <img src="{{ G }}r_fountain.webp" alt="A tiered fountain on a stained-glass plaza, flower beds round it, a canal running off" loading="lazy">
+  </a>
+  <p class="lane-intro">The town under the Monarch has a name now. It has a fountain on a stained-glass plaza, and a high street.</p>
+
+  <div class="stops">
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}r_snack.webp" data-caption="The Snack Bar">
+        <img src="{{ G }}r_snack.webp" alt="The Snack Bar: a bowling-alley diner with a counter, red chairs and white tables" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">7</span>The Snack Bar</h3>
+        <p>It replaced the trattoria. You get fries three ways, two kinds of churro, a soft pretzel and a cold soda, served at a bowling-alley counter.</p>
+        <span class="where">Rokken &middot; piazza</span>
+      </div>
+    </article>
+
+    <aside class="note right">
+      <div class="stamp"><small>On the</small><span>Menu</span></div>
+      <div class="art row" style="--n:4">
+        <img src="{{ G }}icon/food_chili_cheese_fries.webp" alt="Chili cheese fries" loading="lazy">
+        <img src="{{ G }}icon/food_churro.webp" alt="A churro" loading="lazy">
+        <img src="{{ G }}icon/food_pretzel.webp" alt="A soft pretzel" loading="lazy">
+        <img src="{{ G }}icon/food_soda.webp" alt="A soda" loading="lazy">
+      </div>
+      <div>
+        <span class="kicker">Order up</span>
+        <h4>Fries, churros, pretzels</h4>
+        <p>There's plain fries, cheese fries and chili cheese fries. There's a churro, a cookie churro, a soft pretzel and a soda.</p>
+      </div>
+    </aside>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}r_pitcher_door.webp" data-caption="Pitcher's">
+        <img src="{{ G }}r_pitcher_door.webp" alt="Pitcher's: a toy and card shop with glass counters, card walls and a round rug" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">8</span>Pitcher's</h3>
+        <p>Cards, games and toys on Via Mensa, run by Pitcher himself. He sells Genesis packs, blisters with better odds than a loose pack, and paper scratch cards.</p>
+        <span class="where">Rokken &middot; Via Mensa</span>
+      </div>
+    </article>
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}r_arcade.webp" data-caption="Rokken's arcades at night">
+        <img src="{{ G }}r_arcade.webp" alt="Lit stone arcades at night with café tables under them" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">9</span>Upgrades</h3>
+        <p>Across from Pitcher's. All twelve base modules are here, plus Nightblade moves and passives.</p>
+        <p>The movement abilities are here too. Buy High Jump, Double Jump, Quick Run and Glide, then come back and take each one to level 3.</p>
+        <span class="where">Rokken &middot; Via Mensa</span>
+      </div>
+    </article>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}r_plaza.webp" data-caption="The piazza">
+        <img src="{{ G }}r_plaza.webp" alt="The piazza at night: the fountain on a carpet of stained glass, canals running out from it" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">10</span>Round the piazza</h3>
+        <p><strong>Forgie's Forge</strong> has moved off the Caldera into a glass-fronted shop on the piazza, and Gideon is still on the ceiling.</p>
+        <p><strong>Weaver's</strong>, the armour shop, is a weavers' guild now, with working spinning wheels, a loom and a dye cauldron. The <strong>Potion Shop</strong> has jars up to the beams.</p>
+      </div>
+    </article>
+
+    <aside class="note">
+      <div class="stamp"><small>Pay it</small><span>Forward</span></div>
+      <div class="art"><img src="{{ G }}cut/bubble.webp" alt="The Bubble Stand: a green wooden stall with a BUBBLES 250 sign" style="--w:80%; --m:-70px 0 -40px" loading="lazy"></div>
+      <div>
+        <span class="kicker">Number 11</span>
+        <h4>The Bubble Stand</h4>
+        <p>Pay 250 Monny and it blows a bubble with the money inside. A minute or three later the bubble drifts down somewhere on the island. Whoever shoots it open gets the Monny, and a note saying who it's from.</p>
+      </div>
+    </aside>
+
+    <aside class="note right">
+      <div class="stamp"><small>Now with</small><span>Receipts</span></div>
+      <div class="art"><img src="{{ G }}cut/corey.webp" alt="Corey, a white cat" style="--w:70%; --m:-80px 0 -40px" loading="lazy"></div>
+      <div>
+        <span class="kicker">Corey's Sundries</span>
+        <h4>Look before you buy</h4>
+        <p>Press E on a case and you get a slip with the item's picture, its stats and its cost. Nothing is bought until you say yes, and empty cases say SOLD OUT. The tent also turns up on eight pads round the Caldera now.</p>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<!-- ======================================================== CALDERA ====== -->
+
+<section class="lane caldera" id="caldera">
+  <div class="lane-head">
+    <div class="sky" style="--sky: url('{{ G }}sky-caldera.png')"></div>
+    <div class="row">
+      <div class="chart">
+        <img src="{{ G }}badge-caldera.webp" alt="The chart of the Caldera, covered in monument icons">
+        <span class="flag">The Caldera</span>
+        <span class="dot" style="--dx:46%; --dy:30%">12</span>
+        <span class="dot" style="--dx:72%; --dy:76%">13</span>
+        <span class="dot" style="--dx:88%; --dy:44%">14</span>
+        <span class="dot" style="--dx:30%; --dy:20%">15</span>
+        <span class="dot" style="--dx:70%; --dy:24%">16</span>
+        <span class="dot" style="--dx:24%; --dy:62%">17</span>
+      </div>
+      <div class="signpost">
+        <span class="kicker">Plant a flag on the</span><br>
+        <span class="pill"><b>C</b>Caldera</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="vista plate" href="{{ G }}c_tower.webp" data-caption="The Tower, and the Monarch beyond it">
+    <img src="{{ G }}c_tower.webp" alt="A granite tower with a red and blue beacon on a summit, the Monarch's spire behind it in the haze" loading="lazy">
+  </a>
+  <p class="lane-intro">Ten monuments are new or rebuilt. They're the places worth going, which means everyone else is going too.</p>
+
+  <div class="stops">
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}c_tower.webp" data-caption="The Tower">
+        <img src="{{ G }}c_tower.webp" alt="The Tower" style="object-position: 40% 50%" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">12</span>The Tower</h3>
+        <p>A granite war memorial on the Caldera's highest summit. The beacon on top turns red and blue, and you can see it across the island. Inside are a memorial chamber and a hundred steps up to the lookout.</p>
+      </div>
+    </article>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}c_radio.webp" data-caption="Climbing the Radio Tower">
+        <img src="{{ G }}c_radio.webp" alt="The player at the foot of a red and white lattice mast, looking up" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">13</span>The Radio Tower</h3>
+        <p>Sixty-four metres of red-and-white steel lattice, with three ladders and three decks. There's a nyxite chest at the bottom and on every deck, and each one is rarer than the last: Uncommon in the shelter, Rare, Ultra, and Secret at the very top.</p>
+      </div>
+    </article>
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}c_oilrig.webp" data-caption="The Oil Rig">
+        <img src="{{ G }}c_oilrig.webp" alt="An oil rig at sea: a derrick, cranes and a helideck on yellow legs" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">14</span>The Oil Rigs</h3>
+        <p>A drilling platform with a derrick over a moonpool. There are two, one off the east coast and one off the west. Each has red and blue ends that mirror each other, with a helideck, a crane, a flare boom and a boat dock. The ghost ship ties up alongside.</p>
+      </div>
+    </article>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}c_ice.webp" data-caption="The Ice Cavern">
+        <img src="{{ G }}c_ice.webp" alt="The player in an ice cave with icicles overhead and snow underfoot" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">15</span>The Ice Cavern</h3>
+        <p>A winding ramp goes seventeen metres down to a hall of ice pillars and a frozen pool. An ice door opens on a vault full of stars, with a chest inside. It is the one monument you're allowed to build a base near.</p>
+      </div>
+    </article>
+
+    <article class="stop">
+      <a class="shot plate" href="{{ G }}c_sawmill.webp" data-caption="The Sawmill">
+        <img src="{{ G }}c_sawmill.webp" alt="A dirt lane between long blue sheds with red roofs" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">16</span>The Sawmill</h3>
+        <p>King of the hill in a lumber camp. The mill and its saw deck stand in the middle, with a blue camp to the north and a red one to the south. Each camp has sheds, log decks and burners.</p>
+      </div>
+    </article>
+
+    <article class="stop flip">
+      <a class="shot plate" href="{{ G }}c_post.webp" data-caption="The Post">
+        <img src="{{ G }}c_post.webp" alt="A tall concrete post-office block with deep fins over a dark ground floor" loading="lazy">
+      </a>
+      <div class="stop-text">
+        <h3><span class="num">17</span>The Post</h3>
+        <p>A five-storey post office with a forecourt. Go through the mirror-ball gallery and you come out on the sorting floor, dark and long abandoned.</p>
+      </div>
+    </article>
+
+    <aside class="note">
+      <div class="stamp"><small>Bring all</small><span>Seven</span></div>
+      <div class="art"><img src="{{ '/assets/img/slides/forest-render.webp' | relative_url }}" alt="The Forest: a walled grove of green and pink trees" style="--w:112%; --m:-30px 0" loading="lazy"></div>
+      <div>
+        <span class="kicker">The Forest</span>
+        <h4>The Heart Window</h4>
+        <p>Seven Heart Shards lie on rings of light around the grove. Bring all seven to the shack in the north bailey and set them in its stained-glass window. The door opens on three chests for everyone there, and the shards go back out for next time.</p>
+      </div>
+    </aside>
+
+    <aside class="note right">
+      <div class="stamp"><small>Cut right</small><span>Back</span></div>
+      <div class="art"><img src="{{ G }}c_hazard.webp" alt="Hazard from the air: a cooling tower, two domes and a walled yard" style="--m:0; border:6px solid rgba(247,233,213,.5)" loading="lazy"></div>
+      <div>
+        <span class="kicker">Rebuilt</span>
+        <h4>Hazard and the Gravel Pit</h4>
+        <p>Hazard is cut back so you can read it at a glance. Each side has a spawn, a hall, a flank shed, silos and a dome. The Gravel Pit gets sacks, tarps, drums and uneven ground, and its crates and barrels only stand against walls and in corners.</p>
+      </div>
+    </aside>
+
+    <aside class="note">
+      <div class="stamp"><small>Every 20</small><span>Minutes</span></div>
+      <div class="art"><img src="{{ G }}c_corey.webp" alt="A notice: The Monarch, Acre N14 SE. Corey's Sundries is here" style="--m:0" loading="lazy"></div>
+      <div>
+        <span class="kicker">Watch the notices</span>
+        <h4>Event pads</h4>
+        <p>Eight sandstone foundations are scattered over the Caldera. Corey's tent and the bomb-flip vault each claim a free one, scanned in as a hologram by the robot crew. Five minutes later they're gone again.</p>
+        <p>The <strong>Monarca Works</strong> are out there too: twenty compounds with steel strongboxes to crack.</p>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<!-- ======================================================== WILDLIFE ===== -->
+
+<div class="torn" style="--to:#100e0e"></div>
+<section class="g-mobs" id="wildlife">
+  <div class="g-open" style="background:none; padding-top:0">
+    <span class="kicker">While you're out there</span>
+    <h2>Mind the <span class="hl">wildlife</span></h2>
+    <p class="sub">Mobs live in camps across the island, four to a camp. They leave you alone until you hit them, and a cleared camp comes back two minutes later.</p>
+  </div>
+
+  <div class="mob">
+    <div class="mob-head">
+      <span class="kicker">They were here first</span>
+      <span class="ring">1</span><h3>The Monarchs</h3><em>Mob</em>
+    </div>
+    <div class="mob-body">
+      <div class="mob-art" style="--bg:#3a2216">
+        <img class="a" src="{{ G }}cut/monarch.webp" alt="A Monarch butterfly in flight" loading="lazy">
+      </div>
+      <div class="panel">
+        <span class="kicker">Six skins, one temper</span>
+        <h4>Ember, Tide, Frost, Meadow, Blossom, Dusk</h4>
+        <p>Butterflies four metres across. They perch and bask until you get close. Then they lunge, rear up and clap you away with a <strong>Bash</strong>, or burst into a cloud of scales with <strong>Flutter</strong>.</p>
+        <p>Tiny ones drift over the grass and do no harm.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mob flip">
+    <div class="mob-head">
+      <span class="kicker">Small, but there are four of them</span>
+      <span class="ring">2</span><h3>Leaflings</h3><em>Mob</em>
+    </div>
+    <div class="mob-body">
+      <div class="mob-art" style="--bg:#1f3016; --wa:62%">
+        <img class="a" src="{{ G }}cut/leafling_idle.webp" alt="A Leafling standing" loading="lazy">
+        <img class="b" src="{{ G }}cut/leafling.webp" alt="A Leafling winding up its spin" loading="lazy">
+      </div>
+      <div class="panel">
+        <span class="kicker">Moss, Maple and Plum</span>
+        <h4>Leaf Whirl</h4>
+        <p>Leaf-hooded sprites, less than a metre tall, that waddle about in packs. They slap with leaf blades and spin into a Leaf Whirl.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mob">
+    <div class="mob-head">
+      <span class="kicker">The Proving Ground has a</span>
+      <span class="ring">3</span><h3>Garrison</h3><em>Guards</em>
+    </div>
+    <div class="mob-body">
+      <div class="mob-art" style="--bg:#1a2426; --wa:52%">
+        <img class="a" src="{{ G }}cut/guard.webp" alt="A prison guard in armour, aiming a laser rifle" loading="lazy">
+      </div>
+      <div class="panel">
+        <span class="kicker">Keep your head down</span>
+        <h4>Prison guards</h4>
+        <p>They patrol or stand in the towers, and they see in a cone. A meter fills, they turn suspicious, and then they hunt with the laser gone red. Crouch and they can only see half as far.</p>
+        <p>They call for help, but they never leave their post to chase you.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mob flip">
+    <div class="mob-head">
+      <span class="kicker">Out in the long grass</span>
+      <span class="ring">4</span><h3>Spirits</h3><em>Drops</em>
+    </div>
+    <div class="mob-body">
+      <a class="shot plate" href="{{ G }}m_spirit.webp" data-caption="A Dark Spirit">
+        <img src="{{ G }}m_spirit.webp" alt="The player swinging a blade at a dark spirit, a spiked purple orb" loading="lazy">
+      </a>
+      <div class="panel">
+        <span class="kicker">For the Oumo who has everything</span>
+        <h4>Elemental crystals</h4>
+        <p>Each elemental spirit drops crystals of its own element: Fire, Ice, Wind, Earth, Thunder, Water, Light or Dark. They're what a reborn Oumo eats.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mob">
+    <div class="mob-head">
+      <span class="kicker">Saddle up</span>
+      <span class="ring">5</span><h3>Striders</h3><em>Mount</em>
+    </div>
+    <div class="mob-body">
+      <div class="mob-art" style="--bg:#2b2420">
+        <div class="strip">
+          <img src="{{ G }}cut/strider_kettle.webp" alt="Kettle" loading="lazy">
+          <img src="{{ G }}cut/strider_heron.webp" alt="Heron" loading="lazy">
+          <img src="{{ G }}cut/strider_packrat.webp" alt="Packrat" loading="lazy">
+          <img src="{{ G }}cut/strider_springtail.webp" alt="Springtail" loading="lazy">
+        </div>
+      </div>
+      <div class="panel">
+        <span class="kicker">Kettle, Heron, Packrat, Springtail</span>
+        <h4>Ride a scrap walker</h4>
+        <p>A two-legged walker built out of scrap, in four bodies. When you climb in you dissolve into orbs inside it. It takes a couple of seconds to reach 14.5 m/s, turns heavily, and jumps.</p>
+        <p>Crouch and it digs up buried loot. There's a range to learn it on, with a sprint, steps, gaps and a slalom.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mob flip">
+    <div class="mob-head">
+      <span class="kicker">Your base has staff now</span>
+      <span class="ring">6</span><h3>The Crew</h3><em>Friendly</em>
+    </div>
+    <div class="mob-body">
+      <div class="mob-art" style="--bg:#2a2a1a; --wa:56%; --wb:42%">
+        <img class="a" src="{{ G }}cut/foreman.webp" alt="The build foreman, a boxy white drone with a hard hat" loading="lazy">
+        <img class="b" src="{{ G }}cut/fetchbot.webp" alt="The fetch bot, an orange ball with two rotors" loading="lazy">
+      </div>
+      <div class="panel">
+        <span class="kicker">Foreman, workers, fetch bot, courier</span>
+        <h4>Hard hats on</h4>
+        <p>A moustached foreman and five hard-hat drones weld your base together. One of them slacks off and gets told off for it.</p>
+        <p>A fetch bot flies to the Monarch for any blueprint you learn. A courier delivers new guns, blows up the old ones with C4, and scans the new ones in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ KIT ====== -->
+
+<div class="torn" style="--to:#070707"></div>
+<section class="g-kit" id="kit">
+  <div class="g-open">
+    <span class="kicker">There's a lot more to carry</span>
+    <h2>The <span class="hl">new</span> kit</h2>
+    <p class="sub">Items, upgrades, and things to put on the base.</p>
+  </div>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}cut/frag.webp" alt="Frag grenade" style="--w:26%" loading="lazy">
+      <img src="{{ G }}cut/firegren.webp" alt="Fire grenade" style="--w:18%" loading="lazy">
+      <img src="{{ G }}cut/empgren.webp" alt="EMP grenade" style="--w:18%" loading="lazy">
+      <img src="{{ G }}cut/clustergren.webp" alt="Cluster grenade" style="--w:20%" loading="lazy">
+      <img src="{{ G }}cut/smokegren.webp" alt="Smoke grenade" style="--w:24%" loading="lazy">
+      <a class="shot plate" href="{{ G }}k_cluster.webp" data-caption="A cluster grenade's bomblets going off"><img src="{{ G }}k_cluster.webp" alt="A cluster grenade's bomblets bursting in orange fire" loading="lazy"></a>
+    </div>
+    <div>
+      <span class="kicker">Pull the pin</span>
+      <h3>Grenades</h3>
+      <p>Frag, Fire, EMP, Cluster and Smoke. A frag's fuse starts on the first bounce, and fire burns the ground for eight seconds. A cluster lets go six bomblets. Smoke screens for about twelve seconds.</p>
+      <p>EMP doesn't hurt anyone. Turrets stop firing for eight seconds and shields come off. Live grenades glow in their own colour, and holding aim draws the throw and a landing ring.</p>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}cut/mod_firepower.webp" alt="Firepower module" style="--w:46%" loading="lazy">
+      <img src="{{ G }}cut/mod_shield.webp" alt="Shield module" style="--w:46%" loading="lazy">
+      <img src="{{ G }}cut/mod_overclock.webp" alt="Overclock module" style="--w:46%" loading="lazy">
+      <img src="{{ G }}cut/mod_airstrike.webp" alt="Airstrike module" style="--w:46%" loading="lazy">
+    </div>
+    <div>
+      <span class="kicker">For the Module Bay</span>
+      <h3>Twelve cartridges</h3>
+      <p>Firepower, Rapid Fire, Targeting, Plating, Shield, Repair, Overclock, Fuel Saver, Smelter, Airstrike, Barracks and Supply. Each one goes from Mk I to Mk V.</p>
+      <p>Overclock powers up to five more guns. Shield takes up to 80% off the damage your turrets take.</p>
+      <span class="found">Sold at Upgrades and Corey's</span>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}cut/cram.webp" alt="The C-RAM, a white Gatling turret" style="--w:50%" loading="lazy">
+      <img src="{{ G }}cut/plasma4.webp" alt="The quad plasma cannon" style="--w:44%" loading="lazy">
+    </div>
+    <div>
+      <span class="kicker">On the roof</span>
+      <h3>C-RAM and plasma</h3>
+      <p>The CR-01 C-RAM is a roof Gatling. It shoots down rockets, missiles, shells, bombs and anyone flying a minicopter over your base. Plasma cannons come as twins, triples and quads, and there are seven new power cores to run it all.</p>
+      <p>Missile racks lock on with a count now, one chime per missile, then fire every tube at once. Their reloads are halved.</p>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}cut/heavenchest.webp" alt="A white and gold chest with wings and a halo" style="--w:62%" loading="lazy">
+      <img src="{{ G }}cut/steelchest.webp" alt="The steel chest" style="--w:40%" loading="lazy">
+    </div>
+    <div>
+      <span class="kicker">What's inside</span>
+      <h3>Chests</h3>
+      <p>A nyxite chest promises one item of its rarity, and its crystal glows that rarity's colour. The steel chest has a real lid now. It swings open, and stays open once you've emptied it.</p>
+      <p>Climb into the light at the top of the Tower of Babel and you come out on a still sea under open sky, with three winged chests waiting.</p>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}icon/armor_wear_jet_boots.webp" alt="Jet Boots" style="--w:40%" loading="lazy">
+      <img src="{{ G }}icon/armor_wear_pirate_hat.webp" alt="Corsair's Plume" style="--w:40%" loading="lazy">
+      <img src="{{ G }}icon/armor_wear_pirate_hat_small.webp" alt="Cabin Hat" style="--w:34%" loading="lazy">
+    </div>
+    <div>
+      <span class="kicker">Something to wear</span>
+      <h3>Jet Boots and two hats</h3>
+      <p>Jet Boots replace the fastest running shoes, with fire at the heels. There are two pirate hats, the <strong>Corsair's Plume</strong> and the <strong>Cabin Hat</strong>. The Field set (tunic, hose and boots) joins the rack too.</p>
+      <span class="found">Weaver's, Rokken</span>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <a class="shot plate" href="{{ G }}k_codex.webp" data-caption="The Blueprint Reader"><img src="{{ G }}k_codex.webp" alt="The Blueprint Reader: a rail of categories, a blueprint unrolled on a glowing table" loading="lazy"></a>
+    </div>
+    <div>
+      <span class="kicker">Collect them all</span>
+      <h3>The Blueprint Reader</h3>
+      <p>It's a codex now. Every blueprint is a card, locked, held or decoded, and there's a count of how many you've decoded this wipe. There are six milestones of Renown and bonuses for finishing a set. Learn one and the fetch bot goes to get it.</p>
+    </div>
+  </article>
+
+  <article class="kit">
+    <div class="kit-art">
+      <img src="{{ G }}icon/crystal_fire.webp" alt="Fire crystal" style="--w:22%" loading="lazy">
+      <img src="{{ G }}icon/crystal_ice.webp" alt="Ice crystal" style="--w:22%" loading="lazy">
+      <img src="{{ G }}icon/crystal_thunder.webp" alt="Thunder crystal" style="--w:22%" loading="lazy">
+      <img src="{{ G }}icon/crystal_light.webp" alt="Light crystal" style="--w:22%" loading="lazy">
+      <img src="{{ G }}icon/ingot_gun.webp" alt="Gun ingot" style="--w:28%" loading="lazy">
+      <img src="{{ G }}icon/ingot_magic.webp" alt="Magic ingot" style="--w:28%" loading="lazy">
+      <img src="{{ G }}icon/ingot_health.webp" alt="Health ingot" style="--w:28%" loading="lazy">
+    </div>
+    <div>
+      <span class="kicker">Forged with a crystal</span>
+      <h3>Crystals and ingots</h3>
+      <p>Silver forged with a crystal makes a Gun, Magic or Health ingot, and Oumos will eat those too. There's also the AP Boost for an extra Ability Point this wipe, and Genesis Blisters, where more than half the pulls are Rare or better.</p>
+    </div>
+  </article>
+</section>
+
+<!-- ========================================================= ALSO NEW ==== -->
+
+<section class="g-kit" id="also" style="padding-top:0">
+  <div class="g-open" style="padding-top:0">
+    <span class="kicker">And under the hood</span>
+    <h2>Also <span class="hl">new</span></h2>
+  </div>
+
+  <div class="also">
+    <section>
+      <h3>Moving</h3>
+      <ul>
+        <li>The <strong>double jump</strong> is an aerial dodge now, once per jump.</li>
+        <li>Keep holding dash through a roll and it turns into <strong>Quick Run</strong>.</li>
+        <li>Hold dash or guard in the air to <strong>Glide</strong>, and let go to drop.</li>
+        <li>Every hit lands on you now: you flinch, slide, get launched and land. Aerial Recovery catches you.</li>
+        <li><strong>Swimming</strong> has its own crawl and tread. You float, and the seabed isn't a floor.</li>
+        <li>Running on the open Caldera is faster.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Online</h3>
+      <ul>
+        <li><strong>Dedicated servers only</strong>, with our own server browser. You need the server's exact build to join.</li>
+        <li>The server has the final say on packs, Monny, bases, clans, shops, loot, PvP damage and movement. Bad moves snap back.</li>
+        <li>The netcode is packed and thinned by distance, so a server can hold 64 players.</li>
+        <li>You see other players' facing, swings, shots, reloads and spells.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Everything else</h3>
+      <ul>
+        <li>The <strong>moon</strong> favours one class each night. A ring on the clock shows which.</li>
+        <li>Item stats are drawn as <strong>rows of cells</strong>.</li>
+        <li>The player wears a bold white outline.</li>
+        <li>Teleporters hum, wind up and throw orbs while you wait.</li>
+        <li>The Garden's waterfall runs down rapids, under a plank bridge, into the aqueduct.</li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="signoff">
+    It's still a <strong>pre-alpha</strong>, on a server I host myself, so it's only up when I have it running.
+    The button below will tell you which.
+  </p>
+</section>

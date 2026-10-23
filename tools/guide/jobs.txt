@@ -1,0 +1,43 @@
+# name|blend under gamemodels/models|render.py options — cutouts for the Garden Party guide
+marina|Characters/Marina/Marina.blend|action=Idle frame=60 az=22 el=4 lens=85 w=1000 h=1400
+tori|Characters/Tori/Tori.blend|action=Idle frame=60 az=28 el=10 lens=85 w=1300 h=1200
+monarch|Characters/Monarch_Butterfly/Monarch_Butterfly.blend|action=Hover frame=4 az=30 el=22 lens=70 w=1500 h=1200
+monarch_bash|Characters/Monarch_Butterfly/Monarch_Butterfly.blend|action=Bash frame=14 az=20 el=8 lens=70 w=1400 h=1400
+leafling|Characters/Leafling/Leafling.blend|action=Special frame=14 az=30 el=8 lens=85 w=1100 h=1200
+leafling_idle|Characters/Leafling/Leafling.blend|action=Idle frame=20 az=25 el=6 lens=85 w=1100 h=1200
+strider_kettle|Vehicles/Strider_Kettle/Strider_Kettle.blend|action=Run frame=4 az=35 el=6 lens=70 w=1200 h=1300
+strider_heron|Vehicles/Strider_Heron/Strider_Heron.blend|action=Stand frame=1 az=40 el=6 lens=70 w=1100 h=1400
+strider_packrat|Vehicles/Strider_Packrat/Strider_Packrat.blend|action=Stand frame=1 az=40 el=6 lens=70 w=1200 h=1300
+strider_springtail|Vehicles/Strider_Springtail/Strider_Springtail.blend|action=Stand frame=1 az=40 el=6 lens=70 w=1200 h=1300
+pitcher|Characters/NPC_Pitcher/NPC_Pitcher.blend|az=22 el=4 lens=85 w=1000 h=1400
+corey|Characters/NPC_Corey/NPC_Corey.blend|az=22 el=4 lens=85 w=1000 h=1400
+outpost_guard|Characters/NPC_Outpost_Guard/NPC_Outpost_Guard.blend|az=22 el=4 lens=85 w=1000 h=1400
+foreman|Drone/Build_Foreman/Build_Foreman.blend|az=30 el=10 lens=70 w=1200 h=1200
+fetchbot|Drone/Fetch_Bot/Fetch_Bot.blend|az=30 el=10 lens=70 w=1200 h=1200
+fruit_gun|Oumos/Oumo_Fruit_Gun/Oumo_Fruit_Gun.blend|az=20 el=12 lens=85 w=900 h=900
+fruit_magic|Oumos/Oumo_Fruit_Magic/Oumo_Fruit_Magic.blend|az=20 el=12 lens=85 w=900 h=900
+fruit_health|Oumos/Oumo_Fruit_Health/Oumo_Fruit_Health.blend|az=20 el=12 lens=85 w=900 h=900
+imbuer|Oumos/Oumo_Imbuer/Oumo_Imbuer.blend|az=30 el=8 lens=60 w=1400 h=1300
+tv|Oumos/Oumo_Decor_TV/Oumo_Decor_TV.blend|az=25 el=8 lens=85 w=1100 h=1000
+teddy|Oumos/Oumo_Decor_Teddy/Oumo_Decor_Teddy.blend|az=25 el=8 lens=85 w=1000 h=1100
+skyhook|Skyhook/Skyhook.blend|az=25 el=8 lens=85 w=1100 h=1100
+bubble|Stand/Bubble_Stand_01/Bubble_Stand_01.blend|az=30 el=8 lens=70 w=1100 h=1300
+grottosign|Signs/Grotto_Sign/Grotto_Sign.blend|az=25 el=6 lens=85 w=1200 h=1100
+frag|Grenades/Grenade_01/Grenade_01.blend|az=25 el=12 lens=100 w=900 h=900 exp=0.8
+firegren|Grenades/Fire_Grenade/Fire_Grenade.blend|az=25 el=12 lens=100 w=900 h=900 exp=0.8
+empgren|Grenades/EMP_Grenade/EMP_Grenade.blend|az=25 el=12 lens=100 w=900 h=900 exp=0.8
+clustergren|Grenades/Cluster_Grenade/Cluster_Grenade.blend|az=25 el=12 lens=100 w=900 h=900 exp=0.8
+smokegren|Grenades/Smoke_Grenade/Smoke_Grenade.blend|az=25 el=12 lens=100 w=900 h=900 exp=0.8
+jetboots|Armor/Wear_Jet_Boots/Wear_Jet_Boots.blend|az=150 el=14 lens=85 w=1200 h=1000
+piratehat|Armor/Wear_Pirate_Hat/Wear_Pirate_Hat.blend|az=25 el=14 lens=85 w=1200 h=1000
+cabinhat|Armor/Wear_Pirate_Hat_Small/Wear_Pirate_Hat_Small.blend|az=25 el=14 lens=85 w=1100 h=1000
+mod_firepower|Modules/Module_Firepower/Module_Firepower.blend|az=28 el=16 lens=100 w=1000 h=1000
+mod_shield|Modules/Module_Shield/Module_Shield.blend|az=28 el=16 lens=100 w=1000 h=1000
+mod_overclock|Modules/Module_Overclock/Module_Overclock.blend|az=28 el=16 lens=100 w=1000 h=1000
+mod_airstrike|Modules/Module_Airstrike/Module_Airstrike.blend|az=28 el=16 lens=100 w=1000 h=1000
+nyxchest|Chest/Monarca_Chest_01/Monarca_Chest_01.blend|az=30 el=16 lens=85 w=1200 h=1000
+steelchest|Chest/Chest_Steel_01/Chest_Steel_01.blend|az=30 el=16 lens=85 w=1200 h=1000
+heavenchest|Chest/Treasure_Chest_Heaven_01/Treasure_Chest_Heaven_01.blend|az=30 el=14 lens=85 w=1300 h=1000
+cram|CRAM/CR_01/CR_01.blend|az=35 el=10 lens=70 w=1300 h=1200 exp=0.6
+plasma4|Turrets/PlasmaCannon_04/PlasmaCannon_04.blend|az=35 el=10 lens=70 w=1300 h=1100 exp=0.6
+guard|Characters/NPC_Prison_Guard/NPC_Prison_Guard.blend|action=Aim frame=30 az=215 el=4 lens=85 w=1000 h=1400

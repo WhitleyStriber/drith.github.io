@@ -16,29 +16,7 @@
    is scoped under .home.
    ========================================================================== */
 
-/* THE TRIAL CUT draws : ? and ! as a period, so those three are subset out of
-   these files and fall through to the next face in the stack. */
-@font-face {
-  font-family: "Cinetype";
-  src: url("../fonts/cinetype-regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Cinetype";
-  src: url("../fonts/cinetype-bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Cinetype Mono";
-  src: url("../fonts/cinetype-mono.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* The Cinetype faces are declared in board.css, which loads first. */
 
 .home {
   /* --- wardeck_panel.cpp ------------------------------------------------- */

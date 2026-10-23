@@ -18,25 +18,21 @@
 <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
 
 {%- comment %}
-  The game's own two faces, self-hosted and subset — PT Sans Narrow Bold is
-  WORDMARK_FONT in world/menu.gd and the display face for the whole game through
-  display_face::at(); FreeSans is the board's UI face and the project's default
-  theme font. Preloaded because the wordmark is the first thing on the screen
-  and font-display:block holds it until the file lands.
+  GT Cinetype, the WARDECK's face and now the whole site's, self-hosted and
+  subset (assets/fonts/README.txt). Preloaded because the wordmark and the
+  headings are the first thing on every page.
 {%- endcomment %}
-{%- if page.url == '/' %}
 <link rel="preload" href="{{ '/assets/fonts/cinetype-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ '/assets/fonts/cinetype-regular.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-{%- else %}
-<link rel="preload" href="{{ '/assets/fonts/ptsans-narrow-bold.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ '/assets/fonts/freesans.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-{%- endif %}
 <link rel="stylesheet" href="{{ '/assets/css/board.css' | relative_url }}">
 {%- if page.url == '/' %}
 <link rel="stylesheet" href="{{ '/assets/css/home.css' | relative_url }}">
 {%- endif %}
 {%- if page.layout == 'update' %}
 <link rel="stylesheet" href="{{ '/assets/css/update.css' | relative_url }}">
+{%- endif %}
+{%- if page.layout == 'guide' or page.skin == 'guide' %}
+<link rel="stylesheet" href="{{ '/assets/css/guide.css' | relative_url }}">
 {%- endif %}
 </head>
 
@@ -63,7 +59,7 @@
     {%- endif -%}
   {%- endfor -%}
 {%- endunless %}
-<body data-base="{{ site.baseurl }}" data-fractal="{{ '/assets/img/fractals/' | append: fractal | append: '.png' | relative_url }}" class="{% if page.url == '/' %}home intro{% else %}doc{% endif %}">
+<body data-base="{{ site.baseurl }}" data-fractal="{{ '/assets/img/fractals/' | append: fractal | append: '.png' | relative_url }}" class="{% if page.url == '/' %}home intro{% else %}doc{% endif %}{% if page.layout == 'guide' or page.skin == 'guide' %} guide-page{% endif %}">
 
 {%- comment %}
   THE GROUND. One canvas carrying menu.tscn's whole stack in its own order —

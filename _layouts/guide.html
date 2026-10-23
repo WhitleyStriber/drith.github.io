@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+{%- comment %}
+  A GUIDE is a post laid out as a visitor's guide rather than a column: a
+  hero with the headline and the new faces, then the world in coloured lanes,
+  each with its round chart, its numbered stops and its NEW cards. It runs
+  edge to edge, so it keeps neither the document pages' column nor their
+  scanlines. The masthead, the PLAY panel and prev/next are still here, so it
+  is still an entry in the devlog. Styles are in assets/css/guide.css.
+{%- endcomment %}
+
+<div class="guide">
+
+  <header class="g-bar">
+    <a class="g-mark" href="{{ '/' | relative_url }}">Drith</a>
+    <p class="g-about">A multiplayer siege game in pre-alpha. The server is up when I have it running.</p>
+    <a class="g-back" href="{{ '/devlog/' | relative_url }}">&larr; Devlog</a>
+  </header>
+
+  {{ content }}
+
+  <footer class="g-foot">
+    <div class="playbar">
+      <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the pre-alpha</button>
+    </div>
+    {% include server.html %}
+
+    <nav class="foot">
+      {%- if page.next %}<a href="{{ page.next.url | relative_url }}">&larr; {{ page.next.title }}</a>{% endif -%}
+      {%- if page.previous %}<a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }} &rarr;</a>{% endif -%}
+    </nav>
+  </footer>
+
+</div>

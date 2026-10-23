@@ -81,6 +81,32 @@
   font-display: swap;
 }
 
+/* GT CINETYPE, the WARDECK's only face, is now the whole site's: the front
+   page, the devlog and every post. The faces above stay loaded for the PLAY
+   panel's fallbacks, and because the trial cut draws : ? and ! as a period —
+   those three are subset out of these files and fall through to FreeSans. */
+@font-face {
+  font-family: "Cinetype";
+  src: url("../fonts/cinetype-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cinetype";
+  src: url("../fonts/cinetype-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cinetype Mono";
+  src: url("../fonts/cinetype-mono.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* THE LOGICAL PIXEL. See the header. */
   --u: min(0.0925926vh, 0.1373626vw);
@@ -116,15 +142,13 @@
   --crt-fade: 0.13s;
   --crt-pop:  0.22s;
 
-  /* THE FACES. `--display` and `--body` are the game's, self-hosted above;
-     `--mono` is JetBrains Mono, console_style::mono_font, which the board
-     itself never uses but every figure on the document pages does — for the
-     reason it is in the HUD, that a number you read off a row should not be
-     re-fitting its width as it changes. */
-  --display: "Board Display", "PT Sans Narrow", "Arial Narrow", sans-serif;
-  --body: "Board UI", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  --label: "Board Label", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  --mono: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  /* THE FACES. Every role is GT Cinetype now — Bold for the wordmark and
+     headings, Regular for reading, Mono for figures, so that a number read
+     off a row does not re-fit its width as it changes. */
+  --display: "Cinetype", "Board UI", "Helvetica Neue", Arial, sans-serif;
+  --body: "Cinetype", "Board UI", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --label: "Cinetype", "Board UI", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --mono: "Cinetype Mono", ui-monospace, Menlo, Consolas, monospace;
 
   /* FreeSans and PT Sans Narrow Bold measure ascent+descent at 1.1 and 1.294
      of their em. Godot lays a Label out in exactly that box and puts the

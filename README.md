@@ -152,6 +152,8 @@ Drop a file in `_posts/` named `YYYY-MM-DD-some-slug.md`:
 ---
 title: "What I built"
 date: 2026-08-14
+cover: /assets/img/shots/caldera.jpg   # the square on /devlog/
+deck: One line under the title on /devlog/.
 description: >-        # optional — used for og:description
   One or two sentences.
 ---
@@ -162,6 +164,43 @@ styles already. A raw `<ul class="thanks">` flows into columns, for credits.
 
 That's it — `/devlog/` lists everything newest first, and each post gets
 prev/next links.
+
+## A guide page
+
+A post with `layout: guide` (see `_posts/2026-10-23-garden-party.html`) is laid
+out like a printed visitor's guide, after Deadlock's *City Never Sleeps* page:
+a headline whose letters are filled with screenshots, a row of portrait cards,
+then the world in three coloured lanes (the Garden green, Rokken yellow, the
+Caldera blue). Each lane has a skyline cut out of the game's own renders, a
+round chart, numbered stops and NEW cards. It runs edge to edge, without the
+fractal or the scanlines. Styles are `assets/css/guide.css`, images
+`assets/img/garden/`.
+
+`tools/guide/` makes the images. `jobs.txt` lists the Blender cutouts,
+`photos.py` crops the screenshots (cutting away the HUD), and
+`make_assets.py` writes everything else: grain, torn edges, ragged panel
+masks, skylines, the round charts and the headline's fill. The masks carry
+their shape in alpha, because that is what CSS `mask-image` reads.
+
+```bash
+tools/plates/batch.sh tools/guide/jobs.txt /tmp/cut "samples=64"
+python3 tools/guide/photos.py /tmp/photos
+python3 tools/guide/make_assets.py /tmp/cut /tmp/photos
+```
+
+`make_assets.py` copies every cutout and photo it is given. Prune the ones the
+post does not use afterwards.
+
+## The devlog index
+
+`/devlog/` wears the guide's skin (`skin: guide` in its front matter): every
+entry is a square print. A post names its picture and a one-line deck in front
+matter:
+
+```yaml
+cover: /assets/img/garden/g_island.webp
+deck: The Oumo Garden opens, Rokken gets a high street, and the Caldera fills up.
+```
 
 ## An update page
 

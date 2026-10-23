@@ -1,5 +1,6 @@
 ---
 layout: default
+skin: guide
 fractal: gosper
 title: Devlog
 permalink: /devlog/
@@ -7,40 +8,49 @@ description: >-
   Build notes from Drith.
 ---
 
-<div class="wrap">
+{%- comment %} The devlog wears the guide's skin (assets/css/guide.css): every
+entry is a square print in a cream mat, its cover filling the square and its
+name stamped across the foot. A post names its cover and a one-line deck in
+front matter; one without a cover gets its title on a plain card. {%- endcomment %}
 
-  <div class="mast">
-    <a class="home" href="{{ '/' | relative_url }}">Drith</a>
-    <span class="spacer"></span>
-    <span class="label">Devlog</span>
-  </div>
+<div class="guide">
 
-  <div class="playbar">
-    <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the pre-alpha</button>
-  </div>
-  {% include server.html %}
+  <header class="g-bar">
+    <a class="g-mark" href="{{ '/' | relative_url }}">Drith</a>
+    <p class="g-about">A multiplayer siege game in pre-alpha. The server is up when I have it running.</p>
+    <span class="g-back">Devlog</span>
+  </header>
 
-  <div class="sec">
-    <h2>Entries</h2>
-    <span class="line" aria-hidden="true"></span>
-  </div>
+  <section class="g-open d-head">
+    <span class="kicker">Build notes from the island</span>
+    <h1>The <span class="hl">devlog</span></h1>
+    <div class="playbar">
+      <button class="btn" id="play" aria-expanded="false" aria-controls="server">Play the pre-alpha</button>
+    </div>
+    {% include server.html %}
+  </section>
 
-  {%- comment %} The post list IS the board's ledger — same row, same tick, same
-  lit-on-hover behaviour. Only the type sizes move, because an entry name at the
-  board's 32px would be a headline per post. {%- endcomment %}
-  {% if site.posts.size > 0 %}
-  <div class="log">
-    {%- for post in site.posts %}
-    <a class="row" href="{{ post.url | relative_url }}">
-      <span class="tick" aria-hidden="true"></span>
-      <span class="name">{{ post.title }}</span>
-      <span class="fill" aria-hidden="true"></span>
-      <span class="val">{{ post.date | date: "%Y.%m.%d" }}</span>
-    </a>
-    {%- endfor %}
-  </div>
-  {% else %}
-  <div class="empty">No entries yet</div>
-  {% endif %}
+  <div class="torn"></div>
+  <section class="d-list">
+    {% if site.posts.size > 0 %}
+    <div class="squares">
+      {%- for post in site.posts %}
+      <a class="square{% if forloop.first %} newest{% endif %}" href="{{ post.url | relative_url }}">
+        {%- if post.cover %}
+        <img src="{{ post.cover | relative_url }}" alt="" loading="lazy">
+        {%- endif %}
+        {%- if forloop.first %}<span class="stamp"><span>Latest</span></span>{% endif %}
+        <span class="sq-text">
+          <span class="sq-date">{{ post.date | date: "%Y.%m.%d" }}</span>
+          <span class="sq-title">{{ post.title }}</span>
+          {%- if post.deck %}<span class="sq-deck">{{ post.deck }}</span>{% endif %}
+        </span>
+      </a>
+      {%- endfor %}
+    </div>
+    {% else %}
+    <div class="empty">No entries yet</div>
+    {% endif %}
+  </section>
 
 </div>

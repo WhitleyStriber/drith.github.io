@@ -1,6 +1,8 @@
 ---
 title: "An introduction to Drith"
 date: 2026-08-01
+cover: /assets/img/shots/monarch.jpg
+deck: What the game is, how it plays, and how to get in.
 description: >-
   What the game is, how it plays, what's working so far, and how to get into
   the pre-alpha.
